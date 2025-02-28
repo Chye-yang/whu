@@ -1,0 +1,262 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>异常检测</title>
+<link href="/static/record/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+<script src="/static/record/js/echarts.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="/static/record/css/comon0.css">
+<script type="text/javascript" src="/static/record/js/jquery.js"></script>
+<script type="text/javascript" src="/static/record/js/base.js"></script>
+
+<!-- JS 部分 -->
+
+<link rel="stylesheet" href="/static/record/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" media="all" href="/static/record/css/daterangepicker-bs3.css"
+/>
+<script type="text/javascript" src="/static/record/js/moment.js">
+</script>
+<script type="text/javascript" src="/static/record/js/daterangepicker.js">
+</script>
+
+
+<link rel="stylesheet" href="/static/identify/css/liMarquee.css">
+<script src="/static/identify/js/jquery.liMarquee.js"></script>
+
+<!-- Bootstrap 3.3.7 -->
+<script src="/static/record/js/bootstrap.min.js"></script>
+<!-- bootstrap-table -->
+<script src="/static/record/js/bootstrap-table.js"></script>
+<script src="/static/record/js/bootstrap-table-zh-CN.min.js"></script>
+
+<script>
+    $(window).load(function () {
+        $(".loading").fadeOut()
+    })
+
+    /****/
+    $(document).ready(function () {
+        var whei = $(window).width()
+        $("html").css({fontSize: whei / 20})
+        $(window).resize(function () {
+            var whei = $(window).width()
+            $("html").css({fontSize: whei / 20})
+        });
+    });
+</script>
+
+
+<body>
+
+
+<div class="bnt">
+
+    <div class="topbnt_left fl">
+        <ul>
+            <li><a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a></li>
+            <li><a href="analysis.html">流量采集</a></li>
+
+        </ul>
+    </div>
+    <h1 class="tith1 fl" style="color: white">异常检测分析</h1>
+        <div class=" fr topbnt_right">
+        <ul>
+            <!-- <li><a href="http://125.76.115.61:81/">取证平台</a></li> -->
+            <li class="active"><a href="0record.html">异常检测</a></li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="mrbox_top_midd">
+
+    <div class="rbottom_box1">
+        <h2 class="tith2" style="color: white">实时流量速率</h2>
+        <div id="lpeftmidbot" class="prbottom_box1cont"></div>
+    </div>
+
+    <div class="rbottom_box2">
+        <h2 class="tith2" style="color: white">异常检测正确率(每100条流)</h2>
+        <div id="prbottom_box1" class="prbottom_box1cont"></div>
+    </div>
+
+</div>
+
+
+<div class="left1 pleft1">
+    <div class="plefttoday">
+        <h2 class="tith2" style="color: white"></h2>
+
+        <div class="lefttoday_number">
+            <div class="widget-inline-box text-center fl">
+                <div style="margin-top:2%; display: flex;align-items: center; justify-content: center;">
+                    <div style="margin-right: 10%; font-size: 26px">异常检测</div>
+                    <div>
+                        <button onclick="ensure()" class="button">开始</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function ensure() {
+            // {#var select_file = document.getElementById("select_file");#}
+            // {#var select_file_index = select_file.selectedIndex;#}
+
+            window.location.href = '/record.html';
+        }
+    </script>
+    <div class="left3_table" style="text-align:center">
+        <h2 style="text-align:center; margin-top:4.5%; font-size:160%; color: white">流量五元组实时展示</h2>
+
+        <div class="tablebox">
+            <table id="tableId" class="table tbl-body">
+                <thead>
+                <tr>
+                    <th>源IP</th>
+                    <th>目的IP</th>
+                    <th>源端口</th>
+                    <th>目的端口</th>
+                    <th>协议</th>
+                </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    function GetRequest() {
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
+    }
+
+    /**
+     * 设置select选中
+     * @param selectId select的id值
+     * @param checkValue 选中option的值
+     */
+    function setSelectChecked(selectId, checkIndex) {
+        var select = document.getElementById(selectId);
+        select.options[checkIndex].selected = true;
+
+    }
+
+    //使用
+    setSelectChecked('select_file', GetRequest().file);
+
+</script>
+
+<script>
+    $(function () {
+        left = parseInt(GetRequest().text)
+        var tag = false, ox = 0, bgleft = 0;
+        $('.progress_btn').css('left', left);
+        $('.progress_bar').animate({width: left}, 300);
+        $('.text').html(Math.floor((0.2 + 4.8 * (left / 300)) * 10) / 10 + 'x');
+        $('.progress_btn').mousedown(function (e) {
+            ox = e.pageX - left;
+            tag = true;
+        });
+        $(document).mouseup(function () {
+            tag = false;
+        });
+        $('.progress').mousemove(function (e) {//鼠标移动
+            if (tag) {
+                left = e.pageX - ox;
+                if (left <= 0) {
+                    left = 0;
+                } else if (left > 300) {
+                    left = 300;
+                }
+                $('.progress_btn').css('left', left);
+                $('.progress_bar').width(left);
+                $('.text').html(Math.floor((0.2 + 4.8 * (left / 300)) * 10) / 10 + 'x');
+            }
+        });
+        $('.progress_bg').click(function (e) {//鼠标点击
+            if (!tag) {
+                bgleft = $('.progress_bg').offset().left;
+                left = e.pageX - bgleft;
+                if (left <= 0) {
+                    left = 0;
+                } else if (left > 300) {
+                    left = 300;
+                }
+                $('.progress_btn').css('left', left);
+                $('.progress_bar').animate({width: left}, 300);
+                $('.text').html(Math.floor((0.2 + 4.8 * (left / 300)) * 10) / 10 + 'x');
+            }
+        });
+    });
+</script>
+
+<script>
+    var $el = $(".table-responsive");
+
+    function anim() {
+        var st = $el.scrollTop();
+        var sb = $el.prop("scrollHeight") - $el.innerHeight();
+        $el.animate({scrollTop: st < sb / 2 ? sb : 0}, 4000, anim);
+    }
+
+    function stop() {
+        $el.stop();
+    }
+
+    anim();
+    $el.hover(stop, anim);
+</script>
+
+<div class="mrbox prbox">
+
+    <!-- mrbox_top_midd end -->
+    <div class="mrbox_top_right">
+        <div class="hdrightboxtop">
+            <h2 class="tith2" style="color: white">恶意流量分析</h2>
+
+            <div class="tablebox1">
+                <table id="tableId1" class="table1 tbl-body">
+                    <thead>
+                    <tr>
+                        <th>&nbsp;&nbsp;&nbsp;&nbsp;源地址&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>&nbsp;&nbsp;目的地址</th>
+                        <th>协议</th>
+                        <th>行为类型</th>
+                    </tr>
+                    </thead>
+
+                    <tbody style="margin-top: 20%">
+                    {% for item in attack %}
+                        <tr>
+                            <td>{{ item.src_ip }}</td>
+                            <td>{{ item.dst_ip }}</td>
+                            <td>{{ item.protocol }}</td>
+                            <td>{{ item.attack }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="/static/record/js/china.js"></script>
+
+</body>
+
+
+</html>

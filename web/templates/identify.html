@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>网络行为分析与预测</title>
+    <link rel="stylesheet" href="../static/identify/css/common.css">
+    <link rel="stylesheet" href="../static/identify/css/map.css?v=22423">
+    <link rel="stylesheet" href="../static/identify/css/test1.css?v=236">
+    <link rel="stylesheet" href="../static/identify/css/liMarquee.css">
+    <script src="../static/identify/js/jquery-2.1.1.min.js"></script>
+    <script src="../static/identify/js/jquery.liMarquee.js"></script>
+    <script src="../static/identify/js/identify.js?v=11159"></script>
+</head>
+
+
+<body>
+<div class="data">
+    <div class="bnt">
+        <div class="topbnt_left fl">
+            <ul>
+                <li><a href="https://192.3.96.11:10443/cgi-bin/situationalAwareness.cgi">首页</a></li>
+                <li><a href="analysis.html">流量分析</a></li>
+            </ul>
+        </div>
+        <h1 class="tith1 fl" style="color:white">网络行为分析与预测</h1>
+        <div class=" fr topbnt_right">
+            <ul>
+                <li><a href="0record.html">行为回放</a></li>
+                <li class="active"><a href="identify.html">行为分析</a></li>
+                <li><a href="http://192.3.96.98/#/Attack">取证平台 </a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="data-content">
+        <div class="con-left fl">
+            <div class="left-top">
+                <div class="info">
+                    <div class="info-title">实时统计</div>
+                    <img src="/static/identify/img/bj-1.png" alt="" class="bj-1">
+                    <img src="/static/identify/img/bj-2.png" alt="" class="bj-2">
+                    <img src="/static/identify/img/bj-3.png" alt="" class="bj-3">
+                    <img src="/static/identify/img/bj-4.png" alt="" class="bj-4">
+                    <div class="info-main">
+                        <div class="info-1">
+                            <div class="info-img fl">
+                                <img src="../static/identify/img/info-img-1.png" alt="">
+                            </div>
+                            <div class="info-text fl">
+                                <p>行为总数</p>
+                                <p id="all_behavior">0</p><span id="all_behavior_predict" style="color: #ffff44; font-size:14px; position: absolute;left: 65%;top: 19%;">(预测数：0)</span>
+                            </div>
+                        </div>
+                        <div class="info-2">
+                            <div class="info-img fl">
+                                <img src="../static/identify/img/info-img-2.png" alt="">
+                            </div>
+                            <div class="info-text fl">
+                                <p>正常行为数</p>
+                                <p id="normal_behavior">0</p><span id="normal_behavior_predict" style="color: #25f3e6; font-size:14px; position: absolute;left: 65%;top: 40.8%;">(预测数：0)</span>
+                            </div>
+                        </div>
+                        <div class="info-4">
+                            <div class="info-img fl">
+                                <img src="../static/identify/img/info-img-3.png" alt="">
+                            </div>
+                            <div class="info-text fl">
+                                <p>疑似异常数</p>
+                                <p id="suspect_behavior">0</p><span id="suspect_behavior_predict" style="color: #f5c847; font-size:14px; position: absolute;left: 65%;top: 63%;">(预测数：0)</span>
+                            </div>
+                        </div>
+                        <div class="info-3">
+                            <div class="info-img fl">
+                                <img src="../static/identify/img/info-img-4.png" alt="">
+                            </div>
+                            <div class="info-text fl">
+                                <p>异常行为数</p>
+                                <p id="anomaly_behavior">0</p><span id="anomaly_behavior_predict" style="color: #f84a4a; font-size:14px; position: absolute;left: 65%;top: 84.7%;">(预测数：0)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="top-bottom">
+                    <div class="title">协议分类</div>
+                    <img src="/static/identify/img/bj-1.png" alt="" class="bj-1">
+                    <img src="/static/identify/img/bj-2.png" alt="" class="bj-2">
+                    <img src="/static/identify/img/bj-3.png" alt="" class="bj-3">
+                    <img src="/static/identify/img/bj-4.png" alt="" class="bj-4">
+                    <div id="echarts_1" class="charts"></div>
+                </div>
+            </div>
+            <div class="left-bottom" style="margin-left:12px">
+                <div class="title">行为类型</div>
+                <img src="/static/identify/img/bj-1.png" alt="" class="bj-1">
+                <img src="/static/identify/img/bj-2.png" alt="" class="bj-2">
+                <img src="/static/identify/img/bj-3.png" alt="" class="bj-3">
+                <img src="/static/identify/img/bj-4.png" alt="" class="bj-4">
+                <div id="echarts_5" class="charts"></div>
+            </div>
+        </div>
+        <div class="con-center fl">
+            <div class="cen-top">
+                <h1 style="font-size: 18px; color: #ffffff; font-weight: 600; margin-top: 2%; margin-left: 3%;">流量大小实时分析与预测</h1>
+                <div id="mainBottom2" style="width:100%;height:69%;margin-top: -2%;"></div>
+                <h1 style="font-size: 18px; color: #ffffff; font-weight: 600; margin-top: -8%; margin-left: 3%; border-style: none none solid none; border-color: rgba(168,156,156,0.61)">预测行为</h1>
+                <div class="table1" style="width: 100%;height: 29%;margin-top: 2%; background-color: transparent;">
+                    <ul>
+                        <li style="background-color: transparent; color:  white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Backdoors事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">10秒内出现Exploits事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Analysis事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Backdoors事件</span>
+                        </li>
+                        <li style="background-color: transparent; color:  white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Backdoors事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">10秒内出现Exploits事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Analysis事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Backdoors事件</span>
+                        </li>
+                        <li style="background-color: transparent; color:  white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Backdoors事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">10秒内出现Exploits事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Analysis事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Backdoors事件</span>
+                        </li>
+                        <li style="background-color: transparent; color:  white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Backdoors事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">10秒内出现Exploits事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Analysis事件</span>
+                        </li>
+                        <li style="background-color: transparent; color: white; font-size: 16px; line-height: 40px; background: url(../static/identify/img/new_list02.png) left center no-repeat; margin-left: 5%">
+                            <span style="margin-left: 5%">5秒内出现Backdoors事件</span>
+                        </li>
+                    </ul>
+                </div>
+                <script type="text/javascript">
+                    $(function () {
+                        $('.table1').liMarquee({
+                            direction: 'down',//向上滚动
+                            runshort: false,//内容不足时不滚动
+                            scrollamount: 5,//速度
+                        });
+                    });
+                </script>
+            </div>
+            <div class="cen-bottom">
+                <div class="title">新增行为计数</div>
+                <img src="/static/identify/img/bj-1.png" alt="" class="bj-1">
+                <img src="/static/identify/img/bj-2.png" alt="" class="bj-2">
+                <img src="/static/identify/img/bj-3.png" alt="" class="bj-3">
+                <img src="/static/identify/img/bj-4.png" alt="" class="bj-4">
+                <div id="echarts_3" class="charts"></div>
+            </div>
+        </div>
+        <div class="con-right fr" style="background-color:transparent">
+            <div style="position:relative; text-align:center; color:white; font-size:30px">实时行为概览</div>
+            <div class="right-top">
+                <table>
+                    <thead>
+                    <tr>
+                        <th class='a1' style="width: 24%;">源IP</th>
+                        <th class='a1' style="width: 24%;">目的IP</th>
+                        <th class='a1' style="width: 13.2%;">协议类型</th>
+                        <th class='a1' style="width: 13.7%;">服务类型</th>
+                        <th class='a1' style="width: 13.7%;">行为类型</th>
+                        <th class="a1" style="width: 10.7%;">取证</th>
+                    </tr>
+                    </thead>
+                </table>
+                <div class="scrollDiv" style="height: 95.5%; background-color: transparent">
+                    <table>
+                        <thead>
+                        <tr style="display:none">
+                            <!--不显示表头-->
+                            <th class='a1'>1</th>
+                            <th class='a1'>2</th>
+                            <th class='a1'>3</th>
+                            <th class='a1'>4</th>
+                            <th class='a1'>5</th>
+                            <th class='a1'>6</th>
+                        </tr>
+                        </thead>
+                        <tbody id="behavior_overview">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../static/identify/js/echarts.min.js"></script>
+<script src="../static/identify/js/china.js"></script>
+<script src="../static/identify/js/echarts.js"></script>
+
+</html>
