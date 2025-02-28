@@ -1,0 +1,16 @@
+.con-right table, table tr th, table tr td {
+    border: 2px solid #3486da;
+    background-color: transparent;
+    color: white;
+}
+
+.con-right table {
+    width: 95%;
+    border-collapse: collapse;
+}
+
+.con-right .a1 {
+    height: 38px;
+    width: 100px;
+    text-align: center;
+}
