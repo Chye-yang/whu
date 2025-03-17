@@ -638,7 +638,7 @@ table,tbody,tfoot,thead,tr,th,td {
     background-repeat: no-repeat;
     background-position: top center;
     width: 100%;
-    height: 50%;
+    height: 39%;
     margin-left: 6%;
 }
 
@@ -648,19 +648,37 @@ table,tbody,tfoot,thead,tr,th,td {
     background-repeat: no-repeat;
     background-position: top center;
     width: 100%;
-    height: 50%;
+    height: 40%;
     margin-left: 6%;
 }
 
+/* .rbottom_box3 {
+    display: flex;
+    flex-direction: column;
+} */
+
 .rbottom_box3 {
-    background: url(../img/b-rbox2.png);
+    background: url(../img/pleftbox2top.png);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: top center;
-    width: 30%;
-    height: 89.4%;
-    float: left;
-    margin-left: 1%
+    width: 100%;
+    height: 20%;
+    margin-left: 6%;
+}
+
+
+.prbottom_box3cont {
+    display: flex;
+    justify-content: space-between;
+}
+
+.rbottom_box3_col1,
+.rbottom_box3_col2,
+.rbottom_box3_col3 {
+    background: url(../img/pleftbox2top.png);
+    width: 32%; /* 确保三列平分父容器的宽度 */
+    text-align: center; /* 使内容居中 */
 }
 
 .prbottom_box1cont {
@@ -741,6 +759,19 @@ table,tbody,tfoot,thead,tr,th,td {
     letter-spacing: 8px;
     font-size: 36px;
 }
+
+.tith3 {
+   
+    text-align: center;
+    width: 100%;
+    font-size: 18%;
+    padding-top: 0.5%;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-weight: normal;
+    overflow: hidden;
+}
+
 
 .topbnt_right {
     padding-top: 2%;
@@ -926,6 +957,19 @@ i.redr {
     font-size: 12px;
     text-align: center;
 }
+
+
+.random-number {
+    font-size: 24px; /* 设置与 h2 相同的字体大小 */
+    color: white;
+}
+
+.unit {
+    font-size: 10px; /* 设置与 h2 相同的字体大小 */
+    color: white;
+    text-align: right;
+}
+
 
 .mrtop3 {
     margin: 4px 15px;

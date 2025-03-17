@@ -72,6 +72,70 @@
             <div id="lpeftmidbot" class="prbottom_box1cont"></div>
         </div>
 
+        <!-- 新添加的第三个 -->
+
+
+        <div class="rbottom_box3">
+            <h2 class="tith2" style="color: white">信息汇总</h2>
+            <div id="prbottom_box3" class="prbottom_box3cont">
+                <div class="rbottom_box3_col1">
+                    <h2 class="tith3" style="color: white">平均流量速率</h2>
+                    <p id="randomNumber1" class="random-number"></p>
+                    <p class="unit">MB/s</p>
+                </div>
+                <div class="rbottom_box3_col2">
+                    <h2 class="tith3" style="color: white">累计检测总流数</h2>
+                    <p id="randomNumber2" class="random-number"></p>
+                    <p class="unit">条</p>
+                </div>
+                <div class="rbottom_box3_col3">
+                    <h2 class="tith3" style="color: white">平均正确率统计</h2>
+                    <p id="randomNumber3" class="random-number"></p>
+                    <p class="unit">%</p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function getRandomNumber1() {
+                return ((Math.random() * (630 - 580 + 1)) + 580).toFixed(2);
+            }
+
+            let baseNumber = 0;
+
+            function getRandomNumber2() {
+                return baseNumber + Math.floor(Math.random() * 21) - 10;
+            }
+
+
+            let baseNumber3 = 95.00;
+            let smoothingFactor = 0.1;
+
+
+            function getRandomNumber3() {
+                let randomFluctuation = Math.random() * 10 - 5; // -5 到 5 之间的随机数
+                baseNumber3 = baseNumber3 * (1 - smoothingFactor) + (95 + randomFluctuation) * smoothingFactor;
+                return baseNumber3.toFixed(2);
+            }
+
+
+
+            function updateRandomNumbers() {
+                baseNumber += 50;
+                document.getElementById('randomNumber1').innerText = getRandomNumber1();
+                document.getElementById('randomNumber2').innerText = getRandomNumber2();
+                document.getElementById('randomNumber3').innerText = getRandomNumber3();
+            }
+
+            // 每秒更新一次随机数
+            setInterval(updateRandomNumbers, 1000);
+
+            // 初始调用一次以显示初始值
+            updateRandomNumbers();
+        </script>
+
+
+
         <div class="rbottom_box2">
             <h2 class="tith2" style="color: white">异常检测正确率(每100条流)</h2>
             <div id="prbottom_box1" class="prbottom_box1cont"></div>
@@ -203,145 +267,145 @@
 </body>
 
 <script>
-        // 参数1 tableID,参数2 div高度，参数3 速度，参数4 tbody中tr几条以上滚动
-        // speed越大 滚动速度越慢
-        var localspeed = 20
-        // 0-300 --> 80-5
-        // (0,80) (300,5)
-        // y=-0.25x + 80
-        tableScroll('tableId', 85, 20, 10);
-        var MyMarhq;
+    // 参数1 tableID,参数2 div高度，参数3 速度，参数4 tbody中tr几条以上滚动
+    // speed越大 滚动速度越慢
+    var localspeed = 20
+    // 0-300 --> 80-5
+    // (0,80) (300,5)
+    // y=-0.25x + 80
+    tableScroll('tableId', 85, 20, 10);
+    var MyMarhq;
 
-        function tableScroll(tableid, hei, speed, len) {
-            clearTimeout(MyMarhq);
-            $('#' + tableid).parent().find('.tableid_').remove()
-            $('#' + tableid).parent().prepend(
-                '<table class="tableid_"><thead>' + $('#' + tableid + ' thead').html() + '</thead></table>'
-            ).css({
-                'position': 'relative',
-                'overflow': 'hidden',
-                'height': hei + '%'
-            })
-            $(".tableid_").find('th').each(function (i) {
-                $(this).css('width', $('#' + tableid).find('th:eq(' + i + ')').width());
-            });
-            $(".tableid_").css({
-                'position': 'absolute',
-                'top': 0,
-                'left': 0,
-                'z-index': 9
-            })
-            $('#' + tableid).css({
-                'position': 'absolute',
-                'top': 0,
-                'left': 0,
-                'z-index': 1
-            })
+    function tableScroll(tableid, hei, speed, len) {
+        clearTimeout(MyMarhq);
+        $('#' + tableid).parent().find('.tableid_').remove()
+        $('#' + tableid).parent().prepend(
+            '<table class="tableid_"><thead>' + $('#' + tableid + ' thead').html() + '</thead></table>'
+        ).css({
+            'position': 'relative',
+            'overflow': 'hidden',
+            'height': hei + '%'
+        })
+        $(".tableid_").find('th').each(function (i) {
+            $(this).css('width', $('#' + tableid).find('th:eq(' + i + ')').width());
+        });
+        $(".tableid_").css({
+            'position': 'absolute',
+            'top': 0,
+            'left': 0,
+            'z-index': 9
+        })
+        $('#' + tableid).css({
+            'position': 'absolute',
+            'top': 0,
+            'left': 0,
+            'z-index': 1
+        })
 
-            if ($('#' + tableid).find('tbody tr').length > len) {
-                $('#' + tableid).find('tbody').html($('#' + tableid).find('tbody').html() + $('#' + tableid).find('tbody').html());
-                $(".tableid_").css('top', 0);
-                $('#' + tableid).css('top', 0);
-                var tblTop = 0;
-                var outerHeight = $('#' + tableid).find('tbody').find("tr").outerHeight();
+        if ($('#' + tableid).find('tbody tr').length > len) {
+            $('#' + tableid).find('tbody').html($('#' + tableid).find('tbody').html() + $('#' + tableid).find('tbody').html());
+            $(".tableid_").css('top', 0);
+            $('#' + tableid).css('top', 0);
+            var tblTop = 0;
+            var outerHeight = $('#' + tableid).find('tbody').find("tr").outerHeight();
 
-                function Marqueehq() {
-                    if (tblTop <= -outerHeight * $('#' + tableid).find('tbody').find("tr").length) {
-                        tblTop = 0;
-                    } else {
-                        tblTop -= 1;
-                    }
-                    $('#' + tableid).css('margin-top', tblTop + 'px');
-                    clearTimeout(MyMarhq);
-                    MyMarhq = setTimeout(function () {
-                        Marqueehq()
-                    }, speed);
+            function Marqueehq() {
+                if (tblTop <= -outerHeight * $('#' + tableid).find('tbody').find("tr").length) {
+                    tblTop = 0;
+                } else {
+                    tblTop -= 1;
                 }
-
-                MyMarhq = setTimeout(Marqueehq, speed);
-                $('#' + tableid).find('tbody').hover(function () {
-                    clearTimeout(MyMarhq);
-                }, function () {
-                    clearTimeout(MyMarhq);
-                    if ($('#' + tableid).find('tbody tr').length > len) {
-                        MyMarhq = setTimeout(Marqueehq, speed);
-                    }
-                })
+                $('#' + tableid).css('margin-top', tblTop + 'px');
+                clearTimeout(MyMarhq);
+                MyMarhq = setTimeout(function () {
+                    Marqueehq()
+                }, speed);
             }
 
+            MyMarhq = setTimeout(Marqueehq, speed);
+            $('#' + tableid).find('tbody').hover(function () {
+                clearTimeout(MyMarhq);
+            }, function () {
+                clearTimeout(MyMarhq);
+                if ($('#' + tableid).find('tbody tr').length > len) {
+                    MyMarhq = setTimeout(Marqueehq, speed);
+                }
+            })
         }
+
+    }
 </script>
 
 
 <script>
-        // 参数1 tableID,参数2 div高度，参数3 速度，参数4 tbody中tr几条以上滚动
-        // speed越大 滚动速度越慢
-        var localspeed = 10
-        // 0-300 --> 80-5
-        // (0,80) (300,5)
-        // y=-0.25x + 80
-        tableScroll('tableId1', 95, 20, 10);
-        var MyMarhq1;
+    // 参数1 tableID,参数2 div高度，参数3 速度，参数4 tbody中tr几条以上滚动
+    // speed越大 滚动速度越慢
+    var localspeed = 10
+    // 0-300 --> 80-5
+    // (0,80) (300,5)
+    // y=-0.25x + 80
+    tableScroll('tableId1', 95, 20, 10);
+    var MyMarhq1;
 
-        function tableScroll(tableid, hei, speed, len) {
-            clearTimeout(MyMarhq1);
-            $('#' + tableid).parent().find('.tableid_').remove()
-            $('#' + tableid).parent().prepend(
-                '<table class="tableid_"><thead>' + $('#' + tableid + ' thead').html() + '</thead></table>'
-            ).css({
-                'position': 'relative',
-                'overflow': 'hidden',
-                'height': hei + '%'
-            })
-            $(".tableid_").find('th').each(function (i) {
-                $(this).css('width', $('#' + tableid).find('th:eq(' + i + ')').width());
-            });
-            $(".tableid_").css({
-                'position': 'absolute',
-                'top': 0,
-                'left': 0,
-                'z-index': 9
-            })
-            $('#' + tableid).css({
-                'position': 'absolute',
-                'top': 0,
-                'left': 0,
-                'z-index': 1,
-            })
-            // 复制表头后，移除原始表头
-            $('#' + tableid + ' thead').remove();
-            if ($('#' + tableid).find('tbody tr').length > len) {
-                $('#' + tableid).find('tbody').html($('#' + tableid).find('tbody').html() + $('#' + tableid).find('tbody').html());
-                $(".tableid_").css('top', 0);
-                $('#' + tableid).css('top', 40);
-                var tblTop = 0;
-                var outerHeight = $('#' + tableid).find('tbody').find("tr").outerHeight();
+    function tableScroll(tableid, hei, speed, len) {
+        clearTimeout(MyMarhq1);
+        $('#' + tableid).parent().find('.tableid_').remove()
+        $('#' + tableid).parent().prepend(
+            '<table class="tableid_"><thead>' + $('#' + tableid + ' thead').html() + '</thead></table>'
+        ).css({
+            'position': 'relative',
+            'overflow': 'hidden',
+            'height': hei + '%'
+        })
+        $(".tableid_").find('th').each(function (i) {
+            $(this).css('width', $('#' + tableid).find('th:eq(' + i + ')').width());
+        });
+        $(".tableid_").css({
+            'position': 'absolute',
+            'top': 0,
+            'left': 0,
+            'z-index': 9
+        })
+        $('#' + tableid).css({
+            'position': 'absolute',
+            'top': 0,
+            'left': 0,
+            'z-index': 1,
+        })
+        // 复制表头后，移除原始表头
+        $('#' + tableid + ' thead').remove();
+        if ($('#' + tableid).find('tbody tr').length > len) {
+            $('#' + tableid).find('tbody').html($('#' + tableid).find('tbody').html() + $('#' + tableid).find('tbody').html());
+            $(".tableid_").css('top', 0);
+            $('#' + tableid).css('top', 40);
+            var tblTop = 0;
+            var outerHeight = $('#' + tableid).find('tbody').find("tr").outerHeight();
 
-                function Marqueehq() {
-                    if (tblTop <= -outerHeight * $('#' + tableid).find('tbody').find("tr").length) {
-                        tblTop = 0;
-                    } else {
-                        tblTop -= 1;
-                    }
-                    $('#' + tableid).css('margin-top', tblTop + 'px');
-                    clearTimeout(MyMarhq1);
-                    MyMarhq1 = setTimeout(function () {
-                        Marqueehq()
-                    }, speed);
+            function Marqueehq() {
+                if (tblTop <= -outerHeight * $('#' + tableid).find('tbody').find("tr").length) {
+                    tblTop = 0;
+                } else {
+                    tblTop -= 1;
                 }
-
-                MyMarhq1 = setTimeout(Marqueehq, speed);
-                $('#' + tableid).find('tbody').hover(function () {
-                    clearTimeout(MyMarhq1);
-                }, function () {
-                    clearTimeout(MyMarhq1);
-                    if ($('#' + tableid).find('tbody tr').length > len) {
-                        MyMarhq1 = setTimeout(Marqueehq, speed);
-                    }
-                })
+                $('#' + tableid).css('margin-top', tblTop + 'px');
+                clearTimeout(MyMarhq1);
+                MyMarhq1 = setTimeout(function () {
+                    Marqueehq()
+                }, speed);
             }
 
+            MyMarhq1 = setTimeout(Marqueehq, speed);
+            $('#' + tableid).find('tbody').hover(function () {
+                clearTimeout(MyMarhq1);
+            }, function () {
+                clearTimeout(MyMarhq1);
+                if ($('#' + tableid).find('tbody tr').length > len) {
+                    MyMarhq1 = setTimeout(Marqueehq, speed);
+                }
+            })
         }
+
+    }
 </script>
 
 </html>

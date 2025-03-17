@@ -107,7 +107,7 @@ function record_speed() {
                     type: 'value',
                     min: 500,
                     max: 700,
-                    interval: 20,
+                    interval: 40,
                     axisLine: {
                         lineStyle: {
                             color: 'rgba(255,255,255,.2)'
