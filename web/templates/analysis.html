@@ -26,6 +26,25 @@
 </head>
 
 <body class="ksh">
+  <!-- <div class="bnt">
+    <div class="topbnt_left fl">
+      <ul>
+        <li>
+          <a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a>
+        </li>
+        <li class="active"><a href="analysis.html">流量采集</a></li>
+        
+      </ul>
+    </div>
+    <h1 class="tith1 fl">网络流量数据采集</h1>
+    <div class="fr topbnt_right">
+      <ul>
+        
+        <li><a href="0record.html">异常检测</a></li>
+      </ul>
+    </div>
+  </div> -->
+
   <div class="bnt">
     <div class="topbnt_left fl">
       <ul>
@@ -33,16 +52,15 @@
           <a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a>
         </li>
         <li class="active"><a href="analysis.html">流量采集</a></li>
+        <li class="unactive"><a href="0record.html">异常检测</a></li>
       </ul>
     </div>
     <h1 class="tith1 fl">网络流量数据采集</h1>
-    <div class="fr topbnt_right">
-      <ul>
-        <!-- <li><a href="http://125.76.115.61:81/">取证平台</a></li> -->
-        <li><a href="0record.html">异常检测</a></li>
-      </ul>
-    </div>
   </div>
+
+
+
+
   <div class="visual">
     <div class="visual_left">
       <div class="visual_box">
@@ -73,7 +91,7 @@
                   <th style="width: 14%">目的IP</th>
                   <th style="width: 14%">源端口号</th>
                   <th style="width: 20%">协议类型</th>
-                  <th style="width: 10%">包大小</th>
+                  <th style="width: 10%">包大小(B)</th>
                 </tr>
               </thead>
               <tbody id="table1"></tbody>
@@ -259,7 +277,7 @@
                   [
                     {
                       offset: 0,
-                      color: "rgba(122,234,19,0.3)",
+                      color: "rgba(196, 13, 68, 0.3)",  // 从红色开始
                     },
                     {
                       offset: 0.8,

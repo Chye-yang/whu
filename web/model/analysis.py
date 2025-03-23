@@ -136,7 +136,7 @@ def table2(request):
     try:
         for chunk in read_csv_in_chunks("./data/demoCSV/expanded_selected_columns.csv"):
             counter.update(tuple(row) for row in chunk)
-            top_6 = counter.most_common(15)  # 只获取前6个结果
+            top_6 = counter.most_common(45)  # 只获取前6个结果
             for rank, (row, count) in enumerate(top_6, start=1):
                 result.append({"rank": rank, "row": row, "count": count})
     except FileNotFoundError:

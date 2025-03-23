@@ -282,7 +282,7 @@ function hashToPercentage(str) {
     return Math.abs(hash % 101); // 映射到 0-100 的范围
 }
 
-//实时流量分析
+//实时流量分析JS才是真正的，html重复
 function mainBottomx() {
     $.ajax({
         url: "/mainBottom/", //别忘了加双引号
@@ -360,7 +360,7 @@ function mainBottomx() {
                             normal: {
                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                                     offset: 0,
-                                    color: 'rgba(122,234,19,0.3)'
+                                    color: 'rgb(235, 124, 124)'
                                 }, {
                                     offset: 0.8,
                                     color: 'rgba(185,150,248,0)'
@@ -398,16 +398,16 @@ function mainBottomx() {
                             normal: {
                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                                     offset: 0,
-                                    color: 'rgba(218, 57, 20, 0.3)'
+                                    color: 'rgba(255, 215, 0, 0.3)'
                                 }, {
                                     offset: 0.8,
-                                    color: 'rgba(218, 57, 20, 0)'
+                                    color: 'rgba(255, 215, 0, 0)'
                                 }], false),
                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
                                 shadowBlur: 10
                             }
                         },
-                        itemStyle: {normal: {color: '#DA3914'}},
+                        itemStyle: {normal: {color: '#FFD700'}},
                         data: dataMainBottom.YData3
                     }
                 ]

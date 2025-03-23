@@ -1,4 +1,3 @@
-
 h1,
 h2,
 h3,
@@ -24,19 +23,25 @@ textarea {
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'myFont';
+    src: url('../fonts/digifaceitalic.ttf');
+}
+
+
 html,
 body {
-    font-family: 微软雅黑, MicrosoftYahei, sans-serif;
+    font-family: 微软雅黑, MicrosoftYahei, sans-serif, 'myFont' !important;
     color: #fff;
     width: 100%;
     height: 100%;
     background-image: url('../img/bg.jpg');
     background-size: cover;
-    overflow-x:hidden;
-    overflow-y:hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
-.select{
+.select {
     font-size: medium;
     margin-bottom: 1%;
 }
@@ -52,49 +57,80 @@ body {
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 
 
 /* 定义隐藏下拉框默认样式及图片覆盖下拉按钮 */
-.info-select{
+.info-select {
     width: 100px;
-    outline:none;
-    appearance:none;
-    -moz-appearance:none;
-    -webkit-appearance:none;
-    -ms-appearance:none;
+    outline: none;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -ms-appearance: none;
 }
 
-.info-select-long{
+.info-select-long {
     width: 200px;
-    outline:none;
-    appearance:none;
-    -moz-appearance:none;
-    -webkit-appearance:none;
-    -ms-appearance:none;
+    outline: none;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -ms-appearance: none;
 }
 
-.short-info-select{
+.short-info-select {
     width: 100px;
-    outline:none;
-    appearance:none;
-    -moz-appearance:none;
-    -webkit-appearance:none;
-    -ms-appearance:none;
+    outline: none;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -ms-appearance: none;
 }
 
 
-.progress{position: relative; width:300px}
-.progress_bg{height: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;background-color:#f2f2f2;}
-.progress_bar{background: #5FB878; width: 0; height: 10px; border-radius: 5px;}
-.progress_btn{width: 20px; height: 20px; border-radius: 5px; position: absolute;background:#fff;
-left: 0px; margin-left: -10px; top:-5px; cursor: pointer;border:1px #ddd solid;box-sizing:border-box;}
-.progress_btn:hover{border-color:#F7B824;}
+.progress {
+    position: relative;
+    width: 300px
+}
+
+.progress_bg {
+    height: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #f2f2f2;
+}
+
+.progress_bar {
+    background: #5FB878;
+    width: 0;
+    height: 10px;
+    border-radius: 5px;
+}
+
+.progress_btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    position: absolute;
+    background: #fff;
+    left: 0px;
+    margin-left: -10px;
+    top: -5px;
+    cursor: pointer;
+    border: 1px #ddd solid;
+    box-sizing: border-box;
+}
+
+.progress_btn:hover {
+    border-color: #F7B824;
+}
 
 
 .button {
@@ -459,74 +495,94 @@ left: 0px; margin-left: -10px; top:-5px; cursor: pointer;border:1px #ddd solid;b
     display: inline;
 }
 
-table,tbody,tfoot,thead,tr,th,td {
-	margin:0;
-	padding:0;
-	outline:0;
-	font-size:100%;
-	vertical-align:baseline;
-	background:transparent;
-	border-collapse:collapse;
-	border-spacing:0;
-	border:0px;
+table,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 0px;
 }
+
 .tablebox {
-	width:95%;
+    width: 95%;
     margin-left: 5%;
-	overflow:hidden;
+    overflow: hidden;
     color: white;
 }
+
 .tablebox table {
-	width:95%;
+    width: 95%;
     color: white;
 }
-.tablebox table th,.tablebox table td {
-	font-size:16px;
-	text-align:center;
-	line-height:36px;
+
+.tablebox table th,
+.tablebox table td {
+    font-size: 16px;
+    text-align: center;
+    line-height: 36px;
     color: white;
 }
+
 .tablebox table th {
-	color:#f6f6f6;
-	background-color:rgb(70,130,180);
+    color: #f6f6f6;
+    background-color: rgb(70, 130, 180);
 }
+
 .tablebox table td img {
-	display:inline-block;
-	vertical-align:middle;
+    display: inline-block;
+    vertical-align: middle;
 }
+
 .tablebox table tbody tr:nth-child(even) {
-	background-color:#f6f6f6;
+    background-color: #f6f6f6;
 }
-.tablebox.table_md table td,.tablebox.table_md table th {
-	line-height:40px;
+
+.tablebox.table_md table td,
+.tablebox.table_md table th {
+    line-height: 40px;
 }
 
 .tablebox1 {
-	width:100%;
+    width: 100%;
     margin-top: 3%;
-	overflow:hidden;
+    overflow: hidden;
     color: white;
     border-collapse: collapse;
 }
+
 .tablebox1 table {
-	width:95%;
+    width: 95%;
     color: white;
     overflow-y: auto;
 }
-.tablebox1 table th,.tablebox1 table td {
-	font-size:16px;
-	text-align:center;
-    color:#f6f6f6;
+
+.tablebox1 table th,
+.tablebox1 table td {
+    font-size: 16px;
+    text-align: center;
+    color: #f6f6f6;
     line-height: 2.7;
-    background-color:rgb(80,129,179);
-}
-.tablebox1 table td img {
-	display:inline-block;
-	vertical-align:middle;
+    background-color: rgb(80, 129, 179);
 }
 
-.tablebox1.table_md table td,.tablebox.table_md table th {
-	line-height:40px;
+.tablebox1 table td img {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.tablebox1.table_md table td,
+.tablebox.table_md table th {
+    line-height: 40px;
 }
 
 
@@ -677,8 +733,10 @@ table,tbody,tfoot,thead,tr,th,td {
 .rbottom_box3_col2,
 .rbottom_box3_col3 {
     background: url(../img/pleftbox2top.png);
-    width: 32%; /* 确保三列平分父容器的宽度 */
-    text-align: center; /* 使内容居中 */
+    width: 32%;
+    /* 确保三列平分父容器的宽度 */
+    text-align: center;
+    /* 使内容居中 */
 }
 
 .prbottom_box1cont {
@@ -700,6 +758,14 @@ table,tbody,tfoot,thead,tr,th,td {
     width: 90.6%;
     height: 82%;
     margin-top: 1.8%;
+}
+
+.tith0 {
+    width: 33%;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 8px;
+    font-size: 36px;
 }
 
 .tith2 {
@@ -761,7 +827,7 @@ table,tbody,tfoot,thead,tr,th,td {
 }
 
 .tith3 {
-   
+
     text-align: center;
     width: 100%;
     font-size: 18%;
@@ -958,15 +1024,22 @@ i.redr {
     text-align: center;
 }
 
+.tith0 {
+    font-size: 12px;
+    text-align: center;
+}
+
 
 .random-number {
-    font-size: 24px; /* 设置与 h2 相同的字体大小 */
-    color: white;
+    font-size: 33px;
+    /* 设置与 h2 相同的字体大小 */
+    color: rgb(161, 214, 238);
 }
 
 .unit {
-    font-size: 10px; /* 设置与 h2 相同的字体大小 */
-    color: white;
+    font-size: 15px;
+    /* 设置与 h2 相同的字体大小 */
+    color: rgb(94, 168, 229);
     text-align: right;
 }
 
