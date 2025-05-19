@@ -38,7 +38,7 @@ CREATE TABLE `model_prediction`  (
 -- ----------------------------
 -- Records of model_prediction//用于展示恶意流量分析处的原地址目的地址
 -- ----------------------------
-INSERT INTO `model_prediction` VALUES (1, '广州', '17:56:34', 'tcp', '240.217.110.155', '125.76.115.60', 1, 1, '1.0', 'SYN攻击');
+INSERT INTO `model_prediction` VALUES (1, '广州', '17:56:34', 'tcp', '99.99.99.99', '125.76.115.60', 1, 1, '1.0', 'SYN攻击');
 INSERT INTO `model_prediction` VALUES (2, '广州', '17:56:34', 'smtp', '191.235.92.8', '125.76.115.59', 1, 1, '0.5', '钓鱼邮件');
 INSERT INTO `model_prediction` VALUES (3, '广州', '17:56:34', 'tcp', '24.94.142.175', '125.76.115.58', 1, 1, '0.4', '中间人攻击');
 INSERT INTO `model_prediction` VALUES (4, '广州', '17:56:34', 'http', '193.182.78.99', '125.76.115.60', 1, 1, '0.4', 'HTTP劫持');

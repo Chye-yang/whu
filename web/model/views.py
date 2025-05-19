@@ -1,5 +1,8 @@
 import dpkt
 
+import socket
+from collections import defaultdict
+
 from model.db import Record
 from model.db import Library
 from model.db import Statistic
@@ -63,49 +66,171 @@ def db2(request):
 
     return record_info
 
-def db_url(request):
-    # record_info = Record.objects.filter(id__lt=1024,dstip__in=['125.76.115.58','125.76.115.59','125.76.115.60'],srcport__gt=1,dstport__gt=1)
-    flow = []
-    # 打开PCAP文件
+# def db_url(request):
+#     # record_info = Record.objects.filter(id__lt=1024,dstip__in=['125.76.115.58','125.76.115.59','125.76.115.60'],srcport__gt=1,dstport__gt=1)
+#     flow = []
+#     # 打开PCAP文件
     # with open('./data/000-all/287_4_FTP暴力破解_1.32.233.155_125.76.115.51.pcap', 'rb') as f:
-    # web/data/000-all/272_7_IMAP暴力破解_2.22.160.133_125.76.115.51.pcap
-    with open('./data/000-all/272_7_IMAP暴力破解_2.22.160.133_125.76.115.51.pcap', 'rb') as f:
+#     # web/data/000-all/272_7_IMAP暴力破解_2.22.160.133_125.76.115.51.pcap
+#     with open('./data/000-all/hengxiang.pcap', 'rb') as f:
 
-        pcap = dpkt.pcap.Reader(f)
+#         pcap = dpkt.pcap.Reader(f)
 
-        # 遍历PCAP文件中的每个数据包
-        for ts, buf in pcap:
-            # 解析以太网帧
-            eth = dpkt.ethernet.Ethernet(buf)
-            if eth.type != dpkt.ethernet.ETH_TYPE_IP:
-                continue  # 只处理IP数据包
+#         # 遍历PCAP文件中的每个数据包
+#         for ts, buf in pcap:
+#             # 解析以太网帧
+#             eth = dpkt.ethernet.Ethernet(buf)
+#             if eth.type != dpkt.ethernet.ETH_TYPE_IP:
+#                 continue  # 只处理IP数据包
 
-            # 解析IP数据包
-            ip = eth.data
-            # 源IP和目的IP
-            src_ip = socket.inet_ntoa(ip.src)
-            dst_ip = socket.inet_ntoa(ip.dst)
+#             # 解析IP数据包
+#             ip = eth.data
+#             # 源IP和目的IP
+#             src_ip = socket.inet_ntoa(ip.src)
+#             dst_ip = socket.inet_ntoa(ip.dst)
 
-            # 检查协议类型并解析相应的数据包
-            if ip.p == dpkt.ip.IP_PROTO_TCP:
-                # 解析TCP数据包
-                tcp = ip.data
-                src_port = tcp.sport
-                dst_port = tcp.dport
-                protocol = 'TCP'
-            elif ip.p == dpkt.ip.IP_PROTO_UDP:
-                # 解析UDP数据包
-                udp = ip.data
-                src_port = udp.sport
-                dst_port = udp.dport
-                protocol = 'UDP'
-            else:
-                # 其他协议
-                continue
+#             # 检查协议类型并解析相应的数据包
+#             if ip.p == dpkt.ip.IP_PROTO_TCP:
+#                 # 解析TCP数据包
+#                 tcp = ip.data
+#                 src_port = tcp.sport
+#                 dst_port = tcp.dport
+#                 protocol = 'TCP'
+#             elif ip.p == dpkt.ip.IP_PROTO_UDP:
+#                 # 解析UDP数据包
+#                 udp = ip.data
+#                 src_port = udp.sport
+#                 dst_port = udp.dport
+#                 protocol = 'UDP'
+#             else:
+#                 # 其他协议
+#                 continue
 
-            flow.append({'src_ip':src_ip,'dst_ip':dst_ip,'src_port':src_port,'dst_port':dst_port,'protocol':protocol})
-    return flow
-    # return record_info
+#             flow.append({'src_ip':src_ip,'dst_ip':dst_ip,'src_port':src_port,'dst_port':dst_port,'protocol':protocol})
+#     return flow
+#     # return record_info
+
+import dpkt
+import socket
+from collections import defaultdict # 导入defaultdict用于方便地聚合数据
+
+def db_url(request=None): # request参数保留，以防未来与web框架集成
+    """
+    优化后的函数，用于处理PCAP文件并聚合数据流信息。
+    不再存储每个数据包，而是统计每个数据流的包数量和总字节数。
+    """
+    # flow_summary 用于存储聚合后的数据流信息
+    #键是 (src_ip, dst_ip, src_port, dst_port, protocol)
+    #值是 {'packet_count': count, 'byte_count': total_bytes}
+    flow_summary = defaultdict(lambda: {'packet_count': 0, 'byte_count': 0})
+
+    # 替换为您的PCAP文件路径
+    pcap_file_path = './data/000-all/out-2000.pcap'
+    # pcap_file_path = './data/000-all/287_4_FTP暴力破解_1.32.233.155_125.76.115.51.pcap'
+    # pcap_file_path = 'web/data/000-all/272_7_IMAP暴力破解_2.22.160.133_125.76.115.51.pcap'
+
+    try:
+        with open(pcap_file_path, 'rb') as f:
+            try:
+                pcap = dpkt.pcap.Reader(f)
+            except dpkt.dpkt.NeedData:
+                print(f"错误：无法解析PCAP文件 {pcap_file_path}。文件可能已损坏或不完整。")
+                return [] # 或者可以抛出异常
+            except ValueError as ve:
+                print(f"错误：PCAP文件格式无效 {pcap_file_path}: {ve}")
+                return []
+
+
+            # 遍历PCAP文件中的每个数据包
+            for timestamp, buf in pcap:
+                try:
+                    # 解析以太网帧
+                    eth = dpkt.ethernet.Ethernet(buf)
+
+                    # 只处理IP数据包
+                    if not isinstance(eth.data, dpkt.ip.IP):
+                        continue
+
+                    ip = eth.data
+                    # 源IP和目的IP
+                    # 使用 try-except 块来处理可能的 socket.error (例如，如果ip.src是无效的)
+                    try:
+                        src_ip = socket.inet_ntoa(ip.src)
+                        dst_ip = socket.inet_ntoa(ip.dst)
+                    except socket.error:
+                        # print(f"警告：无法转换IP地址：src={ip.src}, dst={ip.dst}")
+                        continue # 跳过此数据包
+
+                    protocol_name = ''
+                    src_port = 0
+                    dst_port = 0
+
+                    # 检查协议类型并解析相应的数据包
+                    if ip.p == dpkt.ip.IP_PROTO_TCP:
+                        if isinstance(ip.data, dpkt.tcp.TCP):
+                            tcp = ip.data
+                            src_port = tcp.sport
+                            dst_port = tcp.dport
+                            protocol_name = 'TCP'
+                        else:
+                            # print("警告：IP协议为TCP，但无法解析TCP头部。")
+                            continue # TCP包但无法解析TCP头部
+                    elif ip.p == dpkt.ip.IP_PROTO_UDP:
+                        if isinstance(ip.data, dpkt.udp.UDP):
+                            udp = ip.data
+                            src_port = udp.sport
+                            dst_port = udp.dport
+                            protocol_name = 'UDP'
+                        else:
+                            # print("警告：IP协议为UDP，但无法解析UDP头部。")
+                            continue # UDP包但无法解析UDP头部
+                    else:
+                        # 其他协议，如果需要可以记录协议号，例如：
+                        # protocol_name = str(ip.p)
+                        # src_port = 0 # 对于非TCP/UDP协议，端口通常不适用或为0
+                        # dst_port = 0
+                        continue # 当前我们只关心TCP和UDP
+
+                    # 定义数据流的唯一标识符 (5元组)
+                    flow_key = (src_ip, dst_ip, src_port, dst_port, protocol_name)
+
+                    # 更新该数据流的包数量和字节数
+                    flow_summary[flow_key]['packet_count'] += 1
+                    flow_summary[flow_key]['byte_count'] += len(buf) # 记录整个数据包的长度（包括头部）
+                                                                    # 或者使用 ip.len 获取IP层负载长度
+
+                except dpkt.dpkt.NeedData:
+                    # print(f"警告：数据包不完整，跳过。Timestamp: {timestamp}")
+                    continue
+                except AttributeError:
+                    # print(f"警告：解析数据包时发生属性错误 (可能由于包结构异常)，跳过。Timestamp: {timestamp}")
+                    continue
+                except Exception as e:
+                    # print(f"警告：处理数据包时发生未知错误: {e}，跳过。Timestamp: {timestamp}")
+                    continue
+    
+    except FileNotFoundError:
+        print(f"错误：PCAP文件未找到: {pcap_file_path}")
+        return []
+    except Exception as e:
+        print(f"错误：打开或读取PCAP文件时发生错误: {e}")
+        return []
+
+    # 将聚合后的数据转换为列表形式，方便后续使用（例如传递给模板或API）
+    aggregated_flows = []
+    for key, data in flow_summary.items():
+        aggregated_flows.append({
+            'src_ip': key[0],
+            'dst_ip': key[1],
+            'src_port': key[2],
+            'dst_port': key[3],
+            'protocol': key[4],
+            'packet_count': data['packet_count'],
+            'byte_count': data['byte_count']
+        })
+
+    return aggregated_flows
+
 
 def db3(request):
     generic = Statistic.objects.filter(attack_cat='Generic').count()
