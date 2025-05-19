@@ -36,7 +36,7 @@ CREATE TABLE `model_prediction`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 848 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of model_prediction
+-- Records of model_prediction//用于展示恶意流量分析处的原地址目的地址
 -- ----------------------------
 INSERT INTO `model_prediction` VALUES (1, '广州', '17:56:34', 'tcp', '240.217.110.155', '125.76.115.60', 1, 1, '1.0', 'SYN攻击');
 INSERT INTO `model_prediction` VALUES (2, '广州', '17:56:34', 'smtp', '191.235.92.8', '125.76.115.59', 1, 1, '0.5', '钓鱼邮件');

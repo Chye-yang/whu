@@ -91,6 +91,7 @@ def table1(request):
     result = []
     try:
         inputData = pd.read_csv("./data/demoCSV/perflow.csv")
+        # 逐流分析源文件
         for index, row in inputData.iterrows():
             result.append(
                 [
@@ -135,6 +136,7 @@ def table2(request):
 
     try:
         for chunk in read_csv_in_chunks("./data/demoCSV/expanded_selected_columns.csv"):
+            # topK分析文件
             counter.update(tuple(row) for row in chunk)
             top_6 = counter.most_common(45)  # 只获取前6个结果
             for rank, (row, count) in enumerate(top_6, start=1):
@@ -154,6 +156,7 @@ def table3(request):
     result = []
     try:
         inputData = pd.read_csv("./data/demoCSV/fen.csv")
+        # topK分析
         for index, row in inputData.iterrows():
             result.append(
                 [
@@ -222,7 +225,7 @@ def mainBottom(request):
     return JsonResponse(result, safe=False)
 
 
-# 流量读入
+# 流量读入//目前没有用处
 def readPcap(request):
     packets = rdpcap("./data/demoPcap/test.pcap")
     flow = []
@@ -414,9 +417,13 @@ def readPcap(request):
     return JsonResponse(result, safe=False)
 
 
+
+# 实时流量流动+网络层分析+数据采集+总流统计
 def readCsv(request):
     flow = Flow()
+    # ceshi
     inputData = pd.read_csv("./data/demoCSV/inputCSV5.csv")
+
     # print("sssss")
     start = random.randint(0, 1900)
     end = start + random.randint(6, 10)
