@@ -67,7 +67,10 @@ def db_url(request):
     # record_info = Record.objects.filter(id__lt=1024,dstip__in=['125.76.115.58','125.76.115.59','125.76.115.60'],srcport__gt=1,dstport__gt=1)
     flow = []
     # 打开PCAP文件
-    with open('./data/000-all/287_4_FTP暴力破解_1.32.233.155_125.76.115.51.pcap', 'rb') as f:
+    # with open('./data/000-all/287_4_FTP暴力破解_1.32.233.155_125.76.115.51.pcap', 'rb') as f:
+    # web/data/000-all/272_7_IMAP暴力破解_2.22.160.133_125.76.115.51.pcap
+    with open('./data/000-all/272_7_IMAP暴力破解_2.22.160.133_125.76.115.51.pcap', 'rb') as f:
+
         pcap = dpkt.pcap.Reader(f)
 
         # 遍历PCAP文件中的每个数据包
