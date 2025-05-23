@@ -90,7 +90,10 @@ from django.http import JsonResponse
 def table1(request):
     result = []
     try:
-        inputData = pd.read_csv("./data/demoCSV/perflow.csv")
+        inputData = pd.read_csv("./data/ChangZhouData/perflow.csv")
+        # inputData = pd.read_csv("web/data/ChangZhouData/perflow.csv")
+        
+
         # 逐流分析源文件
         for index, row in inputData.iterrows():
             result.append(
@@ -102,6 +105,15 @@ def table1(request):
                     row[2],  # 3rd column
                     row[7],  # 8th column
                 ]
+            # result.append(
+            #     [
+            #         row[0],  # First column
+            #         row[1],  # 46th column
+            #         row[2],  # 47th column
+            #         row[3],  # 48th column
+            #         row[4],  # 3rd column
+            #         row[5],  # 8th column
+            #     ]
             )
     except FileNotFoundError:
         return JsonResponse({"error": "CSV file not found"}, status=500)
@@ -135,7 +147,10 @@ def table2(request):
     result = []
 
     try:
-        for chunk in read_csv_in_chunks("./data/demoCSV/expanded_selected_columns.csv"):
+        # for chunk in read_csv_in_chunks("./data/demoCSV/expanded_selected_columns.csv"):
+        for chunk in read_csv_in_chunks("./data/ChangZhouData/topk.csv"):
+
+            
             # topK分析文件
             counter.update(tuple(row) for row in chunk)
             top_6 = counter.most_common(45)  # 只获取前6个结果

@@ -125,7 +125,7 @@ def db_url(request=None): # request参数保留，以防未来与web框架集成
     flow_summary = defaultdict(lambda: {'packet_count': 0, 'byte_count': 0})
 
     # 替换为您的PCAP文件路径
-    pcap_file_path = './data/000-all/out-2000.pcap'
+    pcap_file_path = './data/ChangZhouData/3000out.pcap'
     # pcap_file_path = './data/000-all/287_4_FTP暴力破解_1.32.233.155_125.76.115.51.pcap'
     # pcap_file_path = 'web/data/000-all/272_7_IMAP暴力破解_2.22.160.133_125.76.115.51.pcap'
 
