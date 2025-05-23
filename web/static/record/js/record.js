@@ -47,13 +47,16 @@ function record_speed() {
                 $.each(list, function (i, n) {
                     XData.push(setDate(now, 3 * (list.length - i - 1), false));
                     if (i === (record_speed_number.length)) {
-                        record_speed_number.push(parseFloat(n));  // 确保数据是浮点数
+                        // 修改流速
+
+                        record_speed_number.push(parseFloat(n)*4);  // 确保数据是浮点数 :
                     }
                 });
             } else {
                 $.each(list, function (i, n) {
                     XData.push(setDate(now, 3 * (list.length - i - 1), false));
-                    record_speed_number.push(parseFloat(n));  // 确保数据是浮点数
+                    // 修改流速
+                    record_speed_number.push(parseFloat(n)*4);  // 确保数据是浮点数
                 });
             }
 
@@ -103,26 +106,49 @@ function record_speed() {
                     },
                     data: XData
                 },
+                // yAxis: {
+                //     type: 'value',
+                //     min: 2000,
+                //     max: 2800,
+                //     interval: 160,
+                //     axisLine: {
+                //         lineStyle: {
+                //             color: 'rgba(255,255,255,.2)'
+                //         }
+                //     },
+                //     name: 'Gbps',
+                //     splitLine: {
+                //         lineStyle: {
+                //             color: 'rgba(255,255,255,.1)'
+                //         }
+                //     },
+                //     axisLabel: {
+                //         color: "rgba(255,255,255,.7)"
+                //     },
+                // },
                 yAxis: {
                     type: 'value',
-                    min: 500,
-                    max: 700,
-                    interval: 40,
+                    min: 2000,
+                    max: 2800,
+                    interval: 160,
                     axisLine: {
                         lineStyle: {
                             color: 'rgba(255,255,255,.2)'
                         }
                     },
-                    name: 'Mbps',
+                    name: 'Gbps',
                     splitLine: {
                         lineStyle: {
                             color: 'rgba(255,255,255,.1)'
                         }
                     },
                     axisLabel: {
-                        color: "rgba(255,255,255,.7)"
+                        color: "rgba(255,255,255,.7)",
+                        formatter: function(value) {
+                            return value.toString();  // 直接返回数字的字符串表示，不添加逗号
+                        }
                     },
-                },
+                },                
                 series: [
                     {
                         type: 'line',

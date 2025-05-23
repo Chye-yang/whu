@@ -254,9 +254,9 @@ function mainTopx() {
         url: "/mainTop/", //别忘了加双引号
         type: "GET",
         success: function (list) {
-            document.getElementById("mainTop1").innerText = list[0];
-            document.getElementById("mainTop2").innerText = list[1];
-            document.getElementById("mainTop3").innerText = Math.ceil(list[2]);
+            document.getElementById("mainTop1").innerText = (list[0]*25/1000..toFixed(2));//总流量
+            document.getElementById("mainTop2").innerText = (list[1]*25).toFixed(1);//实时速率修改
+            document.getElementById("mainTop3").innerText = Math.ceil(list[2]/100*25)//总流;
             
             if (Math.random() < 0.4 && numqiguai>10) {
                 percentage = -1;
@@ -282,28 +282,174 @@ function hashToPercentage(str) {
     return Math.abs(hash % 101); // 映射到 0-100 的范围
 }
 
-//实时流量分析JS才是真正的，html重复
+// //实时流量分析JS才是真正的，html重复
+// function mainBottomx() {
+//     $.ajax({
+//         url: "/mainBottom/", //别忘了加双引号
+//         type: "GET",
+//         success: function (list) {
+//             var XData = [];
+//             var YData1 = [];
+//             var YData2 = [];
+//             var YData3 = [];
+//             $.each(list, function (i, n) {
+//                 XData.push(n[0])
+//                 YData1.push(n[1])
+//                 YData2.push(n[2])
+//                 YData3.push(n[3])
+//             });
+//             dataMainBottom = {
+//                 "XData": XData,
+//                 "YData1": YData1,
+//                 "YData2": YData2,
+//                 "YData3": YData3,
+//             };
+//             option = {
+//                 tooltip: {trigger: 'axis', axisPointer: {lineStyle: {color: '#fff'}}},
+//                 legend: {
+//                     icon: 'rect',
+//                     itemWidth: 12, itemHeight: 5, itemGap: 10,
+//                     data: ['总流量', '上行流量', '下行流量'],
+//                     right: '10px', top: '0px',
+//                     textStyle: {fontSize: 12, color: '#fff'}
+//                 },
+//                 grid: {x: 55, y: 35, x2: 30, y2: 90},
+//                 xAxis: [{
+//                     type: 'category',
+//                     boundaryGap: false,
+//                     axisLine: {lineStyle: {color: '#57617B'}},
+//                     axisLabel: {textStyle: {color: '#fff'}},
+//                     data: dataMainBottom.XData
+//                 }],
+//                 yAxis: [
+//                     {
+//                         type: 'value',
+//                         max : 250,
+//                         axisTick: {
+//                             show: false
+//                         },
+//                         axisLine: {lineStyle: {color: '#57617B'}},
+//                         axisLabel: {
+//                             margin: 10,
+//                             textStyle: {fontSize: 6},
+//                             textStyle: {color: '#fff'},
+//                             formatter: '{value}MB'
+//                         },
+//                         splitLine: {lineStyle: {color: '#57617B'}}
+//                     }, {
+//                         type: 'value',
+//                         max : 250,
+//                         axisTick: {
+//                             show: false
+//                         },
+//                         axisLine: {lineStyle: {color: '#57617B'}},
+//                         axisLabel: {
+//                             margin: 10,
+//                             textStyle: {fontSize: 9},
+//                             textStyle: {color: 'rgba(0,0,0,0)'},
+//                             formatter: '{value}MB'
+//                         },
+//                         splitLine: {lineStyle: {color: '#57617B'}}
+//                     }
+//                 ],
+//                 series: [
+//                     {
+//                         name: '总流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
+//                         yAxisIndex: 0,
+//                         areaStyle: {
+//                             normal: {
+//                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+//                                     offset: 0,
+//                                     color: 'rgb(235, 124, 124)'
+//                                 }, {
+//                                     offset: 0.8,
+//                                     color: 'rgba(185,150,248,0)'
+//                                 }], false),
+//                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
+//                                 shadowBlur: 10
+//                             }
+//                         },
+//                         itemStyle: {normal: {color: '#c40d44'}},
+//                         data: dataMainBottom.YData1
+//                     },
+//                     {
+//                         name: '上行流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
+//                         yAxisIndex: 1,
+//                         areaStyle: {
+//                             normal: {
+//                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+//                                     offset: 0,
+//                                     color: 'rgba(3, 194, 236, 0.3)'
+//                                 }, {
+//                                     offset: 0.8,
+//                                     color: 'rgba(3, 194, 236, 0)'
+//                                 }], false),
+//                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
+//                                 shadowBlur: 10
+//                             }
+//                         },
+//                         itemStyle: {normal: {color: '#03C2EC'}},
+//                         data: dataMainBottom.YData2
+//                     },
+//                     {
+//                         name: '下行流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
+//                         yAxisIndex: 1,
+//                         areaStyle: {
+//                             normal: {
+//                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+//                                     offset: 0,
+//                                     color: 'rgba(255, 215, 0, 0.3)'
+//                                 }, {
+//                                     offset: 0.8,
+//                                     color: 'rgba(255, 215, 0, 0)'
+//                                 }], false),
+//                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
+//                                 shadowBlur: 10
+//                             }
+//                         },
+//                         itemStyle: {normal: {color: '#FFD700'}},
+//                         data: dataMainBottom.YData3
+//                     }
+//                 ]
+//             };
+//             var myChart = echarts.init(document.getElementById('mainBottom'));
+//             myChart.setOption(option);
+//         },
+//         error: function (XMLHttpRequest, textStatus, errorThrown) {
+//             // 状态码
+//             console.log(XMLHttpRequest.status);
+//             // 状态
+//             console.log(XMLHttpRequest.readyState);
+//             // 错误信息
+//             console.log(textStatus);
+//         }
+//     })
+// }
+// // setInterval(mainBottomx, 1000);
 function mainBottomx() {
     $.ajax({
-        url: "/mainBottom/", //别忘了加双引号
+        url: "/mainBottom/", // 别忘了加双引号
         type: "GET",
         success: function (list) {
             var XData = [];
-            var YData1 = [];
-            var YData2 = [];
-            var YData3 = [];
+            var YData1 = [];  // 总流量数据
+            var YData2 = [];  // 上行流量数据
+            var YData3 = [];  // 下行流量数据
+            
             $.each(list, function (i, n) {
-                XData.push(n[0])
-                YData1.push(n[1])
-                YData2.push(n[2])
-                YData3.push(n[3])
+                XData.push(n[0]);  // X轴数据不变
+                YData1.push(n[1] * 12.5);  // 先乘以25，然后缩小两倍，等效于乘以12.5
+                YData2.push(n[2] * 12.5);  // 先乘以25，然后缩小两倍
+                YData3.push(n[3] * 12.5);  // 先乘以25，然后缩小两倍
             });
+            
             dataMainBottom = {
                 "XData": XData,
                 "YData1": YData1,
                 "YData2": YData2,
                 "YData3": YData3,
             };
+            
             option = {
                 tooltip: {trigger: 'axis', axisPointer: {lineStyle: {color: '#fff'}}},
                 legend: {
@@ -319,43 +465,42 @@ function mainBottomx() {
                     boundaryGap: false,
                     axisLine: {lineStyle: {color: '#57617B'}},
                     axisLabel: {textStyle: {color: '#fff'}},
-                    data: dataMainBottom.XData
+                    data: dataMainBottom.XData,
+                    splitLine: {  // 修改网格线为浅色虚线
+                        show: true,
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.3)',  // 浅色，半透明
+                            type: 'dashed'  // 虚线
+                        }
+                    }
                 }],
-                yAxis: [
+                yAxis: [  // 只保留一个yAxis，max: 3000
                     {
                         type: 'value',
-                        max : 250,
+                        max: 3000,  
+                        interval: 500,  
                         axisTick: {
                             show: false
                         },
                         axisLine: {lineStyle: {color: '#57617B'}},
                         axisLabel: {
                             margin: 10,
-                            textStyle: {fontSize: 6},
-                            textStyle: {color: '#fff'},
-                            formatter: '{value}MB'
+                            textStyle: {fontSize: 6, color: '#fff'},
+                            formatter: '{value}GB'
                         },
-                        splitLine: {lineStyle: {color: '#57617B'}}
-                    }, {
-                        type: 'value',
-                        max : 250,
-                        axisTick: {
-                            show: false
-                        },
-                        axisLine: {lineStyle: {color: '#57617B'}},
-                        axisLabel: {
-                            margin: 10,
-                            textStyle: {fontSize: 9},
-                            textStyle: {color: 'rgba(0,0,0,0)'},
-                            formatter: '{value}MB'
-                        },
-                        splitLine: {lineStyle: {color: '#57617B'}}
+                        splitLine: {  // 修改网格线为浅色虚线
+                            show: true,
+                            lineStyle: {
+                                color: 'rgba(255, 255, 255, 0.3)',  // 浅色，半透明
+                                type: 'dashed'  // 虚线
+                            }
+                        }
                     }
                 ],
                 series: [
                     {
                         name: '总流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
-                        yAxisIndex: 0,
+                        yAxisIndex: 0,  
                         areaStyle: {
                             normal: {
                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -374,7 +519,7 @@ function mainBottomx() {
                     },
                     {
                         name: '上行流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
-                        yAxisIndex: 1,
+                        yAxisIndex: 0,  
                         areaStyle: {
                             normal: {
                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -393,7 +538,7 @@ function mainBottomx() {
                     },
                     {
                         name: '下行流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
-                        yAxisIndex: 1,
+                        yAxisIndex: 0,  
                         areaStyle: {
                             normal: {
                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -412,20 +557,19 @@ function mainBottomx() {
                     }
                 ]
             };
+            
             var myChart = echarts.init(document.getElementById('mainBottom'));
             myChart.setOption(option);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            // 状态码
             console.log(XMLHttpRequest.status);
-            // 状态
             console.log(XMLHttpRequest.readyState);
-            // 错误信息
             console.log(textStatus);
         }
     })
 }
 setInterval(mainBottomx, 1000);
+
 
 
 //流量读入

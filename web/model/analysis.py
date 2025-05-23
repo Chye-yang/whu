@@ -50,22 +50,22 @@ def findList(param):
         floatList.append(float(var[0]))
     resultList = []
     if not strList:
-        resultList.append("0.00" + "MB")
+        resultList.append("0.00" + "TB")
     elif strList[-1][0] == 0:
-        resultList.append("0.00" + "MB")
+        resultList.append("0.00" + "TB")
     else:
-        resultList.append(str(float("%.3g" % (float(strList[-1][0])))) + "MB")
+        resultList.append(str(float("%.3g" % (float(strList[-1][0])))) + "TB")
     if not floatList:
-        resultList.append("0.00" + "MB")
-        resultList.append("0.00" + "MB")
-        resultList.append("0.00" + "MB")
-        resultList.append("0.00" + "MB")
-        resultList.append("0.00" + "MB")
+        resultList.append("0.00" + "TB")
+        resultList.append("0.00" + "TB")
+        resultList.append("0.00" + "TB")
+        resultList.append("0.00" + "TB")
+        resultList.append("0.00" + "TB")
     else:
-        resultList.append(str(float("%.3g" % (np.mean(floatList)))) + "MB")
-        resultList.append(str(float("%.3g" % (np.max(floatList)))) + "MB")
-        resultList.append(str(float("%.3g" % (np.min(floatList)))) + "MB")
-        resultList.append(str(float("%.3g" % (np.sum(floatList)))) + "MB")
+        resultList.append(str(float("%.3g" % (np.mean(floatList)))) + "TB")
+        resultList.append(str(float("%.3g" % (np.max(floatList)))) + "TB")
+        resultList.append(str(float("%.3g" % (np.min(floatList)))) + "TB")
+        resultList.append(str(float("%.3g" % (np.sum(floatList)))) + "TB")
         resultList.append(str(float("%.3g" % (np.std(floatList)))))
     resultList.append(str(param))
     return resultList
