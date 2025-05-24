@@ -256,7 +256,7 @@ function mainTopx() {
         success: function (list) {
             document.getElementById("mainTop1").innerText = (list[0]*25/1000).toFixed(2);//总流量
             document.getElementById("mainTop2").innerText = (list[1]*25).toFixed(1);//实时速率修改
-            document.getElementById("mainTop3").innerText = (list[2]/100*25)//总流;
+            document.getElementById("mainTop3").innerText = (list[2]/100*25).toFixed(1)//总流;
             
             if (Math.random() < 0.4 && numqiguai>10) {
                 percentage = -1;

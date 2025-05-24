@@ -1,6 +1,6 @@
 import random
 
-
+import math
 import csv
 from django.http import JsonResponse
 from model.db import Record
@@ -90,7 +90,7 @@ from django.http import JsonResponse
 def table1(request):
     result = []
     try:
-        inputData = pd.read_csv("./data/ChangZhouData/perflow.csv")
+        inputData = pd.read_csv("./data/ChangZhouData/0524/Result/perflow0524.csv")
         # inputData = pd.read_csv("web/data/ChangZhouData/perflow.csv")
         
 
@@ -148,7 +148,7 @@ def table2(request):
 
     try:
         # for chunk in read_csv_in_chunks("./data/demoCSV/expanded_selected_columns.csv"):
-        for chunk in read_csv_in_chunks("./data/ChangZhouData/topk.csv"):
+        for chunk in read_csv_in_chunks("./data/ChangZhouData/0524/Result/topk0524.csv"):
 
             
             # topK分析文件
@@ -170,18 +170,24 @@ def table2(request):
 def table3(request):
     result = []
     try:
-        inputData = pd.read_csv("./data/demoCSV/fen.csv")
+        inputData = pd.read_csv("./data/ChangZhouData/0524/Result/fenwei0524.csv")
         # topK分析
         for index, row in inputData.iterrows():
+
+            
+            value4 = int(row[4]) if isinstance(row[4], (int, float)) else row[4]  # 第5列
+            value5 = int(row[5]) if isinstance(row[5], (int, float)) else row[5]  # 第6列
+            value6 = int(row[6]) if isinstance(row[6], (int, float)) else row[6]  # 第4列
+            
             result.append(
                 [
                     row[0],  # First column
                     row[1],  # 46th column
                     row[2],  # 47th column
                     row[3],  # 48th column
-                    row[4],  # 3rd column
-                    row[5],  # 8th column
-                    row[6],  # 8th column
+                    value4,  # 3rd column
+                    value5,  # 8th column
+                    value6,  # 8th column
                 ]
             )
     except FileNotFoundError:
