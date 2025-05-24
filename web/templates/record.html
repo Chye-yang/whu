@@ -52,7 +52,7 @@
         <div class="topbnt_left fl">
             <ul>
                 <li><a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a></li>
-                <li><a href="analysis.html">流量采集</a></li>
+                <li><a href="analysis.html">流量测量</a></li>
             </ul>
         </div>
         <h1 class="tith1 fl" style="color: white">异常检测分析</h1>
@@ -68,7 +68,7 @@
         <div class="topbnt_left fl">
             <ul>
                 <li><a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a></li>
-                <li><a href="analysis.html">流量采集</a></li>
+                <li><a href="analysis.html">流量测量</a></li>
                 <li class="active"><a href="record.html">异常检测</a></li>
             </ul>
         </div>
@@ -89,7 +89,7 @@
             <h2 class="tith2" style="color: white">实时流量速率</h2>
             <div id="lpeftmidbot" class="prbottom_box1cont"></div>
         </div>
-<!-- 流速修改位置：record.js  :  function record_speed() { -->
+        <!-- 流速修改位置：record.js  :  function record_speed() { -->
         <!-- 新添加的第三个 -->
 
 
@@ -124,7 +124,7 @@
 
         <script>
             function getRandomNumber1() {
-                return (  (  (Math.random() * (630 - 580 + 1)) + 580) * 4  ).toFixed(2);
+                return (((Math.random() * (630 - 580 + 1)) + 580) * 4).toFixed(2);
             }
 
             let baseNumber = 0;
@@ -143,10 +143,21 @@
             let smoothingFactor = 0.1;
 
 
+            // function getRandomNumber3() {
+            //     let randomFluctuation = Math.random() * 10 - 5; // -5 到 5 之间的随机数
+            //     baseNumber3 = baseNumber3 * (1 - smoothingFactor) + (95 + randomFluctuation) * smoothingFactor;
+            //     return baseNumber3.toFixed(2);
+            // }
+            let numbersArray = [9999999, 9699999, 9499999, 97999999, 98999999];  // 这里是示例数组，您可以根据需要替换这些数字
+            let index = 0;  // 索引变量，从0开始
             function getRandomNumber3() {
-                let randomFluctuation = Math.random() * 10 - 5; // -5 到 5 之间的随机数
-                baseNumber3 = baseNumber3 * (1 - smoothingFactor) + (95 + randomFluctuation) * smoothingFactor;
-                return baseNumber3.toFixed(2);
+                if (numbersArray.length > 0) {
+                    let value = numbersArray[index];  // 获取当前索引的元素
+                    index = (index + 1) % numbersArray.length;  // 更新索引，循环到数组末尾后重置为0
+                    return value.toFixed(2);  // 返回格式化为两位小数的字符串
+                } else {
+                    return "0.00";  // 如果数组为空，返回默认值
+                }
             }
 
 

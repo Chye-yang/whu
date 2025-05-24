@@ -1,0 +1,86 @@
+# Query: 采集
+# ContextLines: 1
+
+19 个结果 - 6 文件
+
+web/0analysis.html:
+   30              <li><a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a></li>
+   31:             <li class="active"><a href="0analysis.html">流量采集</a></li>
+   32  
+
+  213              <div style="border-color: #4788fb;border-style: solid;border-width: 2px;">
+  214:                 <span style="font-size: 25px">数据采集</span>
+  215                  <button type="button" style="background-color: #00c2fd; font-size: 20px;margin-left: 150px;"
+
+web/model/analysis.py:
+  441  
+  442: # 实时流量流动+网络层分析+数据采集+总流统计
+  443  def readCsv(request):
+
+  569  
+  570: # 流量采集ajax
+  571  def protocol_list(list, param):
+
+web/templates/0analysis.html:
+   32                  <li><a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a></li>
+   33:                 <li class="active"><a href="0analysis.html">流量采集</a></li>
+   34  
+
+   51              </li>
+   52:             <li class="active"><a href="analysis.html">流量采集</a></li>
+   53              <li class="unactive"><a href="0record.html">异常检测</a></li>
+
+   55          </div>
+   56:         <h1 class="tith1 fl">网络流量数据采集</h1>
+   57        </div>
+
+  205                  <div style="border-color: #4788fb;border-style: solid;border-width: 2px;">
+  206:                     <span style="font-size: 25px">数据采集</span>
+  207                      <button type="button" style="background-color: #00c2fd; font-size: 20px;margin-left: 150px;"
+
+web/templates/0record.html:
+  54              <li><a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a></li>
+  55:             <li><a href="analysis.html">流量采集</a></li>
+  56              <li class="active"><a href="0record.html">异常检测</a></li>
+
+  73          </li>
+  74:         <li class="unactive"><a href="analysis.html">流量采集</a></li>
+  75          <li class="active"><a href="0record.html">异常检测</a></li>
+
+  77      </div>
+  78:     <h1 class="">网络流量数据采集</h1>
+  79    </div> -->
+
+web/templates/analysis.html:
+    5    <meta charset="utf-8" />
+    6:   <title>网络流量数据采集</title>
+    7    <!--设置是否为缩放模式 -->
+
+   34          </li>
+   35:         <li class="active"><a href="analysis.html">流量采集</a></li>
+   36          
+
+   38      </div>
+   39:     <h1 class="tith1 fl">网络流量数据采集</h1>
+   40      <div class="fr topbnt_right">
+
+   53          </li>
+   54:         <li class="active"><a href="analysis.html">流量采集</a></li>
+   55          <li class="unactive"><a href="0record.html">异常检测</a></li>
+
+   57      </div>
+   58:     <h1 class="tith1 fl">网络流量数据采集</h1>
+   59    </div>
+
+  146                ">
+  147:             <span style="font-size: 25px">数据采集</span>
+  148              <button type="button" style="
+
+web/templates/record.html:
+  54                  <li><a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a></li>
+  55:                 <li><a href="analysis.html">流量采集</a></li>
+  56              </ul>
+
+  70                  <li><a href="https://125.0.0.11:10443/cgi-bin/situationalAwareness.cgi">返回</a></li>
+  71:                 <li><a href="analysis.html">流量采集</a></li>
+  72                  <li class="active"><a href="record.html">异常检测</a></li>
