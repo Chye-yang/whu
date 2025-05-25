@@ -155,7 +155,7 @@
             </div>
             <div class="visual_conTop" style="height: 12%; margin-top: 2%; margin-bottom: 2%; width: 100%;">
                 <div class="visual_conTop_box visual_conTop1"><div><h3>总流统计</h3><p id="mainTop3">0.0</p><div class="conTop_smil"><a class="xd">千条</a></div></div></div>
-                <div class="visual_conTop_box visual_conTop2"><div><h3>域总数</h3><p id="mainTop4">0.0</p><div class="conTop_smil"><a class="xd">个</a></div></div></div>
+                <div class="visual_conTop_box visual_conTop2"><div><h3>全网熵值</h3><p id="mainTop4">0.0</p><div class="conTop_smil"><a class="xd">%</a></div></div></div>
                 <div class="clear"></div>
             </div>
 
@@ -171,9 +171,9 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th style="width: 10%">序号</th>
-                                        <th style="width: 66%">域名</th>
-                                        <th style="width: 24%">请求次数</th>
+                                        <th style="width: 33%">域名</th>
+                                        <th style="width: 33%">请求次数</th>
+                                        <th style="width: 34%">已测量域总数</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table_domain">
@@ -220,7 +220,6 @@
                                     rows.forEach(row => {
                                         const domain = row[0] ? row[0].trim() : 'N/A';
                                         const count = row[1] ? row[1].trim() : 'N/A';
-                                        const total = row[2] ? row[2].trim() : 'N/A'; // 读取第三列
                                         const tr = document.createElement('tr');
                                         tr.innerHTML = `
                                             <td>${domain}</td>

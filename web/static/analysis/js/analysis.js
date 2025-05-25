@@ -54,7 +54,7 @@
 //             let interval = setInterval(() => {
 //                 // 只清空并添加新行，而不是每次都清空整个表格
 //                 $('#table1').empty();
-                
+
 //                 // 通过 index 和 list 长度来动态添加数据
 //                 for (let i = 0; i < 10; i++) {
 //                     let rowIndex = (index + i) % list.length;
@@ -158,11 +158,11 @@ function table2x() {
                     // 如果 rank 为 1，加粗并将字体颜色设为白色
                     if (item.rank === 1) {
                         rowHtml = "<td style='color: white;'><strong>" + item.rank + "</strong></td>" +
-                                  "<td style='color: white;'><strong>" + item.row[0] + "</strong></td>" +
-                                  "<td style='color: white;'><strong>" + item.row[1] + "</strong></td>" +
-                                  "<td style='color: white;'><strong>" + item.row[2] + "</strong></td>" +
-                                  "<td style='color: white;'><strong>" + item.row[3] + "</strong></td>" +
-                                  "<td style='color: white;'><strong>" + item.count + "</strong></td>";
+                            "<td style='color: white;'><strong>" + item.row[0] + "</strong></td>" +
+                            "<td style='color: white;'><strong>" + item.row[1] + "</strong></td>" +
+                            "<td style='color: white;'><strong>" + item.row[2] + "</strong></td>" +
+                            "<td style='color: white;'><strong>" + item.row[3] + "</strong></td>" +
+                            "<td style='color: white;'><strong>" + item.count + "</strong></td>";
                     }
 
                     // 更新表格行内容
@@ -215,8 +215,8 @@ function table3x() {
                     // 更新每行内容
                     $('#table3').append(
                         $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
-                        row[2] + "</td><td>" + row[3] + "</td><td>" +
-                        row[4] + "</td><td>" + row[5] + "</td><td>" + row[6] + "</td></tr>")
+                            row[2] + "</td><td>" + row[3] + "</td><td>" +
+                            row[4] + "</td><td>" + row[5] + "</td><td>" + row[6] + "</td></tr>")
                     );
                 }
 
@@ -239,33 +239,76 @@ function table4x() {
         type: "GET",
         success: function (list) {
             $('#table4').empty("");
-            $.each(list, function (i,n){
-                $('#table4').append($("<tr><td>"+n[6]+"</td><td>"+n[0]+"</td><td>"+n[1]+ "</td><td>"+ n[2]+
-                    "</td><td>"+n[3]+"</td><td>"+n[4]+"</td><td>"+n[5]+"</td></tr>"));
+            $.each(list, function (i, n) {
+                $('#table4').append($("<tr><td>" + n[6] + "</td><td>" + n[0] + "</td><td>" + n[1] + "</td><td>" + n[2] +
+                    "</td><td>" + n[3] + "</td><td>" + n[4] + "</td><td>" + n[5] + "</td></tr>"));
             });
         }
     })
 }
 setInterval(table4x, 1000);
 
-numqiguai=0;
+numqiguai = 0;
+let step = 0; // 用于追踪当前是第几次更新
+
 function mainTopx() {
     $.ajax({
         url: "/mainTop/", //别忘了加双引号
         type: "GET",
         success: function (list) {
-            document.getElementById("mainTop1").innerText = (list[0]*25/1000).toFixed(2);//总流量
-            document.getElementById("mainTop2").innerText = (list[1]*25).toFixed(1);//实时速率修改
-            document.getElementById("mainTop3").innerText = (list[2]/100*25).toFixed(1)//总流;
-            
-            if (Math.random() < 0.4 && numqiguai>10) {
-                percentage = -1;
-                numqiguai = (hashToPercentage(list[3])*percentage/100+numqiguai).toFixed(2);
-                document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
-            }else{
-                (numqiguai = hashToPercentage(list[3])/100+numqiguai).toFixed(2);
-                document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
+            document.getElementById("mainTop1").innerText = (list[0] * 25 / 1000).toFixed(2);//总流量
+            document.getElementById("mainTop2").innerText = (list[1] * 25).toFixed(1);//实时速率修改
+            document.getElementById("mainTop3").innerText = (list[2] / 100 * 25).toFixed(1)//总流;
+
+            // 域总数更新：
+            step++; // 步骤加 1
+
+            let nextNum;
+
+            // 根据当前步骤数，设定目标数值范围
+            switch (step) {
+                case 1:
+                    nextNum = 0; // 第 1 步：0
+                    break;
+                case 2:
+                    nextNum = 200 + Math.random() * 20; // 第 2 步：~200 (200-220)
+                    break;
+                case 3:
+                    nextNum = 300 + Math.random() * 25; // 第 3 步：~300 (300-325)
+                    break;
+                case 4:
+                    nextNum = 370 + Math.random() * 30; // 第 4 步：接近 400 (370-400)
+                    break;
+                case 5:
+                    nextNum = 420 + Math.random() * 30; // 第 5 步：超过 400 (420-450)
+                    break;
+                case 6:
+                    nextNum = 451 + Math.random() * 10; // 第 6 步：稳定在 450 以上 (451-461)
+                    break;
+                default:
+                    // 之后：保持在 450 以上并缓慢增长
+                    let increment = Math.random() * 4 + 1; // 每次增加 1 到 5
+                    nextNum = numqiguai + increment;
+                    // 确保最低是 451
+                    nextNum = Math.max(451, nextNum);
+                    break;
             }
+
+            // 核心：确保数值严格递增
+            if (step === 1) {
+                numqiguai = 0; // 第一步强制为 0
+            } else {
+                // 从第二步开始，确保新值至少比旧值大一点点，并且不低于计算出的 nextNum
+                numqiguai = Math.max(numqiguai + 0.01, nextNum);
+            }
+
+            // （可选）如果您想设置一个上限，可以取消下面这行的注释
+            // numqiguai = Math.min(numqiguai, 500);
+
+            // 更新页面上 #mainTop4 元素的内容
+            document.getElementById("mainTop4").innerText = numqiguai.toFixed(0);
+
+
 
         }
     })
@@ -435,36 +478,36 @@ function mainBottomx() {
             var YData1 = [];  // 总流量数据
             var YData2 = [];  // 上行流量数据
             var YData3 = [];  // 下行流量数据
-            
+
             $.each(list, function (i, n) {
                 XData.push(n[0]);  // X轴数据不变
                 YData1.push(n[1] * 12.5);  // 先乘以25，然后缩小两倍，等效于乘以12.5
                 YData2.push(n[2] * 12.5);  // 先乘以25，然后缩小两倍
                 YData3.push(n[3] * 12.5);  // 先乘以25，然后缩小两倍
             });
-            
+
             dataMainBottom = {
                 "XData": XData,
                 "YData1": YData1,
                 "YData2": YData2,
                 "YData3": YData3,
             };
-            
+
             option = {
-                tooltip: {trigger: 'axis', axisPointer: {lineStyle: {color: '#fff'}}},
+                tooltip: { trigger: 'axis', axisPointer: { lineStyle: { color: '#fff' } } },
                 legend: {
                     icon: 'rect',
                     itemWidth: 12, itemHeight: 5, itemGap: 10,
                     data: ['总流量', '上行流量', '下行流量'],
                     right: '10px', top: '0px',
-                    textStyle: {fontSize: 12, color: '#fff'}
+                    textStyle: { fontSize: 12, color: '#fff' }
                 },
-                grid: {x: 55, y: 35, x2: 30, y2: 90},
+                grid: { x: 55, y: 35, x2: 30, y2: 90 },
                 xAxis: [{
                     type: 'category',
                     boundaryGap: false,
-                    axisLine: {lineStyle: {color: '#57617B'}},
-                    axisLabel: {textStyle: {color: '#fff'}},
+                    axisLine: { lineStyle: { color: '#57617B' } },
+                    axisLabel: { textStyle: { color: '#fff' } },
                     data: dataMainBottom.XData,
                     splitLine: {  // 修改网格线为浅色虚线
                         show: true,
@@ -477,15 +520,15 @@ function mainBottomx() {
                 yAxis: [  // 只保留一个yAxis，max: 3000
                     {
                         type: 'value',
-                        max: 3000,  
-                        interval: 500,  
+                        max: 3000,
+                        interval: 500,
                         axisTick: {
                             show: false
                         },
-                        axisLine: {lineStyle: {color: '#57617B'}},
+                        axisLine: { lineStyle: { color: '#57617B' } },
                         axisLabel: {
                             margin: 10,
-                            textStyle: {fontSize: 6, color: '#fff'},
+                            textStyle: { fontSize: 6, color: '#fff' },
                             formatter: '{value}GB'
                         },
                         splitLine: {  // 修改网格线为浅色虚线
@@ -499,8 +542,8 @@ function mainBottomx() {
                 ],
                 series: [
                     {
-                        name: '总流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
-                        yAxisIndex: 0,  
+                        name: '总流量', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        yAxisIndex: 0,
                         areaStyle: {
                             normal: {
                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -514,12 +557,12 @@ function mainBottomx() {
                                 shadowBlur: 10
                             }
                         },
-                        itemStyle: {normal: {color: '#c40d44'}},
+                        itemStyle: { normal: { color: '#c40d44' } },
                         data: dataMainBottom.YData1
                     },
                     {
-                        name: '上行流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
-                        yAxisIndex: 0,  
+                        name: '上行流量', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        yAxisIndex: 0,
                         areaStyle: {
                             normal: {
                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -533,12 +576,12 @@ function mainBottomx() {
                                 shadowBlur: 10
                             }
                         },
-                        itemStyle: {normal: {color: '#03C2EC'}},
+                        itemStyle: { normal: { color: '#03C2EC' } },
                         data: dataMainBottom.YData2
                     },
                     {
-                        name: '下行流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
-                        yAxisIndex: 0,  
+                        name: '下行流量', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        yAxisIndex: 0,
                         areaStyle: {
                             normal: {
                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -552,12 +595,12 @@ function mainBottomx() {
                                 shadowBlur: 10
                             }
                         },
-                        itemStyle: {normal: {color: '#FFD700'}},
+                        itemStyle: { normal: { color: '#FFD700' } },
                         data: dataMainBottom.YData3
                     }
                 ]
             };
-            
+
             var myChart = echarts.init(document.getElementById('mainBottom'));
             myChart.setOption(option);
         },
