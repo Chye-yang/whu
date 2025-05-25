@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="zh"> <head>
+<html lang="zh">
+
+<head>
     <meta charset="utf-8" />
     <title>网络流量数据测量</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="/static/analysis/css/bootstrap.css" />
-    <script src="/static/analysis/js/jquery.min.js"></script> <script src="/static/analysis/js/bootstrap.min.js"></script> <script src="/static/analysis/js/echarts.min.js"></script> <link rel="stylesheet" type="text/css" href="/static/analysis/css/swiper.min.css" /> <script src="/static/analysis/js/swiper.min.js"></script> <script src="/static/analysis/js/analysis.js?v=2016rr3650"></script> <script src="/static/analysis/js/china.js"></script> <script src="/static/analysis/js/chartMap.js"></script> <link rel="stylesheet" type="text/css" href="/static/analysis/css/visual.css?v=2016s1020" /> <link rel="stylesheet" type="text/css" href="/static/analysis/css/index.css?v=112" /> <style>
+    <script src="/static/analysis/js/jquery.min.js"></script>
+    <script src="/static/analysis/js/bootstrap.min.js"></script>
+    <script src="/static/analysis/js/echarts.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/analysis/css/swiper.min.css" />
+    <script src="/static/analysis/js/swiper.min.js"></script>
+    <script src="/static/analysis/js/analysis.js?v=2016rr3650"></script>
+    <script src="/static/analysis/js/china.js"></script>
+    <script src="/static/analysis/js/chartMap.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/analysis/css/visual.css?v=2016s1020" />
+    <link rel="stylesheet" type="text/css" href="/static/analysis/css/index.css?v=112" />
+    <style>
         /* --- Styles for the Domain Statistics Table --- */
         #domain_table_container {
             /* Keep existing styles and ensure height is correct */
@@ -13,61 +25,71 @@
             /* CRITICAL: Allow vertical scroll, hide horizontal */
             overflow-y: auto;
             overflow-x: hidden;
-            position: relative; /* Needed for context */
+            position: relative;
+            /* Needed for context */
 
             /* Hide scrollbar for a cleaner look */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
         }
 
         #domain_table_container::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
+            /* Chrome, Safari, Opera */
         }
 
         #domain_table_container table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed; /* Important for sticky header alignment */
+            table-layout: fixed;
+            /* Important for sticky header alignment */
         }
 
         #domain_table_container thead th {
-    position: sticky;
-    top: 0;
-    background-color: #5a78d2; /* <<< 恢复为不透明背景色 (或您主题的其他颜色) */
-    color: white;
-    z-index: 10;
-    padding: 12px 10px;
-    text-align: center;        /* <<< 保持居中 */
-    border-bottom: 2px solid #00aaff;
-    font-weight: bold;
-}
+            position: sticky;
+            top: 0;
+            background-color: #5a78d2;
+            /* <<< 恢复为不透明背景色 (或您主题的其他颜色) */
+            color: white;
+            z-index: 10;
+            padding: 12px 10px;
+            text-align: center;
+            /* <<< 保持居中 */
+            border-bottom: 2px solid #00aaff;
+            font-weight: bold;
+        }
 
         #domain_table_container tbody td {
             padding: 10px;
-            border-bottom: 1px solid #2a344a; /* Example border */
+            border-bottom: 1px solid #2a344a;
+            /* Example border */
             color: #64E2C6;
             word-wrap: break-word;
         }
+
         #domain_table_container tbody tr:last-child td {
-           border-bottom: none;
+            border-bottom: none;
         }
 
         /* Adjust visual_box if necessary to ensure it has space */
         .visual_box .listbox .visual_box {
-            border: none; /* Remove border if it looks odd nested */
-            padding: 0;   /* Remove padding if it looks odd nested */
-            height: 100%; /* Ensure it takes full height of its container */
+            border: none;
+            /* Remove border if it looks odd nested */
+            padding: 0;
+            /* Remove padding if it looks odd nested */
+            height: 100%;
+            /* Ensure it takes full height of its container */
             width: 100%;
         }
 
         /* Ensure .listbox allows its children to fill height */
-         .visual_con .visual_box .listbox {
-             height: 100%;
-         }
-
-
+        .visual_con .visual_box .listbox {
+            height: 100%;
+        }
     </style>
-    </head>
+</head>
 
 <body class="ksh">
     <div class="bnt">
@@ -115,10 +137,10 @@
             </div>
             <div class="visual_box">
                 <div class="listbox fl">
-                     <div class="t_line_box"><i class="t_l_line"></i><i class="l_t_line"></i></div>
-                     <div class="t_line_box"><i class="t_r_line"></i><i class="r_t_line"></i></div>
-                     <div class="t_line_box"><i class="l_b_line"></i><i class="b_l_line"></i></div>
-                     <div class="t_line_box"><i class="r_b_line"></i><i class="b_r_line"></i></div>
+                    <div class="t_line_box"><i class="t_l_line"></i><i class="l_t_line"></i></div>
+                    <div class="t_line_box"><i class="t_r_line"></i><i class="r_t_line"></i></div>
+                    <div class="t_line_box"><i class="l_b_line"></i><i class="b_l_line"></i></div>
+                    <div class="t_line_box"><i class="r_b_line"></i><i class="b_r_line"></i></div>
                     <div class="main_title">Heavy Flow检测</div>
                     <div class="main_table t_btn8">
                         <table>
@@ -141,7 +163,7 @@
 
         <div class="visual_con" style="height: 97%">
             <div style="height: 5%; text-align: center">
-                 <div style="border-color: #4788fb; border-style: solid; border-width: 2px;">
+                <div style="border-color: #4788fb; border-style: solid; border-width: 2px;">
                     <span style="font-size: 25px">数据测量</span>
                     <button type="button" style="background-color: #00c2fd; font-size: 20px; margin-left: 150px;">
                         <a href="analysis.html" style="color: white; text-decoration: none;">开始</a> </button>
@@ -149,13 +171,37 @@
             </div>
 
             <div class="visual_conTop" style="height: 12%; margin-top: 2%; margin-bottom: 2%; width: 100%;">
-                <div class="visual_conTop_box visual_conTop1"><div><h3>总流量</h3><p id="mainTop1">0.0</p><div class="conTop_smil"><a class="xd">TB</a></div></div></div>
-                <div class="visual_conTop_box visual_conTop2"><div><h3>实时速率</h3><p id="mainTop2">0.0</p><div class="conTop_smil"><a class="xd">Gbps</a></div></div></div>
+                <div class="visual_conTop_box visual_conTop1">
+                    <div>
+                        <h3>总流量</h3>
+                        <p id="mainTop1">0.0</p>
+                        <div class="conTop_smil"><a class="xd">TB</a></div>
+                    </div>
+                </div>
+                <div class="visual_conTop_box visual_conTop2">
+                    <div>
+                        <h3>实时速率</h3>
+                        <p id="mainTop2">0.0</p>
+                        <div class="conTop_smil"><a class="xd">Gbps</a></div>
+                    </div>
+                </div>
                 <div class="clear"></div>
             </div>
             <div class="visual_conTop" style="height: 12%; margin-top: 2%; margin-bottom: 2%; width: 100%;">
-                <div class="visual_conTop_box visual_conTop1"><div><h3>总流统计</h3><p id="mainTop3">0.0</p><div class="conTop_smil"><a class="xd">千条</a></div></div></div>
-                <div class="visual_conTop_box visual_conTop2"><div><h3>域总数</h3><p id="mainTop4">0.0</p><div class="conTop_smil"><a class="xd">个</a></div></div></div>
+                <div class="visual_conTop_box visual_conTop1">
+                    <div>
+                        <h3>总流统计</h3>
+                        <p id="mainTop3">0.0</p>
+                        <div class="conTop_smil"><a class="xd">千条</a></div>
+                    </div>
+                </div>
+                <div class="visual_conTop_box visual_conTop2">
+                    <div>
+                        <h3>域总数</h3>
+                        <p id="mainTop4">0.0</p>
+                        <div class="conTop_smil"><a class="xd">个</a></div>
+                    </div>
+                </div>
                 <div class="clear"></div>
             </div>
 
@@ -166,7 +212,8 @@
                     <div class="t_line_box"><i class="l_b_line"></i><i class="b_l_line"></i></div>
                     <div class="t_line_box"><i class="r_b_line"></i><i class="b_r_line"></i></div>
 
-                    <div class="visual_box"> <div class="main_title" style="left: 47%;">域统计</div>
+                    <div class="visual_box">
+                        <div class="main_title" style="left: 47%;">域统计</div>
                         <div class="main_table t_btn8" id="domain_table_container">
                             <table>
                                 <thead>
@@ -183,7 +230,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        </div>
+                    </div>
 
                     <script>
                         (() => { // Using IIFE to avoid global scope pollution
@@ -198,8 +245,8 @@
 
                             async function loadAndDisplayData() {
                                 if (!tableBody || !tableContainer) {
-                                     console.error("域统计表格元素未找到!");
-                                     return;
+                                    console.error("域统计表格元素未找到!");
+                                    return;
                                 }
                                 try {
                                     const response = await fetch(csvFilePath);
@@ -225,7 +272,7 @@
                                         tr.innerHTML = `
                                             <td>${domain}</td>
                                             <td>${count}</td>
-                                            <td>${totalDomains}</td>
+                                            <td>${total}</td>
                                         `;
                                         tableBody.appendChild(tr);
                                     });
@@ -245,7 +292,7 @@
                                     console.log("域统计: 内容超出，启动滚动。");
                                     // Duplicate content only if not already duplicated
                                     if (tableBody.offsetHeight <= tableContainer.clientHeight * 1.5) { // Simple check
-                                         tableBody.innerHTML += tableBody.innerHTML;
+                                        tableBody.innerHTML += tableBody.innerHTML;
                                     }
                                     startScrollingInterval();
                                 } else {
@@ -277,17 +324,19 @@
 
                         })(); // End of IIFE
                     </script>
-                    </div>
+                </div>
             </div>
 
             <div class="visual_conBot" style="height: 38%; margin-top: 2%">
-                <div class="visual_chart_text"><h1>实时流量流动</h1></div>
+                <div class="visual_chart_text">
+                    <h1>实时流量流动</h1>
+                </div>
                 <div class="visual_chart" id="mainBottom"></div>
             </div>
         </div>
 
         <div class="visual_right">
-             <div class="visual_box" style="height: 50%">
+            <div class="visual_box" style="height: 50%">
                 <div class="listbox fl">
                     <div class="t_line_box"><i class="t_l_line"></i><i class="l_t_line"></i></div>
                     <div class="t_line_box"><i class="t_r_line"></i><i class="r_t_line"></i></div>
@@ -298,7 +347,13 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 14%">源IP</th><th style="width: 14%">目的IP</th><th style="width: 14%">端口号</th><th style="width: 14%">协议类型</th><th style="width: 14%">25%分位数</th><th style="width: 20%">50%分位数</th><th style="width: 10%">75%分位数</th>
+                                    <th style="width: 14%">源IP</th>
+                                    <th style="width: 14%">目的IP</th>
+                                    <th style="width: 14%">端口号</th>
+                                    <th style="width: 14%">协议类型</th>
+                                    <th style="width: 14%">25%分位数</th>
+                                    <th style="width: 20%">50%分位数</th>
+                                    <th style="width: 10%">75%分位数</th>
                                 </tr>
                             </thead>
                             <tbody id="table3"></tbody>
@@ -317,7 +372,13 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 14%">协议类型</th><th style="width: 14%">实时速率</th><th style="width: 14%">平均速率</th><th style="width: 14%">最大速率</th><th style="width: 14%">最小速率</th><th style="width: 20%">总流量</th><th style="width: 10%">标准差</th>
+                                    <th style="width: 14%">协议类型</th>
+                                    <th style="width: 14%">实时速率</th>
+                                    <th style="width: 14%">平均速率</th>
+                                    <th style="width: 14%">最大速率</th>
+                                    <th style="width: 14%">最小速率</th>
+                                    <th style="width: 20%">总流量</th>
+                                    <th style="width: 10%">标准差</th>
                                 </tr>
                             </thead>
                             <tbody id="table4"></tbody>
@@ -335,13 +396,14 @@
             tooltip: { trigger: "axis", axisPointer: { lineStyle: { color: "#fff" } }, },
             legend: { icon: "rect", itemWidth: 14, itemHeight: 5, itemGap: 10, data: ["总流量", "上行流量", "下行流量"], right: "10px", top: "0px", textStyle: { fontSize: 12, color: "#fff" }, },
             grid: { x: 45, y: 35, x2: 30, y2: 90 },
-            xAxis: [ { type: "category", boundaryGap: false, axisLine: { lineStyle: { color: "#57617B" } }, axisLabel: { textStyle: { color: "#fff" } }, data: [], /* Data will be loaded by your other JS */ }, ],
-            yAxis: [ { type: "value", axisTick: { show: false, }, axisLine: { lineStyle: { color: "#57617B" } }, axisLabel: { margin: 10, textStyle: { fontSize: 12, color: "#fff" }, formatter: "{value}MB", }, splitLine: { lineStyle: { color: "#57617B" } }, }, { type: "value", axisTick: { show: false, }, axisLine: { lineStyle: { color: "#57617B" } }, axisLabel: { margin: 10, textStyle: { fontSize: 12, color: "rgba(0,0,0,0)" }, formatter: "{value}MB", }, splitLine: { lineStyle: { color: "#57617B" } }, }, ],
-            series: [ { name: "总流量", type: "line", smooth: true, lineStyle: { normal: { width: 2 } }, yAxisIndex: 0, areaStyle: { normal: { color: new echarts.graphic.LinearGradient( 0, 0, 0, 1, [ { offset: 0, color: "rgba(196, 13, 68, 0.3)", }, { offset: 0.8, color: "rgba(185,150,248,0)", }, ], false ), shadowColor: "rgba(0, 0, 0, 0.1)", shadowBlur: 10, }, }, itemStyle: { normal: { color: "#c40d44" } }, data: [], /* Data will be loaded */ }, { name: "上行流量", type: "line", smooth: true, lineStyle: { normal: { width: 2 } }, yAxisIndex: 1, areaStyle: { normal: { color: new echarts.graphic.LinearGradient( 0, 0, 0, 1, [ { offset: 0, color: "rgba(3, 194, 236, 0.3)", }, { offset: 0.8, color: "rgba(3, 194, 236, 0)", }, ], false ), shadowColor: "rgba(0, 0, 0, 0.1)", shadowBlur: 10, }, }, itemStyle: { normal: { color: "#03C2EC" } }, data: [], /* Data will be loaded */ }, { name: "下行流量", type: "line", smooth: true, lineStyle: { normal: { width: 2 } }, yAxisIndex: 1, areaStyle: { normal: { color: new echarts.graphic.LinearGradient( 0, 0, 0, 1, [ { offset: 0, color: "rgba(218, 57, 20, 0.3)", }, { offset: 0.8, color: "rgba(218, 57, 20, 0)", }, ], false ), shadowColor: "rgba(0, 0, 0, 0.1)", shadowBlur: 10, }, }, itemStyle: { normal: { color: "#DA3914" } }, data: [], /* Data will be loaded */ }, ],
+            xAxis: [{ type: "category", boundaryGap: false, axisLine: { lineStyle: { color: "#57617B" } }, axisLabel: { textStyle: { color: "#fff" } }, data: [], /* Data will be loaded by your other JS */ },],
+            yAxis: [{ type: "value", axisTick: { show: false, }, axisLine: { lineStyle: { color: "#57617B" } }, axisLabel: { margin: 10, textStyle: { fontSize: 12, color: "#fff" }, formatter: "{value}MB", }, splitLine: { lineStyle: { color: "#57617B" } }, }, { type: "value", axisTick: { show: false, }, axisLine: { lineStyle: { color: "#57617B" } }, axisLabel: { margin: 10, textStyle: { fontSize: 12, color: "rgba(0,0,0,0)" }, formatter: "{value}MB", }, splitLine: { lineStyle: { color: "#57617B" } }, },],
+            series: [{ name: "总流量", type: "line", smooth: true, lineStyle: { normal: { width: 2 } }, yAxisIndex: 0, areaStyle: { normal: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: "rgba(196, 13, 68, 0.3)", }, { offset: 0.8, color: "rgba(185,150,248,0)", },], false), shadowColor: "rgba(0, 0, 0, 0.1)", shadowBlur: 10, }, }, itemStyle: { normal: { color: "#c40d44" } }, data: [], /* Data will be loaded */ }, { name: "上行流量", type: "line", smooth: true, lineStyle: { normal: { width: 2 } }, yAxisIndex: 1, areaStyle: { normal: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: "rgba(3, 194, 236, 0.3)", }, { offset: 0.8, color: "rgba(3, 194, 236, 0)", },], false), shadowColor: "rgba(0, 0, 0, 0.1)", shadowBlur: 10, }, }, itemStyle: { normal: { color: "#03C2EC" } }, data: [], /* Data will be loaded */ }, { name: "下行流量", type: "line", smooth: true, lineStyle: { normal: { width: 2 } }, yAxisIndex: 1, areaStyle: { normal: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: "rgba(218, 57, 20, 0.3)", }, { offset: 0.8, color: "rgba(218, 57, 20, 0)", },], false), shadowColor: "rgba(0, 0, 0, 0.1)", shadowBlur: 10, }, }, itemStyle: { normal: { color: "#DA3914" } }, data: [], /* Data will be loaded */ },],
         };
         myChart.setOption(option);
         window.addEventListener("resize", function () { myChart.resize(); });
     </script>
 
 </body>
+
 </html>
