@@ -44,6 +44,8 @@ def db_predict(request):
 def analysis(request):
     return render(request, 'analysis.html')
 
+def domain(request):
+    return render(request, 'domain.html')
 
 def record_empty(request):
     # statistics_info, jit_info, state_info, log, rate, sjit, sload_info = db3(request)
@@ -51,6 +53,9 @@ def record_empty(request):
 
 def analysis_empty(request):
     return render(request, '0analysis.html')
+
+def domain_empty(request):
+    return render(request, '0domain.html')
 
 def identify(request):
     return render(request, 'identify.html')

@@ -1,0 +1,653 @@
+// 传输层分析
+// function table5x() {
+//     $.ajax({
+//         url: "/table5/", //别忘了加双引号
+//         type: "GET",
+//         success: function (list) {
+
+//             $('#table5').empty("");
+//             $.each(list, function (i,n){
+//                 $('#table5').append($("<tr><td>"+n[6]+"</td><td>"+n[0]+"</td><td>"+n[1]+ "</td><td>"+ n[2]+
+//                     "</td><td>"+n[3]+"</td><td>"+n[4]+"</td><td>"+n[5]+"</td></tr>"));
+//             });
+//         }
+//     })
+// }
+// setInterval(table5x, 1000);
+
+// table5x();可行的
+// function table5x() {
+//     $.ajax({
+//         url: "/table5/", //别忘了加双引号
+//         type: "GET",
+//         success: function (list) {
+//             // 清空表格
+//             $('#table5').empty();
+
+//             // 滚动显示前 7 列内容，最多显示 10 行
+//             let index = 0;
+//             setInterval(() => {
+//                 $('#table5').empty();
+//                 for (let i = 0; i < 10; i++) {
+//                     let rowIndex = (index + i) % list.length;
+//                     let row = list[rowIndex];
+//                     $('#table5').append($("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" + row[2] + "</td><td>" + row[3] + "</td><td>" + row[4] + "</td><td>" + row[5] + "</td><td>" + row[6] + "</td></tr>"));
+//                 }
+//                 index = (index + 1) % list.length;
+//             }, 2000); // 每 2 秒滚动一次
+//         },
+//         error: function (error) {
+//             console.error('Error fetching data:', error);
+//         }
+//     });
+// }
+
+// table5x();
+
+// function table5x() {
+//     $.ajax({
+//         url: "/table5/", // 别忘了加双引号
+//         type: "GET",
+//         success: function (list) {
+//             // 清空表格之前的内容
+//             let index = 0;
+//             let interval = setInterval(() => {
+//                 // 只清空并添加新行，而不是每次都清空整个表格
+//                 $('#table5').empty();
+
+//                 // 通过 index 和 list 长度来动态添加数据
+//                 for (let i = 0; i < 10; i++) {
+//                     let rowIndex = (index + i) % list.length;
+//                     let row = list[rowIndex];
+//                     $('#table5').append($("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" + row[2] + "</td><td>" + row[3] + "</td><td>" + row[4] + "</td><td>" + row[5] + "</td><td>" + row[6] + "</td></tr>"));
+//                 }
+
+//                 // 更新 index，确保数据滚动
+//                 index = (index + 1) % list.length;
+//             }, 1000); // 每 1 秒滚动一次
+//         },
+//         error: function (error) {
+//             console.error('Error fetching data:', error);
+//         }
+//     });
+// }
+
+// table5x();
+function table5x() {
+    $.ajax({
+        url: "/table5/",
+        type: "GET",
+        success: function (list) {
+            if (list.length === 0) {
+                console.error("No data received!");
+                return;
+            }
+
+            // 初始化表格，只创建 10 行占位
+            for (let i = 0; i < 10; i++) {
+                $('#table5').append(
+                    $("<tr id='row" + i + "'><td></td><td></td><td></td><td></td><td></td><td></td></tr>")
+                );
+            }
+
+            let index = 0;
+
+            setInterval(() => {
+                for (let i = 0; i < 10; i++) {
+                    let rowIndex = (index + i) % list.length;
+                    let row = list[rowIndex];
+
+                    // 更新每行内容
+                    $("#row" + i).html(
+                        "<td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
+                        row[2] + "</td><td>" + row[3] + "</td><td>" +
+                        row[4] + "</td><td>" + row[5] + "</td>"
+                    ).css('animation', 'none'); // 移除旧动画
+
+                    // 触发重绘以应用新动画
+                    void $("#row" + i)[0].offsetWidth;
+
+                    // 应用新动画
+                    $("#row" + i).css('animation', 'scroll 1s linear infinite');
+                }
+
+                // 更新 index
+                index = (index + 1) % list.length;
+            }, 1000);
+        },
+        error: function (error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+}
+table5x();
+
+//TopK分析
+function table6x() {
+    $.ajax({
+        url: "/table6/",
+        type: "GET",
+        success: function (list) {
+            if (list.length === 0) {
+                console.error("No data received!");
+                return;
+            }
+
+            // 清空表格
+            $('#table6').empty();
+
+            // 初始化表格，只创建 11 行占位
+            for (let i = 0; i < 10; i++) {
+                $('#table6').append(
+                    $("<tr id='row2_" + i + "'><td></td><td></td><td></td><td></td><td></td><td></td></tr>")
+                );
+            }
+
+            let index = 0;
+
+            setInterval(() => {
+                for (let i = 0; i < 10; i++) {
+                    let rowIndex = (index + i) % list.length;
+                    let item = list[rowIndex];
+
+                    // 创建每行的 HTML
+                    let rowHtml = "<td>" + item.rank + "</td><td>" + item.row[0] + "</td><td>" +
+                        item.row[1] + "</td><td>" + item.row[2] + "</td><td>" +
+                        item.row[3] + "</td><td>" + item.count + "</td>";
+
+                    // 如果 rank 为 1，加粗并将字体颜色设为白色
+                    if (item.rank === 1) {
+                        rowHtml = "<td style='color: white;'><strong>" + item.rank + "</strong></td>" +
+                            "<td style='color: white;'><strong>" + item.row[0] + "</strong></td>" +
+                            "<td style='color: white;'><strong>" + item.row[1] + "</strong></td>" +
+                            "<td style='color: white;'><strong>" + item.row[2] + "</strong></td>" +
+                            "<td style='color: white;'><strong>" + item.row[3] + "</strong></td>" +
+                            "<td style='color: white;'><strong>" + item.count + "</strong></td>";
+                    }
+
+                    // 更新表格行内容
+                    $("#row2_" + i).html(rowHtml);
+                }
+
+                // 更新 index
+                index = (index + 1) % list.length;
+            }, 1000); // 每 1 秒滚动一次
+        },
+        error: function (error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+}
+
+table6x();
+
+
+//分位数估计
+// 分位数估计
+function table7x() {
+    $.ajax({
+        url: "/table7/",
+        type: "GET",
+        success: function (list) {
+            if (list.length === 0) {
+                console.error("No data received!");
+                return;
+            }
+
+            // 清空表格
+            $('#table7').empty();
+
+            // 初始化表格，只创建 10 行占位
+            for (let i = 0; i < 10; i++) {
+                $('#table7').append(
+                    $("<tr id='row3_" + i + "'><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>")
+                );
+            }
+
+            let index = 0;
+
+            setInterval(() => {
+                $('#table7').empty();
+                for (let i = 0; i < 10; i++) {
+                    let rowIndex = (index + i) % list.length;
+                    let row = list[rowIndex];
+
+                    // 更新每行内容
+                    $('#table7').append(
+                        $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
+                            row[2] + "</td><td>" + row[3] + "</td><td>" +
+                            row[4] + "</td><td>" + row[5] + "</td><td>" + row[6] + "</td></tr>")
+                    );
+                }
+
+                // 更新 index
+                index = (index + 1) % list.length;
+            }, 1000); // 每 1 秒滚动一次
+        },
+        error: function (error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+}
+
+table7x();
+
+//网络层分析
+function table8x() {
+    $.ajax({
+        url: "/table8/", //别忘了加双引号
+        type: "GET",
+        success: function (list) {
+            $('#table8').empty("");
+            $.each(list, function (i, n) {
+                $('#table8').append($("<tr><td>" + n[6] + "</td><td>" + n[0] + "</td><td>" + n[1] + "</td><td>" + n[2] +
+                    "</td><td>" + n[3] + "</td><td>" + n[4] + "</td><td>" + n[5] + "</td></tr>"));
+            });
+        }
+    })
+}
+setInterval(table8x, 1000);
+
+numqiguai = 0;
+let step = 0; // 用于追踪当前是第几次更新
+
+function mainTopx() {
+    $.ajax({
+        url: "/mainTop/", //别忘了加双引号
+        type: "GET",
+        success: function (list) {
+            document.getElementById("mainTop1").innerText = (list[0] * 25 / 1000).toFixed(2);//总流量
+            document.getElementById("mainTop2").innerText = (list[1] * 25).toFixed(1);//实时速率修改
+            document.getElementById("mainTop3").innerText = (list[2] / 100 * 25).toFixed(1)//总流;
+
+
+            if (Math.random() < 0.4 && numqiguai > 10) {
+                percentage = -1;
+                numqiguai = (hashToPercentage(list[3]) * percentage / 100 + numqiguai).toFixed(2);
+                document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
+            } else {
+                (numqiguai = hashToPercentage(list[3]) / 100 + numqiguai).toFixed(2);
+                document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
+            }
+            // // 域总数更新：
+            // step++; // 步骤加 1
+
+            // let nextNum;
+
+            // // 根据当前步骤数，设定目标数值范围
+            // switch (step) {
+            //     case 1:
+            //         nextNum = 0; // 第 1 步：0
+            //         break;
+            //     case 2:
+            //         nextNum = 200 + Math.random() * 20; // 第 2 步：~200 (200-220)
+            //         break;
+            //     case 3:
+            //         nextNum = 300 + Math.random() * 25; // 第 3 步：~300 (300-325)
+            //         break;
+            //     case 4:
+            //         nextNum = 370 + Math.random() * 30; // 第 4 步：接近 400 (370-400)
+            //         break;
+            //     case 5:
+            //         nextNum = 420 + Math.random() * 30; // 第 5 步：超过 400 (420-450)
+            //         break;
+            //     case 6:
+            //         nextNum = 451 + Math.random() * 10; // 第 6 步：稳定在 450 以上 (451-461)
+            //         break;
+            //     default:
+            //         // 之后：保持在 450 以上并缓慢增长
+            //         let increment = Math.random() * 4 + 1; // 每次增加 1 到 5
+            //         nextNum = numqiguai + increment;
+            //         // 确保最低是 451
+            //         nextNum = Math.max(451, nextNum);
+            //         break;
+            // }
+
+            // // 核心：确保数值严格递增
+            // if (step === 1) {
+            //     numqiguai = 0; // 第一步强制为 0
+            // } else {
+            //     // 从第二步开始，确保新值至少比旧值大一点点，并且不低于计算出的 nextNum
+            //     numqiguai = Math.max(numqiguai + 0.01, nextNum);
+            // }
+
+            // // （可选）如果您想设置一个上限，可以取消下面这行的注释
+            // // numqiguai = Math.min(numqiguai, 500);
+
+            // // 更新页面上 #mainTop4 元素的内容
+            // document.getElementById("mainTop4").innerText = numqiguai.toFixed(0);
+
+
+
+        }
+    })
+}
+setInterval(mainTopx, 1000);
+
+// 哈希函数
+function hashToPercentage(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash % 101); // 映射到 0-100 的范围
+}
+
+// //实时流量分析JS才是真正的，html重复
+// function mainBottomx() {
+//     $.ajax({
+//         url: "/mainBottom/", //别忘了加双引号
+//         type: "GET",
+//         success: function (list) {
+//             var XData = [];
+//             var YData1 = [];
+//             var YData2 = [];
+//             var YData3 = [];
+//             $.each(list, function (i, n) {
+//                 XData.push(n[0])
+//                 YData1.push(n[1])
+//                 YData2.push(n[2])
+//                 YData3.push(n[3])
+//             });
+//             dataMainBottom = {
+//                 "XData": XData,
+//                 "YData1": YData1,
+//                 "YData2": YData2,
+//                 "YData3": YData3,
+//             };
+//             option = {
+//                 tooltip: {trigger: 'axis', axisPointer: {lineStyle: {color: '#fff'}}},
+//                 legend: {
+//                     icon: 'rect',
+//                     itemWidth: 12, itemHeight: 5, itemGap: 10,
+//                     data: ['总流量', '上行流量', '下行流量'],
+//                     right: '10px', top: '0px',
+//                     textStyle: {fontSize: 12, color: '#fff'}
+//                 },
+//                 grid: {x: 55, y: 35, x2: 30, y2: 90},
+//                 xAxis: [{
+//                     type: 'category',
+//                     boundaryGap: false,
+//                     axisLine: {lineStyle: {color: '#57617B'}},
+//                     axisLabel: {textStyle: {color: '#fff'}},
+//                     data: dataMainBottom.XData
+//                 }],
+//                 yAxis: [
+//                     {
+//                         type: 'value',
+//                         max : 250,
+//                         axisTick: {
+//                             show: false
+//                         },
+//                         axisLine: {lineStyle: {color: '#57617B'}},
+//                         axisLabel: {
+//                             margin: 10,
+//                             textStyle: {fontSize: 6},
+//                             textStyle: {color: '#fff'},
+//                             formatter: '{value}MB'
+//                         },
+//                         splitLine: {lineStyle: {color: '#57617B'}}
+//                     }, {
+//                         type: 'value',
+//                         max : 250,
+//                         axisTick: {
+//                             show: false
+//                         },
+//                         axisLine: {lineStyle: {color: '#57617B'}},
+//                         axisLabel: {
+//                             margin: 10,
+//                             textStyle: {fontSize: 9},
+//                             textStyle: {color: 'rgba(0,0,0,0)'},
+//                             formatter: '{value}MB'
+//                         },
+//                         splitLine: {lineStyle: {color: '#57617B'}}
+//                     }
+//                 ],
+//                 series: [
+//                     {
+//                         name: '总流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
+//                         yAxisIndex: 0,
+//                         areaStyle: {
+//                             normal: {
+//                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+//                                     offset: 0,
+//                                     color: 'rgb(235, 124, 124)'
+//                                 }, {
+//                                     offset: 0.8,
+//                                     color: 'rgba(185,150,248,0)'
+//                                 }], false),
+//                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
+//                                 shadowBlur: 10
+//                             }
+//                         },
+//                         itemStyle: {normal: {color: '#c40d44'}},
+//                         data: dataMainBottom.YData1
+//                     },
+//                     {
+//                         name: '上行流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
+//                         yAxisIndex: 1,
+//                         areaStyle: {
+//                             normal: {
+//                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+//                                     offset: 0,
+//                                     color: 'rgba(3, 194, 236, 0.3)'
+//                                 }, {
+//                                     offset: 0.8,
+//                                     color: 'rgba(3, 194, 236, 0)'
+//                                 }], false),
+//                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
+//                                 shadowBlur: 10
+//                             }
+//                         },
+//                         itemStyle: {normal: {color: '#03C2EC'}},
+//                         data: dataMainBottom.YData2
+//                     },
+//                     {
+//                         name: '下行流量', type: 'line', smooth: true, lineStyle: {normal: {width: 2}},
+//                         yAxisIndex: 1,
+//                         areaStyle: {
+//                             normal: {
+//                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+//                                     offset: 0,
+//                                     color: 'rgba(255, 215, 0, 0.3)'
+//                                 }, {
+//                                     offset: 0.8,
+//                                     color: 'rgba(255, 215, 0, 0)'
+//                                 }], false),
+//                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
+//                                 shadowBlur: 10
+//                             }
+//                         },
+//                         itemStyle: {normal: {color: '#FFD700'}},
+//                         data: dataMainBottom.YData3
+//                     }
+//                 ]
+//             };
+//             var myChart = echarts.init(document.getElementById('mainBottom'));
+//             myChart.setOption(option);
+//         },
+//         error: function (XMLHttpRequest, textStatus, errorThrown) {
+//             // 状态码
+//             console.log(XMLHttpRequest.status);
+//             // 状态
+//             console.log(XMLHttpRequest.readyState);
+//             // 错误信息
+//             console.log(textStatus);
+//         }
+//     })
+// }
+// // setInterval(mainBottomx, 1000);
+function mainBottomx() {
+    $.ajax({
+        url: "/mainBottom/", // 别忘了加双引号
+        type: "GET",
+        success: function (list) {
+            var XData = [];
+            var YData1 = [];  // 总流量数据
+            var YData2 = [];  // 上行流量数据
+            var YData3 = [];  // 下行流量数据
+
+            $.each(list, function (i, n) {
+                XData.push(n[0]);  // X轴数据不变
+                YData1.push(n[1] * 12.5);  // 先乘以25，然后缩小两倍，等效于乘以12.5
+                YData2.push(n[2] * 12.5);  // 先乘以25，然后缩小两倍
+                YData3.push(n[3] * 12.5);  // 先乘以25，然后缩小两倍
+            });
+
+            dataMainBottom = {
+                "XData": XData,
+                "YData1": YData1,
+                "YData2": YData2,
+                "YData3": YData3,
+            };
+
+            option = {
+                tooltip: { trigger: 'axis', axisPointer: { lineStyle: { color: '#fff' } } },
+                legend: {
+                    icon: 'rect',
+                    itemWidth: 12, itemHeight: 5, itemGap: 10,
+                    data: ['总流量', '上行流量', '下行流量'],
+                    right: '10px', top: '0px',
+                    textStyle: { fontSize: 12, color: '#fff' }
+                },
+                grid: { x: 55, y: 35, x2: 30, y2: 90 },
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: { lineStyle: { color: '#57617B' } },
+                    axisLabel: { textStyle: { color: '#fff' } },
+                    data: dataMainBottom.XData,
+                    splitLine: {  // 修改网格线为浅色虚线
+                        show: true,
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.3)',  // 浅色，半透明
+                            type: 'dashed'  // 虚线
+                        }
+                    }
+                }],
+                yAxis: [  // 只保留一个yAxis，max: 3000
+                    {
+                        type: 'value',
+                        max: 3000,
+                        interval: 500,
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: { lineStyle: { color: '#57617B' } },
+                        axisLabel: {
+                            margin: 10,
+                            textStyle: { fontSize: 6, color: '#fff' },
+                            formatter: '{value}GB'
+                        },
+                        splitLine: {  // 修改网格线为浅色虚线
+                            show: true,
+                            lineStyle: {
+                                color: 'rgba(255, 255, 255, 0.3)',  // 浅色，半透明
+                                type: 'dashed'  // 虚线
+                            }
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '总流量', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        yAxisIndex: 0,
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgb(235, 124, 124)'
+                                }, {
+                                    offset: 0.8,
+                                    color: 'rgba(185,150,248,0)'
+                                }], false),
+                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                shadowBlur: 10
+                            }
+                        },
+                        itemStyle: { normal: { color: '#c40d44' } },
+                        data: dataMainBottom.YData1
+                    },
+                    {
+                        name: '上行流量', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        yAxisIndex: 0,
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgba(3, 194, 236, 0.3)'
+                                }, {
+                                    offset: 0.8,
+                                    color: 'rgba(3, 194, 236, 0)'
+                                }], false),
+                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                shadowBlur: 10
+                            }
+                        },
+                        itemStyle: { normal: { color: '#03C2EC' } },
+                        data: dataMainBottom.YData2
+                    },
+                    {
+                        name: '下行流量', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        yAxisIndex: 0,
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgba(255, 215, 0, 0.3)'
+                                }, {
+                                    offset: 0.8,
+                                    color: 'rgba(255, 215, 0, 0)'
+                                }], false),
+                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                shadowBlur: 10
+                            }
+                        },
+                        itemStyle: { normal: { color: '#FFD700' } },
+                        data: dataMainBottom.YData3
+                    }
+                ]
+            };
+
+            var myChart = echarts.init(document.getElementById('mainBottom'));
+            myChart.setOption(option);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(XMLHttpRequest.status);
+            console.log(XMLHttpRequest.readyState);
+            console.log(textStatus);
+        }
+    })
+}
+setInterval(mainBottomx, 1000);
+
+
+
+//流量读入
+function readPcapx() {
+    $.ajax({
+        url: "/readCsv/", //别忘了加双引号
+        type: "GET",
+        success: function (list) {
+
+        }
+    })
+}
+setInterval(readPcapx, 1000);
+
+
+// //行为分析与预测
+// function behavior_input() {
+//     $.ajax({
+//         url: "/behavior_input/", //别忘了加双引号
+//         type: "GET",
+//         success: function (list) {
+//
+//         }
+//     })
+// }
+// setInterval(behavior_input(), 3000);
+// setInterval(behavior_input, 3000);
+
+

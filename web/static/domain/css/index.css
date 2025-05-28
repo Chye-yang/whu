@@ -1,0 +1,129 @@
+.listbox{
+    width: 100%;
+    height: 95%;
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid #2C58A6;
+    box-shadow: 0 0 10px #2C58A6;
+    margin-bottom: 5%;
+}
+.t_line_box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.t_line_box i{
+    background-color: #4788fb;
+    box-shadow: 0 0 10px #4788fb;
+    position: absolute;
+}
+.l_t_line{
+    width: 1.2%;
+    height: 25%;
+    left: -3px;
+    top: -3px;
+}
+.t_l_line{
+    height: 1.7%;
+    width: 20%;
+    left: -3px;
+    top: -3px;
+}
+.t_r_line{
+    height: 1.7%;
+    width: 20%;
+    right: -3px;
+    top: -3px;
+}
+.r_t_line{
+    width: 1.2%;
+    height: 25%;
+    right: -3px;
+    top: -3px;
+}
+.l_b_line{
+    width: 1.2%;
+    height: 25%;
+    left: -3px;
+    bottom: -3px;
+}
+.b_l_line{
+    height: 1.7%;
+    width: 20%;
+    left: -3px;
+    bottom: -3px;
+}
+.r_b_line{
+    width: 1.2%;
+    height: 25%;
+    right: -3px;
+    bottom: -3px;
+}
+.b_r_line{
+    height: 1.7%;
+    width: 20%;
+    right: -3px;
+    bottom: -3px;
+}
+.main_title{
+    width: 35.5%;
+    height: 35px;
+    line-height: 33px;
+    background-color: #2C58A6;
+    border-radius: 18px;
+    position: absolute;
+    top: -17px;
+    left:50%;
+    margin-left: -110px;
+    color:#fff;
+    font-size: 18px;
+    font-weight: 600;
+    box-sizing: border-box;
+    padding-left: 10%;
+}
+.main_table{
+    width: 100%;
+    margin-top: 25px;
+}
+.main_table table{
+    width: 100%;
+}
+.main_table thead tr{
+    height: 42px;
+}
+.main_table th{
+    font-size: 18px;
+    font-weight: 600;
+    color:#61d2f7;
+    text-align: center;
+}
+.main_table th:nth-child(1){
+
+}
+.main_table th:nth-child(2){
+
+}
+.main_table td{
+    color: #64e3c6;
+    font-size: 15px;
+    text-align: center;
+    height: 40px;
+}
+
+.main_table table{
+    width: 100%;
+}
+
+.main_table tbody tr:nth-child(1),
+.main_table tbody tr:nth-child(3),
+.main_table tbody tr:nth-child(5),
+.main_table tbody tr:nth-child(7),
+.main_table tbody tr:nth-child(9),
+.main_table tbody tr:nth-child(11),
+.main_table tbody tr:nth-child(13),
+.main_table tbody tr:nth-child(15){
+    background-color: #072951;
+    box-shadow:-10px 0px 15px #2C58A6 inset,   /*左边阴影*/
+    10px 0px 15px #2C58A6 inset;  /*右边阴影*/
+}
+

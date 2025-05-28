@@ -16,7 +16,7 @@ Including another URLconf
 from django.urls import re_path as url
 from django.contrib import admin
 from django.urls import path
-from model import views, identify, analysis, record
+from model import views, identify, analysis, record , domain
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,6 +40,22 @@ urlpatterns = [
     url(r'^mainBottom', analysis.mainBottom),
     url(r'^readPcap', analysis.readPcap),
     url(r'^readCsv/', analysis.readCsv),
+
+    # domain-紧跟上面的ana
+    url(r'^table5', domain.table5),
+    url(r'^table6', domain.table6),
+    url(r'^table7', domain.table7),
+    url(r'^table8', domain.table8),
+    url(r'^mainTop', domain.mainTop),
+    url(r'^mainBottom', domain.mainBottom),
+    url(r'^readPcap', domain.readPcap),
+    url(r'^readCsv/', domain.readCsv),
+
+    #domain
+    url(r'^$', views.domain_empty),
+    url(r'^domain', views.domain),
+    url(r'^0domain', views.domain_empty),
+
 
     # prediction
     # url(r'^chart1/', views.chart1),
