@@ -260,53 +260,62 @@ function mainTopx() {
             document.getElementById("mainTop2").innerText = (list[1] * 25).toFixed(1);//实时速率修改
             document.getElementById("mainTop3").innerText = (list[2] / 100 * 25).toFixed(1)//总流;
 
-            // 域总数更新：
-            step++; // 步骤加 1
 
-            let nextNum;
-
-            // 根据当前步骤数，设定目标数值范围
-            switch (step) {
-                case 1:
-                    nextNum = 0; // 第 1 步：0
-                    break;
-                case 2:
-                    nextNum = 200 + Math.random() * 20; // 第 2 步：~200 (200-220)
-                    break;
-                case 3:
-                    nextNum = 300 + Math.random() * 25; // 第 3 步：~300 (300-325)
-                    break;
-                case 4:
-                    nextNum = 370 + Math.random() * 30; // 第 4 步：接近 400 (370-400)
-                    break;
-                case 5:
-                    nextNum = 420 + Math.random() * 30; // 第 5 步：超过 400 (420-450)
-                    break;
-                case 6:
-                    nextNum = 451 + Math.random() * 10; // 第 6 步：稳定在 450 以上 (451-461)
-                    break;
-                default:
-                    // 之后：保持在 450 以上并缓慢增长
-                    let increment = Math.random() * 4 + 1; // 每次增加 1 到 5
-                    nextNum = numqiguai + increment;
-                    // 确保最低是 451
-                    nextNum = Math.max(451, nextNum);
-                    break;
-            }
-
-            // 核心：确保数值严格递增
-            if (step === 1) {
-                numqiguai = 0; // 第一步强制为 0
+            if (Math.random() < 0.4 && numqiguai > 10) {
+                percentage = -1;
+                numqiguai = (hashToPercentage(list[3]) * percentage / 100 + numqiguai).toFixed(2);
+                document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
             } else {
-                // 从第二步开始，确保新值至少比旧值大一点点，并且不低于计算出的 nextNum
-                numqiguai = Math.max(numqiguai + 0.01, nextNum);
+                (numqiguai = hashToPercentage(list[3]) / 100 + numqiguai).toFixed(2);
+                document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
             }
+            // // 域总数更新：
+            // step++; // 步骤加 1
 
-            // （可选）如果您想设置一个上限，可以取消下面这行的注释
-            // numqiguai = Math.min(numqiguai, 500);
+            // let nextNum;
 
-            // 更新页面上 #mainTop4 元素的内容
-            document.getElementById("mainTop4").innerText = numqiguai.toFixed(0);
+            // // 根据当前步骤数，设定目标数值范围
+            // switch (step) {
+            //     case 1:
+            //         nextNum = 0; // 第 1 步：0
+            //         break;
+            //     case 2:
+            //         nextNum = 200 + Math.random() * 20; // 第 2 步：~200 (200-220)
+            //         break;
+            //     case 3:
+            //         nextNum = 300 + Math.random() * 25; // 第 3 步：~300 (300-325)
+            //         break;
+            //     case 4:
+            //         nextNum = 370 + Math.random() * 30; // 第 4 步：接近 400 (370-400)
+            //         break;
+            //     case 5:
+            //         nextNum = 420 + Math.random() * 30; // 第 5 步：超过 400 (420-450)
+            //         break;
+            //     case 6:
+            //         nextNum = 451 + Math.random() * 10; // 第 6 步：稳定在 450 以上 (451-461)
+            //         break;
+            //     default:
+            //         // 之后：保持在 450 以上并缓慢增长
+            //         let increment = Math.random() * 4 + 1; // 每次增加 1 到 5
+            //         nextNum = numqiguai + increment;
+            //         // 确保最低是 451
+            //         nextNum = Math.max(451, nextNum);
+            //         break;
+            // }
+
+            // // 核心：确保数值严格递增
+            // if (step === 1) {
+            //     numqiguai = 0; // 第一步强制为 0
+            // } else {
+            //     // 从第二步开始，确保新值至少比旧值大一点点，并且不低于计算出的 nextNum
+            //     numqiguai = Math.max(numqiguai + 0.01, nextNum);
+            // }
+
+            // // （可选）如果您想设置一个上限，可以取消下面这行的注释
+            // // numqiguai = Math.min(numqiguai, 500);
+
+            // // 更新页面上 #mainTop4 元素的内容
+            // document.getElementById("mainTop4").innerText = numqiguai.toFixed(0);
 
 
 
