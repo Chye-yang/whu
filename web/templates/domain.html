@@ -100,7 +100,7 @@
             <i class="r_b_line"></i>
             <i class="b_r_line"></i>
           </div>
-          <div class="main_title">Per-Flow分析</div>
+          <div class="main_title">全局分析</div>
           <div class="main_table t_btn8">
             <table>
               <thead>
@@ -172,49 +172,60 @@
           </div>
         </div>
       </div>
-      <div class="visual_conTop">
+
+
+      <div class="visual_conTop" style="height: 15%; margin-top: 2%; margin-bottom: 2%; width: 100%;">
         <div class="visual_conTop_box visual_conTop1">
           <div>
             <h3>总流量</h3>
             <p id="mainTop1">0.0</p>
-            <div class="conTop_smil">
-              <a class="xd">TB</a>
-            </div>
+            <div class="conTop_smil"><a class="xd">TB</a></div>
           </div>
         </div>
         <div class="visual_conTop_box visual_conTop2">
           <div>
             <h3>实时速率</h3>
             <p id="mainTop2">0.0</p>
-            <div class="conTop_smil">
-              <a class="xd">Gbps</a>
-            </div>
+            <div class="conTop_smil"><a class="xd">Gbps</a></div>
           </div>
         </div>
         <div class="clear"></div>
       </div>
-      <div class="visual_conTop">
+      <div class="visual_conTop" style="height: 12%; margin-top: 2%; margin-bottom: 2%; width: 100%;">
         <div class="visual_conTop_box visual_conTop1">
           <div>
             <h3>总流统计</h3>
             <p id="mainTop3">0.0</p>
-            <div class="conTop_smil">
-              <a class="xd">千条</a>
-            </div>
+            <div class="conTop_smil"><a class="xd">千条</a></div>
+          </div>
+
+          <div>
+            <h3>总流统计2</h3>
+            <p id="mainTop3">0.0</p>
+            <div class="conTop_smil"><a class="xd">千条</a></div>
           </div>
         </div>
+
         <div class="visual_conTop_box visual_conTop2">
           <div>
-            <h3>全网熵值</h3>
+            <h3>域总数</h3>
             <p id="mainTop4">0.0</p>
-            <div class="conTop_smil">
-              <a class="xd">%</a>
-            </div>
+            <div class="conTop_smil"><a class="xd">个</a></div>
+          </div>
+          <div>
+
+            <h3>域总数2</h3>
+            <p id="mainTop4">0.0</p>
+            <div class="conTop_smil"><a class="xd">个</a></div>
           </div>
         </div>
         <div class="clear"></div>
       </div>
-      <div class="visual_conBot" style="height: 49%; margin-top: 2%">
+
+
+
+
+      <div class="visual_conBot" style="height: 47%; margin-top: 24%">
         <div class="visual_chart_text">
           <h1>实时流量流动</h1>
         </div>
@@ -232,7 +243,7 @@
           itemWidth: 14,
           itemHeight: 5,
           itemGap: 10,
-          data: ["总流量", "上行流量", "下行流量"],
+          data: ["江苏省", "河南省", "山东省"],
           right: "10px",
           top: "0px",
           textStyle: { fontSize: 12, color: "#fff" },
@@ -279,7 +290,7 @@
         ],
         series: [
           {
-            name: "总流量",
+            name: "江苏省",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -311,7 +322,7 @@
             data: 0,
           },
           {
-            name: "上行流量",
+            name: "河南省",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -343,7 +354,7 @@
             data: 0,
           },
           {
-            name: "下行流量",
+            name: "山东省",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -382,6 +393,8 @@
         myChart.resize();
       });
     </script>
+
+    <!-- 
     <div class="visual_right">
       <div class="visual_box" style="height: 50%">
         <div class="listbox fl">
@@ -461,9 +474,167 @@
           </div>
         </div>
       </div>
+    </div> -->
+    <div class="visual_right">
+      <div class="visual_box" style="height: 50%">
+        <div class="listbox fl">
+          <div class="t_line_box">
+            <i class="t_l_line"></i>
+            <i class="l_t_line"></i>
+          </div>
+          <div class="t_line_box">
+            <i class="t_r_line"></i>
+            <i class="r_t_line"></i>
+          </div>
+          <div class="t_line_box">
+            <i class="l_b_line"></i>
+            <i class="b_l_line"></i>
+          </div>
+          <div class="t_line_box">
+            <i class="r_b_line"></i>
+            <i class="b_r_line"></i>
+          </div>
+          <div class="main_title" style="padding-left: 7.5%; left: 55%; width: 30%">
+            江苏省
+          </div>
+          <div class="main_table t_btn8">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 25%">城市</th> <!-- 宽度调整为25%，以适应四列布局 -->
+                  <th style="width: 25%">entropy</th>
+                  <th style="width: 25%">Traffic总量占比</th>
+                  <th style="width: 25%">总比特数</th> <!-- 合并后的列 -->
+                </tr>
+              </thead>
+              <tbody id="table7">
+                <!-- 示例数据行，假设原数据需要合并分位数 -->
+                <tr>
+                  <td>示例源IP1</td> <!-- 源IP -->
+                  <td>示例目的IP1</td> <!-- 目的IP -->
+                  <td>示例端口号1</td> <!-- 端口号 -->
+                  <td>25%: 10, 50%: 20, 75%: 30</td> <!-- 合并分位数列，格式可根据实际数据调整 -->
+                </tr>
+                <tr>
+                  <td>示例源IP2</td>
+                  <td>示例目的IP2</td>
+                  <td>示例端口号2</td>
+                  <td>25%: 15, 50%: 25, 75%: 35</td>
+                </tr>
+                <!-- 更多行根据数据动态添加 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- 网络层分析部分保持不变 -->
+      <!--        
+      <div class="visual_box" style="height: 50%">
+        <div class="listbox fl">
+          <div class="t_line_box">
+            <i class="t_l_line"></i>
+            <i class="l_t_line"></i>
+          </div>
+          <div class="t_line_box">
+            <i class="t_r_line"></i>
+            <i class="r_t_line"></i>
+          </div>
+          <div class="t_line_box">
+            <i class="l_b_line"></i>
+            <i class="b_l_line"></i>
+          </div>
+          <div class="t_line_box">
+            <i class="r_b_line"></i>
+            <i class="b_r_line"></i>
+          </div>
+          <div class="main_title" style="padding-left: 12.5%; left: 53%">
+            网络层分析
+          </div>
+          <div class="main_table t_btn8">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 14%">协议类型</th>
+                  <th style="width: 14%">实时速率</th>
+                  <th style="width: 14%">平均速率</th>
+                  <th style="width: 14%">最大速率</th>
+                  <th style="width: 14%">最小速率</th>
+                  <th style="width: 20%">总流量</th>
+                  <th style="width: 10%">标准差</th>
+                </tr>
+              </thead>
+              <tbody id="table8"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="clear"></div>
-  </div>
+     -->
+      <div class="visual_box" style="height: 50%">
+        <div class="listbox fl">
+          <div class="t_line_box">
+            <i class="t_l_line"></i>
+            <i class="l_t_line"></i>
+          </div>
+          <div class="t_line_box">
+            <i class="t_r_line"></i>
+            <i class="r_t_line"></i>
+          </div>
+          <div class="t_line_box">
+            <i class="l_b_line"></i>
+            <i class="b_l_line"></i>
+          </div>
+          <div class="t_line_box">
+            <i class="r_b_line"></i>
+            <i class="b_r_line"></i>
+          </div>
+          <div class="main_title" style="padding-left: 7.5%; left: 55%; width: 30%">
+            沙东省
+          </div>
+          <div class="main_table t_btn8">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 25%">城市</th> <!-- 宽度调整为25%，以适应四列布局 -->
+                  <th style="width: 25%">entropy</th>
+                  <th style="width: 25%">Traffic总量占比</th>
+                  <th style="width: 25%">总比特数</th> <!-- 合并后的列 -->
+                </tr>
+              </thead>
+              <tbody id="table8">
+                <!-- 示例数据行，假设原数据需要合并分位数 -->
+                <tr>
+                  <td>示例源IP1</td> <!-- 源IP -->
+                  <td>示例目的IP1</td> <!-- 目的IP -->
+                  <td>示例端口号1</td> <!-- 端口号 -->
+                  <td>25%: 10, 50%: 20, 75%: 30</td> <!-- 合并分位数列，格式可根据实际数据调整 -->
+                </tr>
+                <tr>
+                  <td>示例源IP2</td>
+                  <td>示例目的IP2</td>
+                  <td>示例端口号2</td>
+                  <td>25%: 15, 50%: 25, 75%: 35</td>
+                </tr>
+                <!-- 更多行根据数据动态添加 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="clear"></div>
+    </div>
 
 </body>
 

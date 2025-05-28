@@ -193,73 +193,129 @@ $(document).ready(function() {
 
 
 //分位数估计
-// 分位数估计
+
 function table7x() {
     $.ajax({
-        url: "/table7/", // <--- 请求的 URL 是 /table7/
+        url: "/table7/",
         type: "GET",
         success: function (list) {
-            if (list.length === 0) {
-                console.error("No data received!");
+            if (!Array.isArray(list) || list.length === 0) {
+                console.error("No data received or data is not an array for table7!");
+                $('#table7').html('<tr><td colspan="4">暂无数据</td></tr>');
                 return;
             }
 
-            // 清空表格
-            $('#table7').empty(); // <--- 操作的表格 ID 是 #table7
-
-            // 初始化表格，只创建 10 行占位 (这部分其实会被立刻覆盖)
-            for (let i = 0; i < 10; i++) {
-                $('#table7').append( // <--- 操作的表格 ID 是 #table7
-                    $("<tr id='row3_" + i + "'><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>")
-                );
-            }
-
+            let tableBody = $('#table7');
             let index = 0;
+            const displayRows = 10;  // 可以调整
 
-            setInterval(() => {
-                $('#table7').empty(); // <--- 操作的表格 ID 是 #table7
-                for (let i = 0; i < 10; i++) {
-                    let rowIndex = (index + i) % list.length;
-                    let row = list[rowIndex];
-
-                    // 更新每行内容
-                    $('#table7').append( // <--- 操作的表格 ID 是 #table7
-                        // 这里期望后端返回的数据 (list) 中每行有 7 个元素 (row[0] 到 row[6])
-                        $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
-                            row[2] + "</td><td>" + row[3] + "</td><td>" +
-                            row[4] + "</td><td>" + row[5] + "</td><td>" + row[6] + "</td></tr>")
-                    );
+            let intervalId = setInterval(() => {
+                tableBody.empty();
+                if (list.length > 0) {
+                    for (let i = 0; i < displayRows; i++) {
+                        let rowIndex = (index + i) % list.length;
+                        let row = list[rowIndex];
+                        if (row && Array.isArray(row) && row.length >= 4) {
+                            tableBody.append(
+                                $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" + 
+                                    row[2] + "</td><td>" + row[3] + "</td></tr>")
+                            );
+                        } else {
+                            console.warn("Skipping invalid row:", row);
+                            tableBody.append('<tr><td colspan="4">数据无效</td></tr>');
+                        }
+                    }
+                    index = (index + 1) % list.length;
+                } else {
+                    tableBody.html('<tr><td colspan="4">暂无数据</td></tr>');
                 }
+            }, 1000);  // 间隔可调整
 
-                // 更新 index
-                index = (index + 1) % list.length;
-            }, 1000); // 每 1 秒滚动一次
+            // 清理定时器（可选）
+            $(window).on('beforeunload', () => clearInterval(intervalId));
         },
-        error: function (error) {
-            console.error('Error fetching data:', error);
+        error: function (xhr, status, error) {
+            console.error('Error fetching data for table7:', status, error);
+            $('#table7').html('<tr><td colspan="4">数据加载失败</td></tr>');
         }
     });
 }
 
-table7x();
+// 确保在 DOM 加载完成后执行
+$(document).ready(function() {
+    table7x(); // 调用函数开始加载和显示数据
+});
 
 
 
-//网络层分析
+// //网络层分析
+
+
 function table8x() {
     $.ajax({
-        url: "/table8/", //别忘了加双引号
+        url: "/table8/",
         type: "GET",
         success: function (list) {
-            $('#table8').empty("");
-            $.each(list, function (i, n) {
-                $('#table8').append($("<tr><td>" + n[6] + "</td><td>" + n[0] + "</td><td>" + n[1] + "</td><td>" + n[2] +
-                    "</td><td>" + n[3] + "</td><td>" + n[4] + "</td><td>" + n[5] + "</td></tr>"));
-            });
+            if (!Array.isArray(list) || list.length === 0) {
+                console.error("No data received or data is not an array for table8!");
+                $('#table8').html('<tr><td colspan="4">暂无数据</td></tr>');
+                return;
+            }
+
+            let tableBody = $('#table8');
+            let index = 0;
+            const displayRows = 10;  // 可以调整
+
+            let intervalId = setInterval(() => {
+                tableBody.empty();
+                if (list.length > 0) {
+                    for (let i = 0; i < displayRows; i++) {
+                        let rowIndex = (index + i) % list.length;
+                        let row = list[rowIndex];
+                        if (row && Array.isArray(row) && row.length >= 4) {
+                            tableBody.append(
+                                $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" + 
+                                    row[2] + "</td><td>" + row[3] + "</td></tr>")
+                            );
+                        } else {
+                            console.warn("Skipping invalid row:", row);
+                            tableBody.append('<tr><td colspan="4">数据无效</td></tr>');
+                        }
+                    }
+                    index = (index + 1) % list.length;
+                } else {
+                    tableBody.html('<tr><td colspan="4">暂无数据</td></tr>');
+                }
+            }, 1000);  // 间隔可调整
+
+            // 清理定时器（可选）
+            $(window).on('beforeunload', () => clearInterval(intervalId));
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching data for table8:', status, error);
+            $('#table8').html('<tr><td colspan="4">数据加载失败</td></tr>');
         }
-    })
+    });
 }
-setInterval(table8x, 1000);
+
+// 确保在 DOM 加载完成后执行
+$(document).ready(function() {
+    table8x(); // 调用函数开始加载和显示数据
+});
+// function table8x() {
+//     $.ajax({
+//         url: "/table8/", //别忘了加双引号
+//         type: "GET",
+//         success: function (list) {
+//             $('#table8').empty("");
+//             $.each(list, function (i, n) {
+//                 $('#table8').append($("<tr><td>" + n[6] + "</td><td>" + n[0] + "</td><td>" + n[1] + "</td><td>" + n[2] +
+//                     "</td><td>" + n[3] + "</td><td>" + n[4] + "</td><td>" + n[5] + "</td></tr>"));
+//             });
+//         }
+//     })
+// }
+// setInterval(table8x, 1000);
 
 numqiguai = 0;
 let step = 0; // 用于追踪当前是第几次更新
@@ -520,7 +576,7 @@ function mainBottomx() {
                 legend: {
                     icon: 'rect',
                     itemWidth: 12, itemHeight: 5, itemGap: 10,
-                    data: ['总流量', '上行流量', '下行流量'],
+                    data: ['江苏省', '河北省', '山东省'],
                     right: '10px', top: '0px',
                     textStyle: { fontSize: 12, color: '#fff' }
                 },
@@ -564,7 +620,7 @@ function mainBottomx() {
                 ],
                 series: [
                     {
-                        name: '总流量', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        name: '江苏省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
                         yAxisIndex: 0,
                         areaStyle: {
                             normal: {
@@ -583,7 +639,7 @@ function mainBottomx() {
                         data: dataMainBottom.YData1
                     },
                     {
-                        name: '上行流量', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        name: '河北省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
                         yAxisIndex: 0,
                         areaStyle: {
                             normal: {
@@ -602,7 +658,7 @@ function mainBottomx() {
                         data: dataMainBottom.YData2
                     },
                     {
-                        name: '下行流量', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        name: '山东省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
                         yAxisIndex: 0,
                         areaStyle: {
                             normal: {
