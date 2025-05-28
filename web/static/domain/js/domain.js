@@ -101,7 +101,7 @@ function table5x() {
                     $("#row" + i).html(
                         "<td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
                         row[2] + "</td><td>" + row[3] + "</td><td>" +
-                        row[4] + "</td><td>" + row[5] + "</td>"
+                        row[4]
                     ).css('animation', 'none'); // 移除旧动画
 
                     // 触发重绘以应用新动画
@@ -122,71 +122,81 @@ function table5x() {
 }
 table5x();
 
-//TopK分析
+//IP分析
+
+/**
+ * 从 /table6/ 获取数据并以滚动方式填充到 #table6 表格中。
+ */
 function table6x() {
     $.ajax({
-        url: "/table6/",
+        url: "/table6/", // <--- 修改: 请求 /table6/
         type: "GET",
         success: function (list) {
-            if (list.length === 0) {
-                console.error("No data received!");
+            // 检查返回的是否是数组以及是否有数据
+            if (!Array.isArray(list) || list.length === 0) {
+                console.error("No data received or data is not an array for table6!");
+                // 可以在表格中显示一条提示信息
+                $('#table6').html('<tr><td colspan="3">暂无数据</td></tr>'); 
                 return;
             }
 
-            // 清空表格
-            $('#table6').empty();
-
-            // 初始化表格，只创建 11 行占位
-            for (let i = 0; i < 10; i++) {
-                $('#table6').append(
-                    $("<tr id='row2_" + i + "'><td></td><td></td><td></td><td></td><td></td><td></td></tr>")
-                );
-            }
-
+            let tableBody = $('#table6'); // <--- 修改: 获取 #table6
             let index = 0;
+            const displayRows = 10; // 定义希望显示的行数 (可以根据您的界面调整)
 
+            // 设置定时器
             setInterval(() => {
-                for (let i = 0; i < 10; i++) {
-                    let rowIndex = (index + i) % list.length;
-                    let item = list[rowIndex];
+                tableBody.empty(); // 清空当前内容
 
-                    // 创建每行的 HTML
-                    let rowHtml = "<td>" + item.rank + "</td><td>" + item.row[0] + "</td><td>" +
-                        item.row[1] + "</td><td>" + item.row[2] + "</td><td>" +
-                        item.row[3] + "</td><td>" + item.count + "</td>";
+                // 循环显示指定行数的数据
+                for (let i = 0; i < displayRows; i++) {
+                    // 确保 list.length > 0 避免模运算错误
+                    if (list.length > 0) {
+                        let rowIndex = (index + i) % list.length;
+                        let row = list[rowIndex];
 
-                    // 如果 rank 为 1，加粗并将字体颜色设为白色
-                    if (item.rank === 1) {
-                        rowHtml = "<td style='color: white;'><strong>" + item.rank + "</strong></td>" +
-                            "<td style='color: white;'><strong>" + item.row[0] + "</strong></td>" +
-                            "<td style='color: white;'><strong>" + item.row[1] + "</strong></td>" +
-                            "<td style='color: white;'><strong>" + item.row[2] + "</strong></td>" +
-                            "<td style='color: white;'><strong>" + item.row[3] + "</strong></td>" +
-                            "<td style='color: white;'><strong>" + item.count + "</strong></td>";
+                        // 检查 row 是否有效且有 3 个元素
+                        if (row && row.length >= 3) {
+                             // <--- 修改: 创建 3 列的行
+                            tableBody.append(
+                                $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
+                                    row[2] + "</td></tr>")
+                            );
+                        } else {
+                             // 如果某行数据有问题，可以跳过或显示错误
+                             console.warn("Skipping invalid row:", row);
+                        }
                     }
-
-                    // 更新表格行内容
-                    $("#row2_" + i).html(rowHtml);
                 }
 
-                // 更新 index
-                index = (index + 1) % list.length;
-            }, 1000); // 每 1 秒滚动一次
+                // 更新起始索引，实现滚动
+                if (list.length > 0) {
+                   index = (index + 1) % list.length;
+                }
+            }, 1000); // 每 1 秒滚动一次 (您可以调整这个间隔)
         },
-        error: function (error) {
-            console.error('Error fetching data:', error);
+        error: function (xhr, status, error) {
+            console.error('Error fetching data for table6:', status, error);
+            // 可以在表格中显示错误信息
+             $('#table6').html('<tr><td colspan="3">数据加载失败</td></tr>');
         }
     });
 }
 
-table6x();
+// 确保在 DOM 加载完成后执行
+$(document).ready(function() {
+    table6x(); // 调用函数开始加载和显示数据
+});
+
+
+
 
 
 //分位数估计
 // 分位数估计
 function table7x() {
     $.ajax({
-        url: "/table7/",
+        url: "/table7/", // <--- 请求的 URL 是 /table7/
         type: "GET",
         success: function (list) {
             if (list.length === 0) {
@@ -195,11 +205,11 @@ function table7x() {
             }
 
             // 清空表格
-            $('#table7').empty();
+            $('#table7').empty(); // <--- 操作的表格 ID 是 #table7
 
-            // 初始化表格，只创建 10 行占位
+            // 初始化表格，只创建 10 行占位 (这部分其实会被立刻覆盖)
             for (let i = 0; i < 10; i++) {
-                $('#table7').append(
+                $('#table7').append( // <--- 操作的表格 ID 是 #table7
                     $("<tr id='row3_" + i + "'><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>")
                 );
             }
@@ -207,13 +217,14 @@ function table7x() {
             let index = 0;
 
             setInterval(() => {
-                $('#table7').empty();
+                $('#table7').empty(); // <--- 操作的表格 ID 是 #table7
                 for (let i = 0; i < 10; i++) {
                     let rowIndex = (index + i) % list.length;
                     let row = list[rowIndex];
 
                     // 更新每行内容
-                    $('#table7').append(
+                    $('#table7').append( // <--- 操作的表格 ID 是 #table7
+                        // 这里期望后端返回的数据 (list) 中每行有 7 个元素 (row[0] 到 row[6])
                         $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
                             row[2] + "</td><td>" + row[3] + "</td><td>" +
                             row[4] + "</td><td>" + row[5] + "</td><td>" + row[6] + "</td></tr>")
@@ -231,6 +242,8 @@ function table7x() {
 }
 
 table7x();
+
+
 
 //网络层分析
 function table8x() {

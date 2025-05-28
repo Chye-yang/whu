@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>哈哈哈哈</title>
+  <title>域统计</title>
   <!--设置是否为缩放模式 -->
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- 新 Bootstrap 核心 CSS 文件 -->
@@ -61,7 +61,8 @@
   <div class="bnt">
     <div class="topbnt_left fl">
       <ul>
-        <li class="active"><a href="analysis.html">流量测量</a></li>
+        <li class="unactive"><a href="analysis.html">流量测量</a></li>
+        <li class="active"><a href="domain.html">域统计</a></li>
         <li class="unactive"><a href="0record.html">异常检测</a></li>
       </ul>
     </div>
@@ -73,7 +74,7 @@
         </li>
       </ul>
     </div>
-</div>
+  </div>
 
 
 
@@ -104,12 +105,13 @@
             <table>
               <thead>
                 <tr>
-                  <th style="width: 14%">流ID</th>
+                  <!-- Rank,scrIP,Location_src,dstIP,Location_dst -->
+                  <th style="width: 14%">序号</th>
                   <th style="width: 14%">源IP</th>
+                  <th style="width: 14%">地区</th>
                   <th style="width: 14%">目的IP</th>
-                  <th style="width: 14%">源端口号</th>
-                  <th style="width: 20%">协议类型</th>
-                  <th style="width: 10%">包大小(B)</th>
+                  <th style="width: 20%">地区</th>
+                  <!-- <th style="width: 10%">包大小(B)</th> -->
                 </tr>
               </thead>
               <tbody id="table5"></tbody>
@@ -135,17 +137,14 @@
             <i class="r_b_line"></i>
             <i class="b_r_line"></i>
           </div>
-          <div class="main_title">Heavy Flow检测</div>
+          <div class="main_title">IP统计</div>
           <div class="main_table t_btn8">
             <table>
               <thead>
                 <tr>
-                  <th style="width: 14%">Rank</th>
-                  <th style="width: 14%">源IP</th>
-                  <th style="width: 14%">目的IP</th>
-                  <th style="width: 14%">源端口号</th>
-                  <th style="width: 14%">协议类型</th>
-                  <th style="width: 20%">计数情况</th>
+                  <th style="width: 14%">序号</th>
+                  <th style="width: 14%">IP网段</th>
+                  <th style="width: 14%">次数</th>
                 </tr>
               </thead>
               <tbody id="table6"></tbody>
@@ -460,7 +459,7 @@
               <tbody id="table8"></tbody>
             </table>
           </div>
-        </div>      
+        </div>
       </div>
     </div>
     <div class="clear"></div>

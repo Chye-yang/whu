@@ -90,7 +90,7 @@ from django.http import JsonResponse
 def table5(request):
     result = []
     try:
-        inputData = pd.read_csv("./data/ChangZhouData/0524/Result/perflow0524.csv")
+        inputData = pd.read_csv("./data/ChangZhouData/0524/Result/globle.csv")
         # inputData = pd.read_csv("web/data/ChangZhouData/perflow.csv")
         
 
@@ -99,11 +99,11 @@ def table5(request):
             result.append(
                 [
                     row[0],  # First column
-                    row[45],  # 46th column
-                    row[46],  # 47th column
-                    row[47],  # 48th column
-                    row[2],  # 3rd column
-                    row[7],  # 8th column
+                    row[1],  # 46th column
+                    row[2],  # 47th column
+                    row[3],  # 48th column
+                    row[4],  # 3rd column
+                    # row[5],  # 8th column
                 ]
             # result.append(
             #     [
@@ -125,45 +125,70 @@ def table5(request):
     return JsonResponse(result, safe=False)
 
 
-# TopK分析
-import pandas as pd
-from django.http import JsonResponse
-from collections import Counter
-
-
-def read_csv_in_chunks(file_path, chunk_size=20):
-    with open(file_path, mode="r", encoding="utf-8") as file:
-        csv_reader = csv.reader(file)
-        while True:
-            chunk = [next(csv_reader, None) for _ in range(chunk_size)]
-            chunk = [row for row in chunk if row]
-            if not chunk:
-                break
-            yield chunk
-
-
+# IP分析
+# import pandas as pd
+# from django.http import JsonResponse
+# from collections import Counter
 def table6(request):
-    counter = Counter()
+    """
+    从 CSV 文件读取 IP 和域名信息，返回前三列。
+    """
     result = []
-
     try:
-        # for chunk in read_csv_in_chunks("./data/demoCSV/expanded_selected_columns.csv"):
-        for chunk in read_csv_in_chunks("./data/ChangZhouData/0524/Result/topk0524.csv"):
+        # 建议使用 settings.BASE_DIR 构建绝对路径，例如:
+        # csv_path = os.path.join(settings.BASE_DIR, 'data', 'ChangZhouData', '0524', 'Result', 'IP_domain.csv')
+        # 这里暂时保留您的路径，但请注意它在生产环境中的可靠性
+        csv_path = "./data/ChangZhouData/0524/Result/IP_domain.csv" 
+        
+        inputData = pd.read_csv(csv_path)
 
+        # 确保 CSV 至少有 3 列
+        if inputData.shape[1] < 3:
+             return JsonResponse({"error": "CSV file does not have enough columns"}, status=500)
+
+        for index, row in inputData.iterrows():
+            # 提取前三列 (row[0], row[1], row[2])
+            result.append(
+                [
+                    row.iloc[0], # 使用 iloc[0] 更明确地按位置索引
+                    row.iloc[1], 
+                    row.iloc[2], 
+                ]
+            )
             
-            # topK分析文件
-            counter.update(tuple(row) for row in chunk)
-            top_6 = counter.most_common(45)  # 只获取前6个结果
-            for rank, (row, count) in enumerate(top_6, start=1):
-                result.append({"rank": rank, "row": row, "count": count})
     except FileNotFoundError:
-        return JsonResponse({"error": "CSV file not found"}, status=500)
+        return JsonResponse({"error": f"CSV file not found at: {csv_path}"}, status=500)
     except pd.errors.EmptyDataError:
         return JsonResponse({"error": "CSV file is empty"}, status=500)
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
 
     return JsonResponse(result, safe=False)
+
+# def table6(request):
+#     result = []
+#     try:
+#         inputData = pd.read_csv("./data/ChangZhouData/0524/Result/IP_domain.csv")
+#         # inputData = pd.read_csv("web/data/ChangZhouData/perflow.csv")
+        
+
+#         # 逐流分析源文件
+#         for index, row in inputData.iterrows():
+#             result.append(
+#                 [
+#                     row[0],  # First column
+#                     row[1],  # 46th column
+#                     row[2],
+#                 ]
+#             )
+#     except FileNotFoundError:
+#         return JsonResponse({"error": "CSV file not found"}, status=500)
+#     except pd.errors.EmptyDataError:
+#         return JsonResponse({"error": "CSV file is empty"}, status=500)
+#     except Exception as e:
+#         return JsonResponse({"error": str(e)}, status=500)
+
+#     return JsonResponse(result, safe=False)
 
 
 # 分位数估计
