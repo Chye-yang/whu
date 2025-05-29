@@ -497,69 +497,69 @@ def readPcap(request):
 # # 实时流量流动+网络层分析+数据采集+总流统计
 
 def readCsv(request):
-    flow = Flow()
-    inputData = pd.read_csv("./data/demoCSV/inputCSV5.csv")  # 保留原代码的inputData读取
-    start = random.randint(0, 1900)
-    end = start + random.randint(6, 10)
-    protocol_list = inputData.iloc[start:end, 2]  # 保留原逻辑
-    sbytes_list = inputData.iloc[start:end, 7]  # 原本的上行流量来源，现在可能被覆盖
-    dbytes_list = inputData.iloc[start:end, 8]  # 原本的下行流量来源，现在可能被覆盖
-    port_list = inputData.iloc[start:end, 45]  # 保留原逻辑
+    # flow = Flow()
+    # inputData = pd.read_csv("./data/demoCSV/inputCSV5.csv")  # 保留原代码的inputData读取
+    # start = random.randint(0, 1900)
+    # end = start + random.randint(6, 10)
+    # protocol_list = inputData.iloc[start:end, 2]  # 保留原逻辑
+    # sbytes_list = inputData.iloc[start:end, 7]  # 原本的上行流量来源，现在可能被覆盖
+    # dbytes_list = inputData.iloc[start:end, 8]  # 原本的下行流量来源，现在可能被覆盖
+    # port_list = inputData.iloc[start:end, 45]  # 保留原逻辑
     
-    # 新增：读取三个CSV文件作为新数据来源
-    totalFlowData = pd.read_csv("./data/demoCSV/JiangSu.csv")  # 新来源：总流量
-    outFlowData = pd.read_csv("./data/demoCSV/Shandong.csv")     # 新来源：上行流量
-    inputFlowData = pd.read_csv("./data/demoCSV/Henan.csv") # 新来源：下行流量
+    # # 新增：读取三个CSV文件作为新数据来源
+    # totalFlowData = pd.read_csv("./data/demoCSV/JiangSu.csv")  # 新来源：总流量
+    # outFlowData = pd.read_csv("./data/demoCSV/ShanDong.csv")     # 新来源：上行流量
+    # inputFlowData = pd.read_csv("./data/demoCSV/HeNan.csv") # 新来源：下行流量
     
-    # 随机选取新数据范围（保持与原代码一致的随机逻辑）
-    new_start = random.randint(0, len(totalFlowData) - 10)  # 假设新文件有足够行数
-    new_end = new_start + random.randint(6, 10)
+    # # 随机选取新数据范围（保持与原代码一致的随机逻辑）
+    # new_start = random.randint(0, len(totalFlowData) - 10)  # 假设新文件有足够行数
+    # new_end = new_start + random.randint(6, 10)
     
-    # 从新文件提取数据（假设结构类似原文件）
-    new_totalFlow_list = totalFlowData.iloc[new_start:new_end, 0]  # 假设第一列是总流量数据
-    new_outFlow_list = outFlowData.iloc[new_start:new_end, 0]     # 假设第一列是上行流量数据
-    new_inputFlow_list = inputFlowData.iloc[new_start:new_end, 0] # 假设第一列是下行流量数据
+    # # 从新文件提取数据（假设结构类似原文件）
+    # new_totalFlow_list = totalFlowData.iloc[new_start:new_end, 0]  # 假设第一列是总流量数据
+    # new_outFlow_list = outFlowData.iloc[new_start:new_end, 0]     # 假设第一列是上行流量数据
+    # new_inputFlow_list = inputFlowData.iloc[new_start:new_end, 0] # 假设第一列是下行流量数据
     
-    # 在循环中使用新数据源（仅替换flow.all、flow.outFlow和flow.inputFlow的计算）
-    for i in range(start, start + len(protocol_list)):  # 保留原循环范围
-        flowLen = sbytes_list[i] + dbytes_list[i]  # 保留原逻辑，但可能不被使用
-        if random.random() < 0.2:  # 保留原随机逻辑
-            if flowLen > 3000:
-                flowLen = random.randint(2700, 3000)
-        if sbytes_list[i] > 0:  # 保留原协议处理逻辑
-            if protocol_list[i] == 6:  # TCP
-                flow.tcp = flow.tcp + 1
-                flow.tcpv4 = flow.tcpv4 + 1  # 示例：保留冗余代码
-            elif protocol_list[i] == 17:  # UDP
-                flow.udp = flow.udp + 1
-                flow.udpv4 = flow.udpv4 + 1
-            # ... 其他原协议处理逻辑，全部保留
+    # # 在循环中使用新数据源（仅替换flow.all、flow.outFlow和flow.inputFlow的计算）
+    # for i in range(start, start + len(protocol_list)):  # 保留原循环范围
+    #     flowLen = sbytes_list[i] + dbytes_list[i]  # 保留原逻辑，但可能不被使用
+    #     if random.random() < 0.2:  # 保留原随机逻辑
+    #         if flowLen > 3000:
+    #             flowLen = random.randint(2700, 3000)
+    #     if sbytes_list[i] > 0:  # 保留原协议处理逻辑
+    #         if protocol_list[i] == 6:  # TCP
+    #             flow.tcp = flow.tcp + 1
+    #             flow.tcpv4 = flow.tcpv4 + 1  # 示例：保留冗余代码
+    #         elif protocol_list[i] == 17:  # UDP
+    #             flow.udp = flow.udp + 1
+    #             flow.udpv4 = flow.udpv4 + 1
+    #         # ... 其他原协议处理逻辑，全部保留
         
-        # 修改部分：使用新数据源更新flow.all、flow.outFlow和flow.inputFlow
-        # 这里假设new_totalFlow_list、new_outFlow_list和new_inputFlow_list的长度与原循环匹配
-        if i < len(new_totalFlow_list):  # 防止索引越界
-            flow.all = flow.all + new_totalFlow_list[i]  # 使用新总流量数据
-        if i < len(new_outFlow_list):
-            flow.outFlow = flow.outFlow + (new_outFlow_list[i] / SCALE)  # 使用新上行流量数据
-        if i < len(new_inputFlow_list):
-            flow.inputFlow = flow.inputFlow + (new_inputFlow_list[i] / SCALE)  # 使用新下行流量数据
+    #     # 修改部分：使用新数据源更新flow.all、flow.outFlow和flow.inputFlow
+    #     # 这里假设new_totalFlow_list、new_outFlow_list和new_inputFlow_list的长度与原循环匹配
+    #     if i < len(new_totalFlow_list):  # 防止索引越界
+    #         flow.all = flow.all + new_totalFlow_list[i]  # 使用新总流量数据
+    #     if i < len(new_outFlow_list):
+    #         flow.outFlow = flow.outFlow + (new_outFlow_list[i] / SCALE)  # 使用新上行流量数据
+    #     if i < len(new_inputFlow_list):
+    #         flow.inputFlow = flow.inputFlow + (new_inputFlow_list[i] / SCALE)  # 使用新下行流量数据
         
-        # 保留原冗余代码
-        flow.all = flow.all + flowLen  # 可能冗余，但保留
-        flow.outFlow = flow.outFlow + (sbytes_list[i] / SCALE)  # 可能冗余，但保留
-        flow.inputFlow = flow.inputFlow + (dbytes_list[i] / SCALE)  # 可能冗余，但保留
-        port_list[i]  # 保留原port_list使用（如果有）
+    #     # 保留原冗余代码
+    #     flow.all = flow.all + flowLen  # 可能冗余，但保留
+    #     flow.outFlow = flow.outFlow + (sbytes_list[i] / SCALE)  # 可能冗余，但保留
+    #     flow.inputFlow = flow.inputFlow + (dbytes_list[i] / SCALE)  # 可能冗余，但保留
+    #     port_list[i]  # 保留原port_list使用（如果有）
     
-    analysisVar = Analysis()
-    analysisVar.all = str(flow.all / 1024)  # 保留原计算
-    analysisVar.outFlow = str(flow.outFlow / 1024)  # 保留原计算
-    analysisVar.inputFlow = str(flow.inputFlow / 1024)  # 保留原计算
-    analysisVar.tcpv4 = str(flow.tcpv4)  # 保留
-    analysisVar.udpv4 = str(flow.udpv4)  # 保留
-    analysisVar.tcpv6 = str(flow.tcpv6)  # 保留
-    analysisVar.udpv6 = str(flow.udpv6)  # 保留
-    analysisVar.date = str(datetime.now().strftime("%H:%M:%S"))  # 保留
-    analysisVar.save()  # 保留
+    # analysisVar = Analysis()
+    # analysisVar.all = str(flow.all / 1024)  # 保留原计算
+    # analysisVar.outFlow = str(flow.outFlow / 1024)  # 保留原计算
+    # analysisVar.inputFlow = str(flow.inputFlow / 1024)  # 保留原计算
+    # analysisVar.tcpv4 = str(flow.tcpv4)  # 保留
+    # analysisVar.udpv4 = str(flow.udpv4)  # 保留
+    # analysisVar.tcpv6 = str(flow.tcpv6)  # 保留
+    # analysisVar.udpv6 = str(flow.udpv6)  # 保留
+    # analysisVar.date = str(datetime.now().strftime("%H:%M:%S"))  # 保留
+    # analysisVar.save()  # 保留
     
     result = []  # 保留原返回结构
     return JsonResponse(result, safe=False)  # 保留
