@@ -66,7 +66,7 @@
         <li class="unactive"><a href="0record.html">异常检测</a></li>
       </ul>
     </div>
-    <h1 class="tith1 fl">网络流量数据测量</h1>
+    <h1 class="tith1 fl">域统计</h1>
     <div class="topbnt_right fr">
       <ul>
         <li>
@@ -153,6 +153,9 @@
         </div>
       </div>
     </div>
+
+
+    
     <div class="visual_con" style="height: 97%">
       <div style="height: 5%; text-align: center">
         <div style="height: 5%; text-align: center">
@@ -167,56 +170,54 @@
                   font-size: 20px;
                   margin-left: 150px;
                 ">
-              <a href="analysis.html">开始</a>
+              <a href="domain.html">开始</a>
             </button>
           </div>
         </div>
       </div>
 
 
-      <div class="visual_conTop" style="height: 15%; margin-top: 2%; margin-bottom: 2%; width: 100%;">
+
+
+      <!--中间 -->
+      <div class="visual_conTop">
         <div class="visual_conTop_box visual_conTop1">
           <div>
-            <h3>总流量</h3>
-            <p id="mainTop1">0.0</p>
-            <div class="conTop_smil"><a class="xd">TB</a></div>
+            <h3>省数总</h3>
+            <p id="mainTop1">0</p>
+            <div class="conTop_smil">
+              <a class="xd">个</a>
+            </div>
           </div>
         </div>
         <div class="visual_conTop_box visual_conTop2">
           <div>
             <h3>实时速率</h3>
             <p id="mainTop2">0.0</p>
-            <div class="conTop_smil"><a class="xd">Gbps</a></div>
+            <div class="conTop_smil">
+              <a class="xd">Gbps</a>
+            </div>
           </div>
         </div>
         <div class="clear"></div>
       </div>
-      <div class="visual_conTop" style="height: 12%; margin-top: 2%; margin-bottom: 2%; width: 100%;">
+      <div class="visual_conTop">
         <div class="visual_conTop_box visual_conTop1">
           <div>
-            <h3>总流统计</h3>
-            <p id="mainTop3">0.0</p>
-            <div class="conTop_smil"><a class="xd">千条</a></div>
-          </div>
-
-          <div>
-            <h3>总流统计2</h3>
-            <p id="mainTop3">0.0</p>
-            <div class="conTop_smil"><a class="xd">千条</a></div>
+            <h3>市总数</h3>
+            <p id="mainTop3">0</p>
+            <div class="conTop_smil">
+              <a class="xd">个</a>
+            </div>
           </div>
         </div>
-
         <div class="visual_conTop_box visual_conTop2">
           <div>
-            <h3>域总数</h3>
+            <h3>全网熵值</h3>
             <p id="mainTop4">0.0</p>
-            <div class="conTop_smil"><a class="xd">个</a></div>
-          </div>
-          <div>
-
-            <h3>域总数2</h3>
-            <p id="mainTop4">0.0</p>
-            <div class="conTop_smil"><a class="xd">个</a></div>
+            <div class="conTop_smil">
+              <a class="xd">%</a>
+            </div>
           </div>
         </div>
         <div class="clear"></div>
@@ -225,7 +226,8 @@
 
 
 
-      <div class="visual_conBot" style="height: 47%; margin-top: 24%">
+      <!-- 网络流动 -->
+      <div class="visual_conBot" style="height: 49%; margin-top: 2%">
         <div class="visual_chart_text">
           <h1>实时流量流动</h1>
         </div>
@@ -243,7 +245,7 @@
           itemWidth: 14,
           itemHeight: 5,
           itemGap: 10,
-          data: ["江苏省", "河南省", "山东省"],
+          data: ["总流量", "上行流量", "下行流量"],
           right: "10px",
           top: "0px",
           textStyle: { fontSize: 12, color: "#fff" },
@@ -290,7 +292,7 @@
         ],
         series: [
           {
-            name: "江苏省",
+            name: "总流量",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -322,7 +324,7 @@
             data: 0,
           },
           {
-            name: "河南省",
+            name: "上行流量",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -354,7 +356,7 @@
             data: 0,
           },
           {
-            name: "山东省",
+            name: "下行流量",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -393,6 +395,7 @@
         myChart.resize();
       });
     </script>
+
 
     <!-- 
     <div class="visual_right">

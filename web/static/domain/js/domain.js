@@ -136,7 +136,7 @@ function table6x() {
             if (!Array.isArray(list) || list.length === 0) {
                 console.error("No data received or data is not an array for table6!");
                 // 可以在表格中显示一条提示信息
-                $('#table6').html('<tr><td colspan="3">暂无数据</td></tr>'); 
+                $('#table6').html('<tr><td colspan="3">暂无数据</td></tr>');
                 return;
             }
 
@@ -157,34 +157,34 @@ function table6x() {
 
                         // 检查 row 是否有效且有 3 个元素
                         if (row && row.length >= 3) {
-                             // <--- 修改: 创建 3 列的行
+                            // <--- 修改: 创建 3 列的行
                             tableBody.append(
                                 $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
                                     row[2] + "</td></tr>")
                             );
                         } else {
-                             // 如果某行数据有问题，可以跳过或显示错误
-                             console.warn("Skipping invalid row:", row);
+                            // 如果某行数据有问题，可以跳过或显示错误
+                            console.warn("Skipping invalid row:", row);
                         }
                     }
                 }
 
                 // 更新起始索引，实现滚动
                 if (list.length > 0) {
-                   index = (index + 1) % list.length;
+                    index = (index + 1) % list.length;
                 }
             }, 1000); // 每 1 秒滚动一次 (您可以调整这个间隔)
         },
         error: function (xhr, status, error) {
             console.error('Error fetching data for table6:', status, error);
             // 可以在表格中显示错误信息
-             $('#table6').html('<tr><td colspan="3">数据加载失败</td></tr>');
+            $('#table6').html('<tr><td colspan="3">数据加载失败</td></tr>');
         }
     });
 }
 
 // 确保在 DOM 加载完成后执行
-$(document).ready(function() {
+$(document).ready(function () {
     table6x(); // 调用函数开始加载和显示数据
 });
 
@@ -217,7 +217,7 @@ function table7x() {
                         let row = list[rowIndex];
                         if (row && Array.isArray(row) && row.length >= 4) {
                             tableBody.append(
-                                $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" + 
+                                $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
                                     row[2] + "</td><td>" + row[3] + "</td></tr>")
                             );
                         } else {
@@ -242,7 +242,7 @@ function table7x() {
 }
 
 // 确保在 DOM 加载完成后执行
-$(document).ready(function() {
+$(document).ready(function () {
     table7x(); // 调用函数开始加载和显示数据
 });
 
@@ -274,7 +274,7 @@ function table8x() {
                         let row = list[rowIndex];
                         if (row && Array.isArray(row) && row.length >= 4) {
                             tableBody.append(
-                                $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" + 
+                                $("<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" +
                                     row[2] + "</td><td>" + row[3] + "</td></tr>")
                             );
                         } else {
@@ -299,7 +299,7 @@ function table8x() {
 }
 
 // 确保在 DOM 加载完成后执行
-$(document).ready(function() {
+$(document).ready(function () {
     table8x(); // 调用函数开始加载和显示数据
 });
 // function table8x() {
@@ -318,26 +318,57 @@ $(document).ready(function() {
 // setInterval(table8x, 1000);
 
 numqiguai = 0;
-let step = 0; // 用于追踪当前是第几次更新
+// let step = 0; // 用于追踪当前是第几次更新
+let currentIndex = 0;
+const numberList1_sheng = [
+    7, 13, 17, 19, 22, 23, 24, 24, 28, 29, 29, 30, 32, 32, 33, 33, 33, 33, 33,
+    33, 33, 33, 34, 34, 34, // ... 继续添加剩余的数字，直到列表结束
+    // 如果列表太长，您可以用数组的剩余部分填充
+];
+const numberList2_shi = [8, 21, 36, 52, 70, 86, 102, 115, 145, 164, 199, 221, 242, 271, 297, 315, 336, 352, 363, 372, 374, 383, 396, 403, 411, 414, 420, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429];
+
 
 function mainTopx() {
     $.ajax({
         url: "/mainTop/", //别忘了加双引号
         type: "GET",
         success: function (list) {
-            document.getElementById("mainTop1").innerText = (list[0] * 25 / 1000).toFixed(2);//总流量
-            document.getElementById("mainTop2").innerText = (list[1] * 25).toFixed(1);//实时速率修改
-            document.getElementById("mainTop3").innerText = (list[2] / 100 * 25).toFixed(1)//总流;
 
-
-            if (Math.random() < 0.4 && numqiguai > 10) {
-                percentage = -1;
-                numqiguai = (hashToPercentage(list[3]) * percentage / 100 + numqiguai).toFixed(2);
-                document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
+            if (currentIndex < 25) {
+                const nextNumber = numberList1_sheng[currentIndex];  // 读取当前索引的数字
+                document.getElementById("mainTop1").innerText = nextNumber;  // 更新元素内容
+                currentIndex++;  // 索引加1，准备下次调用
             } else {
-                (numqiguai = hashToPercentage(list[3]) / 100 + numqiguai).toFixed(2);
-                document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
+                document.getElementById("mainTop1").innerText = 34;  // 更新元素内容
             }
+
+
+            if (currentIndex < 40) {
+                const nextNumber = numberList2_shi[currentIndex];  // 读取当前索引的数字
+                document.getElementById("mainTop3").innerText = nextNumber;  // 更新元素内容
+                // currentIndex++;  // 索引加1，准备下次调用
+            } else {
+                document.getElementById("mainTop1").innerText = 429;  // 更新元素内容
+            }
+
+
+
+            // document.getElementById("mainTop1").innerText = ;//实时速率修改
+
+
+            // document.getElementById("mainTop1").innerText = (list[0] * 25 / 1000).toFixed(2);//省
+            document.getElementById("mainTop2").innerText = (list[1] * 25).toFixed(1);//实时速率修改
+            // document.getElementById("mainTop3").innerText = (list[2] / 100 * 25).toFixed(1)//总流;
+
+
+            // if (Math.random() < 0.4 && numqiguai > 10) {
+            //     percentage = -1;
+            //     numqiguai = (hashToPercentage(list[3]) * percentage / 100 + numqiguai).toFixed(2);
+            //     document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
+            // } else {
+            //     (numqiguai = hashToPercentage(list[3]) / 100 + numqiguai).toFixed(2);
+            //     document.getElementById("mainTop4").innerText = numqiguai.toFixed(2);
+            // }
             // // 域总数更新：
             // step++; // 步骤加 1
 
