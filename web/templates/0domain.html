@@ -84,7 +84,7 @@
             <i class="r_b_line"></i>
             <i class="b_r_line"></i>
           </div>
-          <div class="main_title">全局分析</div>
+          <div class="main_title">全局跨域分析</div>
           <div class="main_table t_btn8">
             <table>
               <thead>
@@ -120,7 +120,7 @@
             <i class="r_b_line"></i>
             <i class="b_r_line"></i>
           </div>
-          <div class="main_title">IP统计</div>
+          <div class="main_title">IP网段情况统计</div>
           <div class="main_table t_btn8">
             <table>
               <thead>
@@ -144,7 +144,7 @@
                     border-style: solid;
                     border-width: 2px;
                   ">
-            <span style="font-size: 25px">数据测量</span>
+            <span style="font-size: 25px">网络流量</span>
             <button type="button" style="
                       background-color: #00c2fd;
                       font-size: 20px;
@@ -158,19 +158,19 @@
       <div class="visual_conTop">
         <div class="visual_conTop_box visual_conTop1">
           <div>
-            <h3>总流量</h3>
-            <p id="mainTop1">0.0</p>
+            <h3>省域统计</h3>
+            <p id="mainTop1">0</p>
             <div class="conTop_smil">
-              <a class="xd">TB</a>
+              <a class="xd">个</a>
             </div>
           </div>
         </div>
         <div class="visual_conTop_box visual_conTop2">
           <div>
-            <h3>实时速率</h3>
-            <p id="mainTop2">0.0</p>
+            <h3>城域统计</h3>
+            <p id="mainTop2">0</p>
             <div class="conTop_smil">
-              <a class="xd">Gbps</a>
+              <a class="xd">%</a>
             </div>
           </div>
         </div>
@@ -179,17 +179,17 @@
       <div class="visual_conTop">
         <div class="visual_conTop_box visual_conTop1">
           <div>
-            <h3>总流统计</h3>
-            <p id="mainTop3">0.0</p>
+            <h3>TCP占比</h3>
+            <p id="mainTop3">0</p>
             <div class="conTop_smil">
-              <a class="xd">千条</a>
+              <a class="xd">%</a>
             </div>
           </div>
         </div>
         <div class="visual_conTop_box visual_conTop2">
           <div>
-            <h3>全网熵值</h3>
-            <p id="mainTop4">0.0</p>
+            <h3>UDP占比</h3>
+            <p id="mainTop4">0</p>
             <div class="conTop_smil">
               <a class="xd">%</a>
             </div>
@@ -199,7 +199,7 @@
       </div>
       <div class="visual_conBot" style="height: 49%; margin-top: 2%">
         <div class="visual_chart_text">
-          <h1>实时流量流动</h1>
+          <h1>省域流速统计</h1>
         </div>
         <div class="visual_chart" id="mainBottom"></div>
       </div>
@@ -215,7 +215,7 @@
           itemWidth: 14,
           itemHeight: 5,
           itemGap: 10,
-          data: ["总流量", "上行流量", "下行流量"],
+          data: ["江苏省", "山东省", "河南省"],
           right: "10px",
           top: "0px",
           textStyle: { fontSize: 12, color: "#fff" },
@@ -262,7 +262,7 @@
         ],
         series: [
           {
-            name: "总流量",
+            name: "江苏省",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -294,7 +294,7 @@
             data: 0,
           },
           {
-            name: "上行流量",
+            name: "山东省",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -326,7 +326,7 @@
             data: 0,
           },
           {
-            name: "下行流量",
+            name: "河南省",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -385,19 +385,16 @@
             <i class="b_r_line"></i>
           </div>
           <div class="main_title" style="padding-left: 7.5%; left: 55%; width: 30%">
-            分位数估计
+            江苏省流量统计
           </div>
           <div class="main_table t_btn8">
             <table>
               <thead>
                 <tr>
-                  <th style="width: 14%">源IP</th>
-                  <th style="width: 14%">目的IP</th>
-                  <th style="width: 14%">端口号</th>
-                  <th style="width: 14%">协议类型</th>
-                  <th style="width: 14%">25%分位数</th>
-                  <th style="width: 20%">50%分位数</th>
-                  <th style="width: 10%">75%分位数</th>
+                  <th style="width: 25%">城市</th> <!-- 宽度调整为25%，以适应四列布局 -->
+                  <th style="width: 25%">entropy</th>
+                  <th style="width: 25%">Traffic总量占比</th>
+                  <th style="width: 25%">总比特数</th> <!-- 合并后的列 -->
                 </tr>
               </thead>
               <tbody id="table3"></tbody>
@@ -424,19 +421,16 @@
             <i class="b_r_line"></i>
           </div>
           <div class="main_title" style="padding-left: 12.5%; left: 53%">
-            网络层分析
+            山东省流量统计
           </div>
           <div class="main_table t_btn8">
             <table>
               <thead>
                 <tr>
-                  <th style="width: 14%">协议类型</th>
-                  <th style="width: 14%">实时速率</th>
-                  <th style="width: 14%">平均速率</th>
-                  <th style="width: 14%">最大速率</th>
-                  <th style="width: 14%">最小速率</th>
-                  <th style="width: 20%">总流量</th>
-                  <th style="width: 10%">标准差</th>
+                  <th style="width: 25%">城市</th> <!-- 宽度调整为25%，以适应四列布局 -->
+                  <th style="width: 25%">entropy</th>
+                  <th style="width: 25%">Traffic总量占比</th>
+                  <th style="width: 25%">总比特数</th> <!-- 合并后的列 -->
                 </tr>
               </thead>
               <tbody id="table4"></tbody>

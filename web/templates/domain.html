@@ -100,7 +100,7 @@
             <i class="r_b_line"></i>
             <i class="b_r_line"></i>
           </div>
-          <div class="main_title">全局分析</div>
+          <div class="main_title">全局跨域分析</div>
           <div class="main_table t_btn8">
             <table>
               <thead>
@@ -137,7 +137,7 @@
             <i class="r_b_line"></i>
             <i class="b_r_line"></i>
           </div>
-          <div class="main_title">IP统计</div>
+          <div class="main_title">IP网段情况统计</div>
           <div class="main_table t_btn8">
             <table>
               <thead>
@@ -164,7 +164,7 @@
                 border-style: solid;
                 border-width: 2px;
               ">
-            <span style="font-size: 25px">数据测量</span>
+            <span style="font-size: 25px">网络流量</span>
             <button type="button" style="
                   background-color: #00c2fd;
                   font-size: 20px;
@@ -183,7 +183,7 @@
       <div class="visual_conTop">
         <div class="visual_conTop_box visual_conTop1">
           <div>
-            <h3>省数总</h3>
+            <h3>省域统计</h3>
             <p id="mainTop1">0</p>
             <div class="conTop_smil">
               <a class="xd">个</a>
@@ -192,10 +192,10 @@
         </div>
         <div class="visual_conTop_box visual_conTop2">
           <div>
-            <h3>实时速率</h3>
-            <p id="mainTop2">0.0</p>
+            <h3>城域统计</h3>
+            <p id="mainTop3">0</p>
             <div class="conTop_smil">
-              <a class="xd">Gbps</a>
+              <a class="xd">个</a>
             </div>
           </div>
         </div>
@@ -204,17 +204,17 @@
       <div class="visual_conTop">
         <div class="visual_conTop_box visual_conTop1">
           <div>
-            <h3>市总数</h3>
-            <p id="mainTop3">0</p>
+            <h3>TCP占比</h3>
+            <p id="mainTop2">0</p>
             <div class="conTop_smil">
-              <a class="xd">个</a>
+              <a class="xd">%</a>
             </div>
           </div>
         </div>
         <div class="visual_conTop_box visual_conTop2">
           <div>
-            <h3>全网熵值</h3>
-            <p id="mainTop4">0.0</p>
+            <h3>UDP占比</h3>
+            <p id="mainTop4">0</p>
             <div class="conTop_smil">
               <a class="xd">%</a>
             </div>
@@ -229,7 +229,7 @@
       <!-- 网络流动 -->
       <div class="visual_conBot" style="height: 49%; margin-top: 2%">
         <div class="visual_chart_text">
-          <h1>实时流量流动</h1>
+          <h1>省域流速统计</h1>
         </div>
         <div class="visual_chart" id="mainBottom"></div>
       </div>
@@ -245,7 +245,7 @@
           itemWidth: 14,
           itemHeight: 5,
           itemGap: 10,
-          data: ["总流量", "上行流量", "下行流量"],
+          data: ["江苏省", "山东省", "河南省"],
           right: "10px",
           top: "0px",
           textStyle: { fontSize: 12, color: "#fff" },
@@ -292,7 +292,7 @@
         ],
         series: [
           {
-            name: "总流量",
+            name: "江苏省",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -324,7 +324,7 @@
             data: 0,
           },
           {
-            name: "上行流量",
+            name: "山东省",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -356,7 +356,7 @@
             data: 0,
           },
           {
-            name: "下行流量",
+            name: "河南省",
             type: "line",
             smooth: true,
             lineStyle: { normal: { width: 2 } },
@@ -498,7 +498,7 @@
             <i class="b_r_line"></i>
           </div>
           <div class="main_title" style="padding-left: 7.5%; left: 55%; width: 30%">
-            江苏省
+            江苏省流量统计
           </div>
           <div class="main_table t_btn8">
             <table>
@@ -513,16 +513,8 @@
               <tbody id="table7">
                 <!-- 示例数据行，假设原数据需要合并分位数 -->
                 <tr>
-                  <td>示例源IP1</td> <!-- 源IP -->
-                  <td>示例目的IP1</td> <!-- 目的IP -->
-                  <td>示例端口号1</td> <!-- 端口号 -->
-                  <td>25%: 10, 50%: 20, 75%: 30</td> <!-- 合并分位数列，格式可根据实际数据调整 -->
                 </tr>
                 <tr>
-                  <td>示例源IP2</td>
-                  <td>示例目的IP2</td>
-                  <td>示例端口号2</td>
-                  <td>25%: 15, 50%: 25, 75%: 35</td>
                 </tr>
                 <!-- 更多行根据数据动态添加 -->
               </tbody>
@@ -592,7 +584,7 @@
             <i class="b_r_line"></i>
           </div>
           <div class="main_title" style="padding-left: 7.5%; left: 55%; width: 30%">
-            沙东省
+            山东省流量统计
           </div>
           <div class="main_table t_btn8">
             <table>
@@ -606,17 +598,10 @@
               </thead>
               <tbody id="table8">
                 <!-- 示例数据行，假设原数据需要合并分位数 -->
-                <tr>
-                  <td>示例源IP1</td> <!-- 源IP -->
-                  <td>示例目的IP1</td> <!-- 目的IP -->
-                  <td>示例端口号1</td> <!-- 端口号 -->
-                  <td>25%: 10, 50%: 20, 75%: 30</td> <!-- 合并分位数列，格式可根据实际数据调整 -->
+                <tr><!-- 合并分位数列，格式可根据实际数据调整 -->
                 </tr>
                 <tr>
-                  <td>示例源IP2</td>
-                  <td>示例目的IP2</td>
-                  <td>示例端口号2</td>
-                  <td>25%: 15, 50%: 25, 75%: 35</td>
+                  
                 </tr>
                 <!-- 更多行根据数据动态添加 -->
               </tbody>
