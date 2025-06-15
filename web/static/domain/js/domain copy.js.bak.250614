@@ -1,3 +1,4 @@
+
 // 传输层分析
 // function table5x() {
 //     $.ajax({
@@ -698,300 +699,149 @@ function hashToPercentage(str) {
 //     })
 // }
 // // setInterval(mainBottomx, 1000);
+function mainBottomx() {
+    $.ajax({
+        url: "/mainBottom/", // 别忘了加双引号
+        type: "GET",
+        success: function (list) {
+            var XData = [];
+            var YData1 = [];  // 总流量数据
+            var YData2 = [];  // 上行流量数据
+            var YData3 = [];  // 下行流量数据
 
+            $.each(list, function (i, n) {
+                XData.push(n[0]);  // X轴数据不变
+                YData1.push(n[1] * 12.5);  // 先乘以25，然后缩小两倍，等效于乘以12.5
+                YData2.push(n[2] * 12.5);  // 先乘以25，然后缩小两倍
+                YData3.push(n[3] * 12.5);  // 先乘以25，然后缩小两倍
+            });
 
-// function main_domain_Bottomx() {
-//     $.ajax({
-//         url: "/main_domain_Bottom/", // 别忘了加双引号
-//         type: "GET",
-//         success: function (list) {
-//             var XData = [];
-//             var YData1 = [];  // 总流量数据
-//             var YData2 = [];  // 上行流量数据
-//             var YData3 = [];  // 下行流量数据
+            dataMainBottom = {
+                "XData": XData,
+                "YData1": YData1,
+                "YData2": YData2,
+                "YData3": YData3,
+            };
 
-//             $.each(list, function (i, n) {
-//                 XData.push(n[0]);  // X轴数据不变
-//                 YData1.push(n[1] * 12.5);  // 先乘以25，然后缩小两倍，等效于乘以12.5
-//                 YData2.push(n[2] * 12.5);  // 先乘以25，然后缩小两倍
-//                 YData3.push(n[3] * 12.5);  // 先乘以25，然后缩小两倍
-//             });
+            option = {
+                tooltip: { trigger: 'axis', axisPointer: { lineStyle: { color: '#fff' } } },
+                legend: {
+                    icon: 'rect',
+                    itemWidth: 12, itemHeight: 5, itemGap: 10,
+                    data: ['江苏省', '河北省', '山东省'],
+                    right: '10px', top: '0px',
+                    textStyle: { fontSize: 12, color: '#fff' }
+                },
+                grid: { x: 55, y: 35, x2: 30, y2: 90 },
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: { lineStyle: { color: '#57617B' } },
+                    axisLabel: { textStyle: { color: '#fff' } },
+                    data: dataMainBottom.XData,
+                    splitLine: {  // 修改网格线为浅色虚线
+                        show: true,
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.3)',  // 浅色，半透明
+                            type: 'dashed'  // 虚线
+                        }
+                    }
+                }],
+                yAxis: [  // 只保留一个yAxis，max: 3000
+                    {
+                        type: 'value',
+                        max: 3000,
+                        interval: 500,
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: { lineStyle: { color: '#57617B' } },
+                        axisLabel: {
+                            margin: 10,
+                            textStyle: { fontSize: 6, color: '#fff' },
+                            formatter: '{value}GB'
+                        },
+                        splitLine: {  // 修改网格线为浅色虚线
+                            show: true,
+                            lineStyle: {
+                                color: 'rgba(255, 255, 255, 0.3)',  // 浅色，半透明
+                                type: 'dashed'  // 虚线
+                            }
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '江苏省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        yAxisIndex: 0,
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgb(235, 124, 124)'
+                                }, {
+                                    offset: 0.8,
+                                    color: 'rgba(185,150,248,0)'
+                                }], false),
+                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                shadowBlur: 10
+                            }
+                        },
+                        itemStyle: { normal: { color: '#c40d44' } },
+                        data: dataMainBottom.YData1
+                    },
+                    {
+                        name: '河北省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        yAxisIndex: 0,
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgba(3, 194, 236, 0.3)'
+                                }, {
+                                    offset: 0.8,
+                                    color: 'rgba(3, 194, 236, 0)'
+                                }], false),
+                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                shadowBlur: 10
+                            }
+                        },
+                        itemStyle: { normal: { color: '#03C2EC' } },
+                        data: dataMainBottom.YData2
+                    },
+                    {
+                        name: '山东省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
+                        yAxisIndex: 0,
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgba(255, 215, 0, 0.3)'
+                                }, {
+                                    offset: 0.8,
+                                    color: 'rgba(255, 215, 0, 0)'
+                                }], false),
+                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                shadowBlur: 10
+                            }
+                        },
+                        itemStyle: { normal: { color: '#FFD700' } },
+                        data: dataMainBottom.YData3
+                    }
+                ]
+            };
 
-//             dataMainBottom = {
-//                 "XData": XData,
-//                 "YData1": YData1,
-//                 "YData2": YData2,
-//                 "YData3": YData3,
-//             };
-
-//             option = {
-//                 tooltip: { trigger: 'axis', axisPointer: { lineStyle: { color: '#fff' } } },
-//                 legend: {
-//                     icon: 'rect',
-//                     itemWidth: 12, itemHeight: 5, itemGap: 10,
-//                     data: ['江苏省', '河北省', '山东省'],
-//                     right: '10px', top: '0px',
-//                     textStyle: { fontSize: 12, color: '#fff' }
-//                 },
-//                 grid: { x: 55, y: 35, x2: 30, y2: 90 },
-//                 xAxis: [{
-//                     type: 'category',
-//                     boundaryGap: false,
-//                     axisLine: { lineStyle: { color: '#57617B' } },
-//                     axisLabel: { textStyle: { color: '#fff' } },
-//                     data: dataMainBottom.XData,
-//                     splitLine: {  // 修改网格线为浅色虚线
-//                         show: true,
-//                         lineStyle: {
-//                             color: 'rgba(255, 255, 255, 0.3)',  // 浅色，半透明
-//                             type: 'dashed'  // 虚线
-//                         }
-//                     }
-//                 }],
-//                 yAxis: [  // 只保留一个yAxis，max: 3000
-//                     {
-//                         type: 'value',
-//                         max: 3000,
-//                         interval: 500,
-//                         axisTick: {
-//                             show: false
-//                         },
-//                         axisLine: { lineStyle: { color: '#57617B' } },
-//                         axisLabel: {
-//                             margin: 10,
-//                             textStyle: { fontSize: 6, color: '#fff' },
-//                             formatter: '{value}GB'
-//                         },
-//                         splitLine: {  // 修改网格线为浅色虚线
-//                             show: true,
-//                             lineStyle: {
-//                                 color: 'rgba(255, 255, 255, 0.3)',  // 浅色，半透明
-//                                 type: 'dashed'  // 虚线
-//                             }
-//                         }
-//                     }
-//                 ],
-//                 series: [
-//                     {
-//                         name: '江苏省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
-//                         yAxisIndex: 0,
-//                         areaStyle: {
-//                             normal: {
-//                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-//                                     offset: 0,
-//                                     color: 'rgb(235, 124, 124)'
-//                                 }, {
-//                                     offset: 0.8,
-//                                     color: 'rgba(185,150,248,0)'
-//                                 }], false),
-//                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
-//                                 shadowBlur: 10
-//                             }
-//                         },
-//                         itemStyle: { normal: { color: '#c40d44' } },
-//                         data: dataMainBottom.YData1
-//                     },
-//                     {
-//                         name: '河北省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
-//                         yAxisIndex: 0,
-//                         areaStyle: {
-//                             normal: {
-//                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-//                                     offset: 0,
-//                                     color: 'rgba(3, 194, 236, 0.3)'
-//                                 }, {
-//                                     offset: 0.8,
-//                                     color: 'rgba(3, 194, 236, 0)'
-//                                 }], false),
-//                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
-//                                 shadowBlur: 10
-//                             }
-//                         },
-//                         itemStyle: { normal: { color: '#03C2EC' } },
-//                         data: dataMainBottom.YData2
-//                     },
-//                     {
-//                         name: '山东省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
-//                         yAxisIndex: 0,
-//                         areaStyle: {
-//                             normal: {
-//                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-//                                     offset: 0,
-//                                     color: 'rgba(255, 215, 0, 0.3)'
-//                                 }, {
-//                                     offset: 0.8,
-//                                     color: 'rgba(255, 215, 0, 0)'
-//                                 }], false),
-//                                 shadowColor: 'rgba(0, 0, 0, 0.1)',
-//                                 shadowBlur: 10
-//                             }
-//                         },
-//                         itemStyle: { normal: { color: '#FFD700' } },
-//                         data: dataMainBottom.YData3
-//                     }
-//                 ]
-//             };
-
-//             var myChart = echarts.init(document.getElementById('main_domain_Bottom'));
-//             myChart.setOption(option);
-//         },
-//         error: function (XMLHttpRequest, textStatus, errorThrown) {
-//             console.log(XMLHttpRequest.status);
-//             console.log(XMLHttpRequest.readyState);
-//             console.log(textStatus);
-//         }
-//     })
-// }
-// setInterval(main_domain_Bottomx, 1000);
-// 标记为 async 函数以便使用 await
-
-// async function main_domain_Bottomx() {
-//     try {
-//         // --- 1. 定义 Excel 文件路径 ---
-//         // 请确保这些路径在你的 web 服务器上是可访问的
-//         const file_path1 = '/static/data/domain_flow/JiangSu.csv';
-//         const file_path2 = '/static/data/domain_flow/ShanDong.csv';
-//         const file_path3 = '/static/data/domain_flow/HeNan.csv';
-//         // --- 2. 并行发起所有数据请求 ---
-//         // 我们将 $.ajax 和 fetch 都包装在 Promise.all 中，以便同时执行
-//         const [
-//             ajaxData,      // 对应 $.ajax 的结果
-//             response1,     // 对应 fetch(file_path1)
-//             response2,     // 对应 fetch(file_path2)
-//             response3      // 对应 fetch(file_path3)
-//         ] = await Promise.all([
-//             $.ajax({ url: "/main_domain_Bottom/", type: "GET" }), // 原来的 AJAX 请求
-//             fetch(file_path1),
-//             fetch(file_path2),
-//             fetch(file_path3)
-//         ]);
-
-//         // --- 3. 处理数据 ---
-
-//         // (A) 从 AJAX 请求的结果中提取 XData
-//         const XData = [];
-//         $.each(ajaxData, function (i, n) {
-//             XData.push(n[0]);
-//         });
-
-//         // (B) 解析 Excel 文件以获取 YData
-//         const [buffer1, buffer2, buffer3] = await Promise.all([
-//             response1.arrayBuffer(),
-//             response2.arrayBuffer(),
-//             response3.arrayBuffer()
-//         ]);
-
-//         const parseExcel = (buffer) => {
-//             const workbook = XLSX.read(buffer, { type: 'buffer' });
-//             const sheetName = workbook.SheetNames[0];
-//             const worksheet = workbook.Sheets[sheetName];
-//             return XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-//         };
-        
-//         const data1 = parseExcel(buffer1);
-//         const data2 = parseExcel(buffer2);
-//         const data3 = parseExcel(buffer3);
-
-//         // 从每个 Excel 的第 0 列提取数据，并进行计算
-//         const YData1 = data1.map(row => row[0] * 12.5);
-//         const YData2 = data2.map(row => row[0] * 12.5);
-//         const YData3 = data3.map(row => row[0] * 12.5);
-
-
-//         // --- 4. 准备 ECharts 配置项 ---
-//         const dataMainBottom = {
-//             "XData": XData,
-//             "YData1": YData1,
-//             "YData2": YData2,
-//             "YData3": YData3,
-//         };
-        
-//         // ECharts 的 option 配置部分保持不变...
-//         const option = {
-//             tooltip: { trigger: 'axis', axisPointer: { lineStyle: { color: '#fff' } } },
-//             legend: {
-//                 icon: 'rect',
-//                 itemWidth: 12, itemHeight: 5, itemGap: 10,
-//                 data: ['江苏省', '河北省', '山东省'],
-//                 right: '10px', top: '0px',
-//                 textStyle: { fontSize: 12, color: '#fff' }
-//             },
-//             grid: { x: 55, y: 35, x2: 30, y2: 90 },
-//             xAxis: [{
-//                 type: 'category',
-//                 boundaryGap: false,
-//                 axisLine: { lineStyle: { color: '#57617B' } },
-//                 axisLabel: { textStyle: { color: '#fff' } },
-//                 data: dataMainBottom.XData,
-//                 splitLine: { show: true, lineStyle: { color: 'rgba(255, 255, 255, 0.3)', type: 'dashed' } }
-//             }],
-//             yAxis: [{
-//                 type: 'value',
-//                 max: 3000,
-//                 interval: 500,
-//                 axisTick: { show: false },
-//                 axisLine: { lineStyle: { color: '#57617B' } },
-//                 axisLabel: { margin: 10, textStyle: { fontSize: 6, color: '#fff' }, formatter: '{value}GB' },
-//                 splitLine: { show: true, lineStyle: { color: 'rgba(255, 255, 255, 0.3)', type: 'dashed' } }
-//             }],
-//             series: [
-//                  {
-//                     name: '江苏省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
-//                     yAxisIndex: 0,
-//                     areaStyle: {
-//                         normal: {
-//                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgb(235, 124, 124)' }, { offset: 0.8, color: 'rgba(185,150,248,0)' }], false),
-//                             shadowColor: 'rgba(0, 0, 0, 0.1)',
-//                             shadowBlur: 10
-//                         }
-//                     },
-//                     itemStyle: { normal: { color: '#c40d44' } },
-//                     data: dataMainBottom.YData1
-//                 },
-//                 {
-//                     name: '河北省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
-//                     yAxisIndex: 0,
-//                     areaStyle: {
-//                         normal: {
-//                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(3, 194, 236, 0.3)' }, { offset: 0.8, color: 'rgba(3, 194, 236, 0)' }], false),
-//                             shadowColor: 'rgba(0, 0, 0, 0.1)',
-//                             shadowBlur: 10
-//                         }
-//                     },
-//                     itemStyle: { normal: { color: '#03C2EC' } },
-//                     data: dataMainBottom.YData2
-//                 },
-//                 {
-//                     name: '山东省', type: 'line', smooth: true, lineStyle: { normal: { width: 2 } },
-//                     yAxisIndex: 0,
-//                     areaStyle: {
-//                         normal: {
-//                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(255, 215, 0, 0.3)' }, { offset: 0.8, color: 'rgba(255, 215, 0, 0)' }], false),
-//                             shadowColor: 'rgba(0, 0, 0, 0.1)',
-//                             shadowBlur: 10
-//                         }
-//                     },
-//                     itemStyle: { normal: { color: '#FFD700' } },
-//                     data: dataMainBottom.YData3
-//                 }
-//             ]
-//         };
-
-//         const myChart = echarts.init(document.getElementById('main_domain_Bottom'));
-//         myChart.setOption(option);
-
-//     } catch (error) {
-//         // 统一的错误处理
-//         console.error("图表更新失败:", error);
-//     }
-// }
-
-// // 依然是每秒调用一次
-// // 再次提醒：每秒请求和解析3个Excel文件会非常消耗性能！
-
-// setInterval(main_domain_Bottomx, 1000);
-
-
+            var myChart = echarts.init(document.getElementById('mainBottom'));
+            myChart.setOption(option);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(XMLHttpRequest.status);
+            console.log(XMLHttpRequest.readyState);
+            console.log(textStatus);
+        }
+    })
+}
+setInterval(mainBottomx, 1000);
 
 
 

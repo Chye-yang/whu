@@ -285,7 +285,7 @@ def mainTop(request):
 
 
 # 实时流量分析
-def mainBottom(request):
+def main_domain_Bottom(request):
     listAll = Analysis.objects.all().order_by("-id")[:10]
     result = []
     for var in listAll:
@@ -511,7 +511,7 @@ def readCsv(request):
     outFlowData = pd.read_csv("./data/demoCSV/Shandong.csv")     # 新来源：上行流量
     inputFlowData = pd.read_csv("./data/demoCSV/Henan.csv") # 新来源：下行流量
     
-    # 随机选取新数据范围（保持与原代码一致的随机逻辑）
+    # 随机选取新数据范围（保持与原代码一致的随机逻辑）ls
     new_start = random.randint(0, len(totalFlowData) - 10)  # 假设新文件有足够行数
     new_end = new_start + random.randint(6, 10)
     

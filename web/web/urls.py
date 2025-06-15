@@ -47,7 +47,7 @@ urlpatterns = [
     url(r'^table7', domain.table7),
     url(r'^table8', domain.table8),
     url(r'^mainTop', domain.mainTop),
-    url(r'^mainBottom', domain.mainBottom),
+    url(r'^main_domain_Bottom', domain.main_domain_Bottom),
     url(r'^readPcap', domain.readPcap),
     url(r'^readCsv/', domain.readCsv),
 

@@ -23,6 +23,7 @@
   <script src="../static/domain/js/chartMap.js"></script>
   <link rel="stylesheet" type="text/css" href="../static/domain/css/visual.css?v=2016s1020" />
   <link rel="stylesheet" type="text/css" href="../static/domain/css/index.css?v=112" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 
 <body class="ksh">
@@ -155,7 +156,7 @@
     </div>
 
 
-    
+
     <div class="visual_con" style="height: 97%">
       <div style="height: 5%; text-align: center">
         <div style="height: 5%; text-align: center">
@@ -183,7 +184,7 @@
       <div class="visual_conTop">
         <div class="visual_conTop_box visual_conTop1">
           <div>
-            <h3>省域统计</h3>
+            <h3>省际域数量统计</h3>
             <p id="mainTop1">0</p>
             <div class="conTop_smil">
               <a class="xd">个</a>
@@ -192,7 +193,7 @@
         </div>
         <div class="visual_conTop_box visual_conTop2">
           <div>
-            <h3>城域统计</h3>
+            <h3>城际域数量统计</h3>
             <p id="mainTop3">0</p>
             <div class="conTop_smil">
               <a class="xd">个</a>
@@ -231,171 +232,223 @@
         <div class="visual_chart_text">
           <h1>省域流速统计</h1>
         </div>
-        <div class="visual_chart" id="mainBottom"></div>
+        <div class="visual_chart" id="main_domain_Bottom"></div>
       </div>
     </div>
     <script>
-      option = {
+      // --- 1. 全局变量和配置 ---
+
+      // 用于存储从CSV文件中一次性加载的所有数据
+      let allDataJiangsu = [];
+      let allDataShandong = [];
+      let allDataHenan = [];
+
+      // 数据指针，记录当前显示到哪个位置
+      let dataPointer = 0;
+      // 图表上一次显示多少个数据点
+      const displayWindowSize = 10;
+
+      // 初始化 ECharts 实例
+      const myChart = echarts.init(document.getElementById('main_domain_Bottom'));
+
+      // --- 2. ECharts 的基础配置 ---
+      // 这是图表的骨架，后续我们只更新其中的 data 部分
+      const option = {
         tooltip: {
-          trigger: "axis",
-          axisPointer: { lineStyle: { color: "#fff" } },
+          trigger: 'axis',
+          axisPointer: { lineStyle: { color: '#fff' } }
         },
         legend: {
-          icon: "rect",
-          itemWidth: 14,
-          itemHeight: 5,
-          itemGap: 10,
-          data: ["江苏省", "山东省", "河南省"],
-          right: "10px",
-          top: "0px",
-          textStyle: { fontSize: 12, color: "#fff" },
+          icon: 'rect',
+          itemWidth: 12, itemHeight: 5, itemGap: 10,
+          // 注意：图例要和 series 的 name 对应，这里我根据你的文件名做了修改
+          data: ['江苏省', '山东省', '河南省'],
+          right: '10px', top: '0px',
+          textStyle: { fontSize: 12, color: '#fff' }
         },
-        grid: { x: 45, y: 35, x2: 30, y2: 90 },
-        xAxis: [
-          {
-            type: "category",
-            boundaryGap: false,
-            axisLine: { lineStyle: { color: "#57617B" } },
-            axisLabel: { textStyle: { color: "#fff" } },
-            data: 0,
-          },
-        ],
-        yAxis: [
-          {
-            type: "value",
-            axisTick: {
-              show: false,
-            },
-            axisLine: { lineStyle: { color: "#57617B" } },
-            axisLabel: {
-              margin: 10,
-              textStyle: { fontSize: 12 },
-              textStyle: { color: "#fff" },
-              formatter: "{value}MB",
-            },
-            splitLine: { lineStyle: { color: "#57617B" } },
-          },
-          {
-            type: "value",
-            axisTick: {
-              show: false,
-            },
-            axisLine: { lineStyle: { color: "#57617B" } },
-            axisLabel: {
-              margin: 10,
-              textStyle: { fontSize: 12 },
-              textStyle: { color: "rgba(0,0,0,0)" },
-              formatter: "{value}MB",
-            },
-            splitLine: { lineStyle: { color: "#57617B" } },
-          },
-        ],
+        grid: { x: 55, y: 35, x2: 30, y2: 90 },
+        xAxis: [{
+          type: 'category',
+          boundaryGap: false,
+          axisLine: { lineStyle: { color: '#57617B' } },
+          axisLabel: { textStyle: { color: '#fff' } },
+          // 初始数据为空，后续会动态填充
+          data: [],
+          splitLine: { show: true, lineStyle: { color: 'rgba(255, 255, 255, 0.3)', type: 'dashed' } }
+        }],
+        yAxis: [{
+          type: 'value',
+          max: 2500,
+          interval: 500,
+          axisTick: { show: false },
+          axisLine: { lineStyle: { color: '#57617B' } },
+          axisLabel: { margin: 10, textStyle: { fontSize: 10, color: '#fff' }, formatter: '{value}GB' },
+          splitLine: { show: true, lineStyle: { color: 'rgba(255, 255, 255, 0.3)', type: 'dashed' } }
+        }],
         series: [
           {
-            name: "江苏省",
-            type: "line",
-            smooth: true,
+            name: '江苏省', type: 'line', smooth: true,
             lineStyle: { normal: { width: 2 } },
-            yAxisIndex: 0,
             areaStyle: {
               normal: {
-                color: new echarts.graphic.LinearGradient(
-                  0,
-                  0,
-                  0,
-                  1,
-                  [
-                    {
-                      offset: 0,
-                      color: "rgba(196, 13, 68, 0.3)",  // 从红色开始
-                    },
-                    {
-                      offset: 0.8,
-                      color: "rgba(185,150,248,0)",
-                    },
-                  ],
-                  false
-                ),
-                shadowColor: "rgba(0, 0, 0, 0.1)",
-                shadowBlur: 10,
-              },
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgb(235, 124, 124)' }, { offset: 0.8, color: 'rgba(185,150,248,0)' }], false),
+                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                shadowBlur: 10
+              }
             },
-            itemStyle: { normal: { color: "#c40d44" } },
-            data: 0,
+            itemStyle: { normal: { color: '#c40d44' } },
+            data: [] // 初始数据为空
           },
           {
-            name: "山东省",
-            type: "line",
-            smooth: true,
+            name: '山东省', type: 'line', smooth: true,
             lineStyle: { normal: { width: 2 } },
-            yAxisIndex: 1,
             areaStyle: {
               normal: {
-                color: new echarts.graphic.LinearGradient(
-                  0,
-                  0,
-                  0,
-                  1,
-                  [
-                    {
-                      offset: 0,
-                      color: "rgba(3, 194, 236, 0.3)",
-                    },
-                    {
-                      offset: 0.8,
-                      color: "rgba(3, 194, 236, 0)",
-                    },
-                  ],
-                  false
-                ),
-                shadowColor: "rgba(0, 0, 0, 0.1)",
-                shadowBlur: 10,
-              },
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(3, 194, 236, 0.3)' }, { offset: 0.8, color: 'rgba(3, 194, 236, 0)' }], false),
+                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                shadowBlur: 10
+              }
             },
-            itemStyle: { normal: { color: "#03C2EC" } },
-            data: 0,
+            // 注意：原代码中河北省对应 YData2，这里我改为山东省
+            itemStyle: { normal: { color: '#03C2EC' } },
+            data: [] // 初始数据为空
           },
           {
-            name: "河南省",
-            type: "line",
-            smooth: true,
+            name: '河南省', type: 'line', smooth: true,
             lineStyle: { normal: { width: 2 } },
-            yAxisIndex: 1,
             areaStyle: {
               normal: {
-                color: new echarts.graphic.LinearGradient(
-                  0,
-                  0,
-                  0,
-                  1,
-                  [
-                    {
-                      offset: 0,
-                      color: "rgba(218, 57, 20, 0.3)",
-                    },
-                    {
-                      offset: 0.8,
-                      color: "rgba(218, 57, 20, 0)",
-                    },
-                  ],
-                  false
-                ),
-                shadowColor: "rgba(0, 0, 0, 0.1)",
-                shadowBlur: 10,
-              },
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(255, 215, 0, 0.3)' }, { offset: 0.8, color: 'rgba(255, 215, 0, 0)' }], false),
+                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                shadowBlur: 10
+              }
             },
-            itemStyle: { normal: { color: "#DA3914" } },
-            data: 0,
-          },
-        ],
+            // 注意：原代码中山东省对应 YData3，这里我改为河南省
+            itemStyle: { normal: { color: '#FFD700' } },
+            data: [] // 初始数据为空
+          }
+        ]
       };
-      var myChart = echarts.init(document.getElementById("mainBottom"));
+
+      // 先设置一个空的图表结构
       myChart.setOption(option);
-      window.addEventListener("resize", function () {
+
+
+      /**
+       * 核心函数：更新图表数据
+       * 它不从网络请求数据，而是从已经加载到内存的 `allData` 数组中取数据
+       */
+      function updateChart() {
+        // 如果数据还没加载完，就先不执行
+        if (allDataJiangsu.length === 0) {
+          return;
+        }
+
+        // 1. 准备 X 轴数据（动态生成当前时间往前推的10个时间点）
+        const XData = [];
+        const now = new Date();
+        for (let i = displayWindowSize - 1; i >= 0; i--) {
+          const time = new Date(now.getTime() - i * 1000);
+          // 格式化为 HH:MM:SS
+          XData.push(time.toTimeString().split(' ')[0]);
+        }
+
+        // 2. 准备 Y 轴数据（从总数据中"切"一片出来）
+        const getYDataSlice = (dataArray) => {
+          const slice = [];
+          for (let i = 0; i < displayWindowSize; i++) {
+            // 使用 % 运算符实现循环，当指针到末尾时能回到开头
+            const index = (dataPointer + i) % dataArray.length;
+            slice.push(dataArray[index]);
+          }
+          return slice;
+        };
+
+        const YData1 = getYDataSlice(allDataJiangsu);
+        const YData2 = getYDataSlice(allDataShandong);
+        const YData3 = getYDataSlice(allDataHenan);
+
+        // 3. 更新数据指针，为下一次调用做准备
+        dataPointer++;
+        // 如果指针超过了数据长度，让它归零，实现循环播放
+        if (dataPointer >= allDataJiangsu.length) {
+          dataPointer = 0;
+        }
+
+        // 4. 将新数据设置到图表中
+        myChart.setOption({
+          xAxis: [{
+            data: XData
+          }],
+          series: [
+            { name: '江苏省', data: YData1 },
+            { name: '山东省', data: YData2 },
+            { name: '河南省', data: YData3 }
+          ]
+        });
+      }
+
+
+      /**
+       * 辅助函数：用于加载和解析 CSV 文件
+       * @param {string} csvText - 从文件读取的原始文本
+       * @returns {number[]} - 解析后的数据数组
+       */
+      function parseCsvData(csvText) {
+        // 将文本按行分割，过滤掉空行
+        const rows = csvText.trim().split('\n');
+        return rows.map(row => {
+          // 假设数据在第一列，并进行计算
+          const value = parseFloat(row.split(',')[0]);
+          return value;
+        });
+      }
+
+
+      /**
+       * 启动函数：在页面加载时执行
+       * 负责一次性获取所有数据，然后启动定时器
+       */
+      async function start() {
+        try {
+          const file_path1 = '/static/data/domain_flow/JiangSu.csv';
+          const file_path2 = '/static/data/domain_flow/ShanDong.csv'; // 文件名是 ShanDong
+          const file_path3 = '/static/data/domain_flow/HeNan.csv';    // 文件名是 HeNan
+
+          // 并行发起所有文件请求，并获取文本内容
+          const [csvText1, csvText2, csvText3] = await Promise.all([
+            fetch(file_path1).then(res => res.text()),
+            fetch(file_path2).then(res => res.text()),
+            fetch(file_path3).then(res => res.text())
+          ]);
+
+          // 解析数据并存储到全局变量
+          allDataJiangsu = parseCsvData(csvText1);
+          allDataShandong = parseCsvData(csvText2);
+          allDataHenan = parseCsvData(csvText3);
+
+          console.log("数据加载并解析完成!");
+
+          // 数据加载成功后，立即调用一次以显示初始图表
+          updateChart();
+          // 然后启动定时器，每秒更新一次图表
+          setInterval(updateChart, 1000);
+
+        } catch (error) {
+          console.error("加载或解析数据时发生错误:", error);
+          // 你可以在这里向用户显示一个错误提示
+        }
+      }
+
+      // 监听窗口大小变化，自适应图表
+      window.addEventListener("resize", () => {
         myChart.resize();
       });
-    </script>
 
+      // --- 执行启动函数 ---
+      start();
+
+    </script>
 
     <!-- 
     <div class="visual_right">
@@ -601,7 +654,7 @@
                 <tr><!-- 合并分位数列，格式可根据实际数据调整 -->
                 </tr>
                 <tr>
-                  
+
                 </tr>
                 <!-- 更多行根据数据动态添加 -->
               </tbody>
