@@ -1,0 +1,29 @@
+source attack_cve.sql;
+source behavior.sql;  
+source model_portinfo.sql;   
+source netlog.sql;
+source behavior_predict.sql; 
+source model_analysis.sql;
+source model_prediction.sql;
+source tiny-set.sql;
+
+sudo apt update
+sudo apt install mysql-server
+
+sudo mysql 
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'qazwsx';
+
+quit
+
+mysql -u root -p
+
+
+
+CREATE DATABASE db1；
+Use db1；
+
+导入库：
+source xxx.sql（执行武大原型子系统.zip中的mysql文件夹的所有.sql文件）
+
+

@@ -424,7 +424,7 @@ function speed_ping() {
 }
 
 record_speed();
-setInterval(record_speed, 3000);
+setInterval(record_speed, 1000);
 
 speed_ping();
-setInterval(speed_ping, 3000);
+setInterval(speed_ping, 1000);

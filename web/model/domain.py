@@ -40,6 +40,14 @@ import joblib
 from model.Flow import Flow
 from model.Port import Port
 
+# 导入数据配置
+try:
+    from config.data_config import get_data_path
+except ImportError:
+    # 如果配置文件不存在，使用默认配置
+    def get_data_path(category, key):
+        return f"./data/ChangZhouData/0524/Result/{key}"
+
 SCALE = 0.1
 
 
@@ -90,7 +98,7 @@ from django.http import JsonResponse
 def table5(request):
     result = []
     try:
-        inputData = pd.read_csv("./data/ChangZhouData/0524/Result/globle.csv")
+        inputData = pd.read_csv(get_data_path('changzhou', 'globle'))
         # inputData = pd.read_csv("web/data/ChangZhouData/perflow.csv")
         
 
@@ -138,7 +146,7 @@ def table6(request):
         # 建议使用 settings.BASE_DIR 构建绝对路径，例如:
         # csv_path = os.path.join(settings.BASE_DIR, 'data', 'ChangZhouData', '0524', 'Result', 'IP_domain.csv')
         # 这里暂时保留您的路径，但请注意它在生产环境中的可靠性
-        csv_path = "./data/ChangZhouData/0524/Result/IP_domain.csv" 
+        csv_path = get_data_path('changzhou', 'ip_domain') 
         
         inputData = pd.read_csv(csv_path)
 
@@ -195,7 +203,7 @@ def table6(request):
 def table7(request):
     result = []
     try:
-        inputData = pd.read_csv("./data/ChangZhouData/0524/Result/Domain_JiangSu.csv")
+        inputData = pd.read_csv(get_data_path('changzhou', 'domain_jiangsu'))
         # topK分析
         for index, row in inputData.iterrows():
 
@@ -227,7 +235,7 @@ def table7(request):
 def table8(request):
     result = []
     try:
-        inputData = pd.read_csv("./data/ChangZhouData/0524/Result/Domain_ShanDong.csv")
+        inputData = pd.read_csv(get_data_path('changzhou', 'domain_shandong'))
         # topK分析
         for index, row in inputData.iterrows():
 
@@ -303,7 +311,7 @@ def main_domain_Bottom(request):
 
 # 流量读入//目前没有用处
 def readPcap(request):
-    packets = rdpcap("./data/demoPcap/test.pcap")
+    packets = rdpcap(get_data_path('pcap', 'test'))
     flow = []
     for index in range(20):
         flow.append(0)
@@ -498,7 +506,7 @@ def readPcap(request):
 
 def readCsv(request):
     flow = Flow()
-    inputData = pd.read_csv("./data/demoCSV/inputCSV5.csv")  # 保留原代码的inputData读取
+    inputData = pd.read_csv(get_data_path('demo', 'csv'))  # 使用配置路径
     start = random.randint(0, 1900)
     end = start + random.randint(6, 10)
     protocol_list = inputData.iloc[start:end, 2]  # 保留原逻辑
@@ -507,9 +515,9 @@ def readCsv(request):
     port_list = inputData.iloc[start:end, 45]  # 保留原逻辑
     
     # 新增：读取三个CSV文件作为新数据来源
-    totalFlowData = pd.read_csv("./data/demoCSV/JiangSu.csv")  # 新来源：总流量
-    outFlowData = pd.read_csv("./data/demoCSV/Shandong.csv")     # 新来源：上行流量
-    inputFlowData = pd.read_csv("./data/demoCSV/Henan.csv") # 新来源：下行流量
+    totalFlowData = pd.read_csv(os.path.join(get_data_path('changzhou', 'domain_jiangsu').replace('Domain_JiangSu.csv', ''), 'JiangSu.csv'))  # 新来源：总流量
+    outFlowData = pd.read_csv(os.path.join(get_data_path('changzhou', 'domain_shandong').replace('Domain_ShanDong.csv', ''), 'ShanDong.csv'))     # 新来源：上行流量
+    inputFlowData = pd.read_csv(os.path.join(get_data_path('changzhou', 'domain_jiangsu').replace('Domain_JiangSu.csv', ''), 'HeNan.csv')) # 新来源：下行流量
     
     # 随机选取新数据范围（保持与原代码一致的随机逻辑）ls
     new_start = random.randint(0, len(totalFlowData) - 10)  # 假设新文件有足够行数

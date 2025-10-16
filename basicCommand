@@ -1,0 +1,7 @@
+$ sleep 0.5; ss -ltnp sport = :8000 | cat
+
+源文件读取路径见： /home/whu/os/web/config/data_config.py
+
+1. perflow的csv生成
+    $ python3 /home/whu/os/tools/pcap_to_perflow_beijing.py /home/whu/os/Data/OriginPcap/ceshi_000024.pcap /home/whu/os/Data/analysis/perflow_beijing.csv
+    

@@ -884,11 +884,13 @@
 <script>
     // 参数1 tableID,参数2 div高度，参数3 速度，参数4 tbody中tr几条以上滚动
     // speed越大 滚动速度越慢
-    var localspeed = 20
+    var localspeed = 10
     // 0-300 --> 80-5
     // (0,80) (300,5)
     // y=-0.25x + 80
     tableScroll('tableId', 85, 20, 10);
+    // tableScroll('tableId', 85, 20, 10);
+
     var MyMarhq;
 
     function tableScroll(tableid, hei, speed, len) {

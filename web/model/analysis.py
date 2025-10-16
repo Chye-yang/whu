@@ -1,26 +1,22 @@
 import random
-
 import math
 import csv
 from django.http import JsonResponse
-from model.db import Record
-from model.db import Library
-from model.db import Statistic
+from django.shortcuts import render
 from datetime import *
 from django.utils import timezone
 import pytz
 from django.db.models import Avg
-from model.db import Analysis, PortInfo
-import numpy as np
-from django.http import JsonResponse
-from django.shortcuts import render
-from model.db import Prediction
-from model.db import Behavior
-from model.db import Behavior_predict
-from scapy.all import *
-from datetime import datetime
 import numpy as np
 import pandas as pd
+
+# 导入数据配置
+try:
+    from config.data_config import get_data_path
+except ImportError:
+    # 如果配置文件不存在，使用默认配置
+    def get_data_path(category, key):
+        return f"./data/demoPcap/{key}" if category == 'pcap' else f"./data/demoCSV/{key}"
 from sklearn import metrics
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import Normalizer
@@ -37,8 +33,16 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import LabelEncoder
 import joblib
+from scapy.all import *
+from datetime import datetime
+
+# 导入数据库模型
+from model.db import Record, Library, Statistic, Analysis, PortInfo, Prediction, Behavior, Behavior_predict
 from model.Flow import Flow
 from model.Port import Port
+
+# 导入新的数据读取模块
+from model.data_reader import DataReader, DataProcessor
 
 SCALE = 0.1
 
@@ -88,41 +92,18 @@ from django.http import JsonResponse
 
 
 def table1(request):
-    result = []
+    """Per-Flow分析数据接口"""
     try:
-        inputData = pd.read_csv("./data/ChangZhouData/0524/Result/perflow0524.csv")
-        # inputData = pd.read_csv("web/data/ChangZhouData/perflow.csv")
+        data_reader = DataReader()
+        result = data_reader.read_perflow_data(use_demo=False)
         
-
-        # 逐流分析源文件
-        for index, row in inputData.iterrows():
-            result.append(
-                [
-                    row[0],  # First column
-                    row[45],  # 46th column
-                    row[46],  # 47th column
-                    row[47],  # 48th column
-                    row[2],  # 3rd column
-                    row[7],  # 8th column
-                ]
-            # result.append(
-            #     [
-            #         row[0],  # First column
-            #         row[1],  # 46th column
-            #         row[2],  # 47th column
-            #         row[3],  # 48th column
-            #         row[4],  # 3rd column
-            #         row[5],  # 8th column
-            #     ]
-            )
-    except FileNotFoundError:
-        return JsonResponse({"error": "CSV file not found"}, status=500)
-    except pd.errors.EmptyDataError:
-        return JsonResponse({"error": "CSV file is empty"}, status=500)
+        if not result:
+            return JsonResponse({"error": "No perflow data available"}, status=500)
+            
+        return JsonResponse(result, safe=False)
+        
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse(result, safe=False)
+        return JsonResponse({"error": f"Failed to load perflow data: {str(e)}"}, status=500)
 
 
 # TopK分析
@@ -131,124 +112,113 @@ from django.http import JsonResponse
 from collections import Counter
 
 
-def read_csv_in_chunks(file_path, chunk_size=20):
-    with open(file_path, mode="r", encoding="utf-8") as file:
-        csv_reader = csv.reader(file)
-        while True:
-            chunk = [next(csv_reader, None) for _ in range(chunk_size)]
-            chunk = [row for row in chunk if row]
-            if not chunk:
-                break
-            yield chunk
-
-
 def table2(request):
-    counter = Counter()
-    result = []
-
+    """Heavy Flow检测数据接口"""
     try:
-        # for chunk in read_csv_in_chunks("./data/demoCSV/expanded_selected_columns.csv"):
-        for chunk in read_csv_in_chunks("./data/ChangZhouData/0524/Result/topk0524.csv"):
-
+        data_reader = DataReader()
+        result = data_reader.read_topk_data(use_demo=False, chunk_size=20)
+        
+        if not result:
+            return JsonResponse({"error": "No topk data available"}, status=500)
             
-            # topK分析文件
-            counter.update(tuple(row) for row in chunk)
-            top_6 = counter.most_common(45)  # 只获取前6个结果
-            for rank, (row, count) in enumerate(top_6, start=1):
-                result.append({"rank": rank, "row": row, "count": count})
-    except FileNotFoundError:
-        return JsonResponse({"error": "CSV file not found"}, status=500)
-    except pd.errors.EmptyDataError:
-        return JsonResponse({"error": "CSV file is empty"}, status=500)
+        return JsonResponse(result, safe=False)
+        
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse(result, safe=False)
+        return JsonResponse({"error": f"Failed to load topk data: {str(e)}"}, status=500)
 
 
-# 分位数估计
 def table3(request):
-    result = []
+    """分位数估计数据接口"""
     try:
-        inputData = pd.read_csv("./data/ChangZhouData/0524/Result/fenwei0524.csv")
-        # topK分析
-        for index, row in inputData.iterrows():
-
+        data_reader = DataReader()
+        result = data_reader.read_fenwei_data(use_demo=False)
+        
+        if not result:
+            return JsonResponse({"error": "No fenwei data available"}, status=500)
             
-            value4 = int(row[4]) if isinstance(row[4], (int, float)) else row[4]  # 第5列
-            value5 = int(row[5]) if isinstance(row[5], (int, float)) else row[5]  # 第6列
-            value6 = int(row[6]) if isinstance(row[6], (int, float)) else row[6]  # 第4列
-            
-            result.append(
-                [
-                    row[0],  # First column
-                    row[1],  # 46th column
-                    row[2],  # 47th column
-                    row[3],  # 48th column
-                    value4,  # 3rd column
-                    value5,  # 8th column
-                    value6,  # 8th column
-                ]
-            )
-    except FileNotFoundError:
-        return JsonResponse({"error": "CSV file not found"}, status=500)
-    except pd.errors.EmptyDataError:
-        return JsonResponse({"error": "CSV file is empty"}, status=500)
+        return JsonResponse(result, safe=False)
+        
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse({"error": f"Failed to load fenwei data: {str(e)}"}, status=500)
 
-    return JsonResponse(result, safe=False)
-
-#网络层分析
 def table4(request):
-    result = []
-    result.append(findList("ipv4"))
-    result.append(findList("ipv6"))
-    result.append(findList("icmpv4"))
-    result.append(findList("icmpv6"))
-    result.append(findList("uniCast"))
-    result.append(findList("broadcast"))
-    result.append(findList("multicast"))
-    return JsonResponse(result, safe=False)
+    """网络层分析数据接口"""
+    try:
+        data_reader = DataReader()
+        analysis_data = data_reader.get_analysis_data_from_db()
+        
+        if not analysis_data:
+            return JsonResponse({"error": "No analysis data available"}, status=500)
+        
+        result = []
+        result.append(DataProcessor.process_analysis_data(analysis_data, "ipv4"))
+        result.append(DataProcessor.process_analysis_data(analysis_data, "ipv6"))
+        result.append(DataProcessor.process_analysis_data(analysis_data, "icmpv4"))
+        result.append(DataProcessor.process_analysis_data(analysis_data, "icmpv6"))
+        result.append(DataProcessor.process_analysis_data(analysis_data, "uniCast"))
+        result.append(DataProcessor.process_analysis_data(analysis_data, "broadcast"))
+        result.append(DataProcessor.process_analysis_data(analysis_data, "multicast"))
+        
+        return JsonResponse(result, safe=False)
+        
+    except Exception as e:
+        return JsonResponse({"error": f"Failed to load network layer data: {str(e)}"}, status=500)
 
-# mainTop
 def mainTop(request):
-    result = []
-    lists = Analysis.objects.all()
-    listAll = []
-    listIn = []
-    listOut = []
-    for var in lists:
-        listAll.append(float(var.all))
-        listIn.append(float(var.inputFlow))
-        listOut.append(float(var.outFlow))
-    result.append(str(float("%.4g" % float(np.sum(listAll)))))
-    result.append(str(float("%.4g" % float(float(random.randint(100, 1000) / 10)))))
-    result.append(str(float("%.4g" % float(np.sum(listIn)))))
-    result.append(str(float("%.4g" % float(np.sum(listOut)))))
-    return JsonResponse(result, safe=False)
+    """主要统计数据接口"""
+    try:
+        data_reader = DataReader()
+        analysis_data = data_reader.get_analysis_data_from_db()
+        
+        if not analysis_data:
+            return JsonResponse({"error": "No analysis data available"}, status=500)
+        
+        listAll = [float(var.all) for var in analysis_data]
+        listIn = [float(var.inputFlow) for var in analysis_data]
+        listOut = [float(var.outFlow) for var in analysis_data]
+        
+        result = []
+        result.append(str(float("%.4g" % float(np.sum(listAll)))))
+        result.append(str(float("%.4g" % float(float(random.randint(100, 1000) / 10)))))
+        result.append(str(float("%.4g" % float(np.sum(listIn)))))
+        result.append(str(float("%.4g" % float(np.sum(listOut)))))
+        
+        return JsonResponse(result, safe=False)
+        
+    except Exception as e:
+        return JsonResponse({"error": f"Failed to load main statistics: {str(e)}"}, status=500)
 
 
-# 实时流量分析
 def mainBottom(request):
-    listAll = Analysis.objects.all().order_by("-id")[:10]
-    result = []
-    for var in listAll:
-        tmp = []
-        tmp.append(str(var.date))
-        t1 = float(var.all)
-        tmp.append(str(t1))
-        t2 = float(var.inputFlow)
-        tmp.append(str(t2))
-        tmp.append(str(t1 - t2))
-        result.append(tmp)
-    result.reverse()
-    return JsonResponse(result, safe=False)
+    """实时流量分析数据接口"""
+    try:
+        data_reader = DataReader()
+        latest_data = data_reader.get_latest_analysis_data(limit=10)
+        
+        if not latest_data:
+            return JsonResponse({"error": "No real-time data available"}, status=500)
+        
+        result = []
+        for var in latest_data:
+            tmp = []
+            tmp.append(str(var.date))
+            t1 = float(var.all)
+            tmp.append(str(t1))
+            t2 = float(var.inputFlow)
+            tmp.append(str(t2))
+            tmp.append(str(t1 - t2))
+            result.append(tmp)
+        result.reverse()
+        
+        return JsonResponse(result, safe=False)
+        
+    except Exception as e:
+        return JsonResponse({"error": f"Failed to load real-time data: {str(e)}"}, status=500)
 
 
 # 流量读入//目前没有用处
 def readPcap(request):
-    packets = rdpcap("./data/demoPcap/test.pcap")
+    packets = rdpcap(get_data_path('pcap', 'test'))
     flow = []
     for index in range(20):
         flow.append(0)
@@ -439,128 +409,135 @@ def readPcap(request):
 
 
 
-# 实时流量流动+网络层分析+数据采集+总流统计
 def readCsv(request):
-    flow = Flow()
-    # ceshi
-    inputData = pd.read_csv("./data/demoCSV/inputCSV5.csv")
+    """实时流量流动+网络层分析+数据采集+总流统计"""
+    try:
+        data_reader = DataReader()
+        inputData = data_reader.read_demo_csv_data()
+        
+        if inputData is None:
+            return JsonResponse({"error": "No demo CSV data available"}, status=500)
+        
+        flow = Flow()
 
-    # print("sssss")
-    start = random.randint(0, 1900)
-    end = start + random.randint(6, 10)
-    # print("sssss")
-    # print(start)
-    protocol_list = inputData.iloc[start:end, 2]
-    sbytes_list = inputData.iloc[start:end, 7]
-    dbytes_list = inputData.iloc[start:end, 8]
-    port_list = inputData.iloc[start:end, 45]
-    # print(type(protocol_list[0]))
-    # print(protocol_list.il)
-    portList = []
-    for i in range(start, start + len(protocol_list)):
-        flowLen = sbytes_list[i] + dbytes_list[i]
-        if flowLen > 3000:
-            flowLen = random.randint(2700, 3000)
-            sbytes_list[i] = random.randint(1500, 2000)
-            dbytes_list[i] = flowLen - sbytes_list[i]
-        flowLen = flowLen / SCALE
-        # print(flowLen)
-        flow.all = flow.all + flowLen
-        if protocol_list[i] == "tcp":
-            if random.random() > 0.7:
-                flow.tcpv4 = flow.tcpv4 + flowLen
+        # print("sssss")
+        start = random.randint(0, 1900)
+        end = start + random.randint(6, 10)
+        # print("sssss")
+        # print(start)
+        protocol_list = inputData.iloc[start:end, 2]
+        sbytes_list = inputData.iloc[start:end, 7]
+        dbytes_list = inputData.iloc[start:end, 8]
+        port_list = inputData.iloc[start:end, 45]
+        # print(type(protocol_list[0]))
+        # print(protocol_list.il)
+        portList = []
+        for i in range(start, start + len(protocol_list)):
+            flowLen = sbytes_list[i] + dbytes_list[i]
+            if flowLen > 3000:
+                flowLen = random.randint(2700, 3000)
+                sbytes_list[i] = random.randint(1500, 2000)
+                dbytes_list[i] = flowLen - sbytes_list[i]
+            flowLen = flowLen / SCALE
+            # print(flowLen)
+            flow.all = flow.all + flowLen
+            if protocol_list[i] == "tcp":
+                if random.random() > 0.7:
+                    flow.tcpv4 = flow.tcpv4 + flowLen
+                else:
+                    flow.tcpv6 = flow.tcpv6 + flowLen
+            elif protocol_list[i] == "udp":
+                if random.random() > 0.7:
+                    flow.udpv4 = flow.udpv4 + flowLen
+                else:
+                    flow.udpv6 = flow.udpv6 + flowLen
             else:
-                flow.tcpv6 = flow.tcpv6 + flowLen
-        elif protocol_list[i] == "udp":
-            if random.random() > 0.7:
-                flow.udpv4 = flow.udpv4 + flowLen
+                if random.random() > 0.7:
+                    flow.otherv4 = flow.otherv4 + flowLen
+                else:
+                    flow.otherv6 = flow.otherv6 + flowLen
+            if protocol_list[i] == "arp":
+                flow.arp = flow.arp + flowLen
+            elif protocol_list[i] == "rarp":
+                flow.rarp = flow.rarp + flowLen
             else:
-                flow.udpv6 = flow.udpv6 + flowLen
-        else:
-            if random.random() > 0.7:
-                flow.otherv4 = flow.otherv4 + flowLen
+                flow.other = flow.other
+            flow.outFlow = flow.outFlow + (sbytes_list[i] / SCALE)
+            flow.inputFlow = flow.inputFlow + (dbytes_list[i] / SCALE)
+            if random.random() > 0.8:
+                if random.random() > 0.7:
+                    flow.ipv4 = flow.ipv4 + flowLen
+                else:
+                    flow.ipv6 = flow.ipv6 + flowLen
             else:
-                flow.otherv6 = flow.otherv6 + flowLen
-        if protocol_list[i] == "arp":
-            flow.arp = flow.arp + flowLen
-        elif protocol_list[i] == "rarp":
-            flow.rarp = flow.rarp + flowLen
-        else:
-            flow.other = flow.other
-        flow.outFlow = flow.outFlow + (sbytes_list[i] / SCALE)
-        flow.inputFlow = flow.inputFlow + (dbytes_list[i] / SCALE)
-        if random.random() > 0.8:
-            if random.random() > 0.7:
-                flow.ipv4 = flow.ipv4 + flowLen
+                if random.random() > 0.7:
+                    flow.icmpv4 = flow.icmpv4 + flowLen
+                else:
+                    flow.icmpv6 = flow.icmpv6 + flowLen
+            r = random.random()
+            if r > 0.9:
+                flow.broadcast = flow.broadcast + flowLen
+            elif r > 0.7:
+                flow.multicast = flow.multicast + flowLen
             else:
-                flow.ipv6 = flow.ipv6 + flowLen
-        else:
-            if random.random() > 0.7:
-                flow.icmpv4 = flow.icmpv4 + flowLen
-            else:
-                flow.icmpv6 = flow.icmpv6 + flowLen
+                flow.uniCast = flow.uniCast + flowLen
+            flag = False
+            port = port_list[i]
+            for index in range(len(portList)):
+                if portList[index].no == port:
+                    portList[index].pre += flowLen
+                    portList[index].cur += flowLen
+                    portList[index].inFlow += dbytes_list[i] / SCALE
+                    portList[index].outFlow += sbytes_list[i] / SCALE
+                    flag = True
+            if flag == False:
+                portVar = Port()
+                portVar.no = port
+                portVar.pre = 0
+                portVar.cur = flowLen
+                portVar.inFlow = dbytes_list[i] / SCALE
+                portVar.outFlow = sbytes_list[i] / SCALE
+                portList.append(portVar)
+        analysisVar = Analysis()
+        analysisVar.all = str(flow.all / 1024)
+        analysisVar.tcpv4 = str(flow.tcpv4 / 1024)
+        analysisVar.tcpv6 = str(flow.tcpv6 / 1024)
+        analysisVar.udpv4 = str(flow.udpv4 / 1024)
+        analysisVar.udpv6 = str(flow.udpv6 / 1024)
+        analysisVar.otherv4 = str(flow.otherv4 / 1024)
+        analysisVar.otherv6 = str(flow.otherv6 / 1024)
+        analysisVar.arp = str(flow.arp / 1024)
+        analysisVar.rarp = str(flow.rarp / 1024)
+        analysisVar.other = str(flow.other / 1024)
+        analysisVar.outFlow = str(flow.outFlow / 1024)
+        analysisVar.inputFlow = str(flow.inputFlow / 1024)
+        analysisVar.ipv4 = str(flow.ipv4 / 1024)
+        analysisVar.ipv6 = str(flow.ipv6 / 1024)
+        analysisVar.icmpv4 = str(flow.icmpv4 / 1024)
+        analysisVar.icmpv6 = str(flow.icmpv6 / 1024)
+        analysisVar.uniCast = str(flow.uniCast / 1024)
+        analysisVar.broadcast = str(flow.broadcast / 1024)
+        analysisVar.multicast = str(flow.multicast / 1024)
+        analysisVar.date = str(datetime.now().strftime("%H:%M:%S"))
+        analysisVar.save()
+
+        portvar = PortInfo()
+        portvar.cur = str(flow.all / 1024)
+        portvar.pre = "0"
+        portvar.no = random.randint(9200, 58000)
         r = random.random()
-        if r > 0.9:
-            flow.broadcast = flow.broadcast + flowLen
-        elif r > 0.7:
-            flow.multicast = flow.multicast + flowLen
+        if r > 0.5:
+            portvar.inFlow = str(flow.all / 1024)
+            portvar.outFlow = "0"
         else:
-            flow.uniCast = flow.uniCast + flowLen
-        flag = False
-        port = port_list[i]
-        for index in range(len(portList)):
-            if portList[index].no == port:
-                portList[index].pre += flowLen
-                portList[index].cur += flowLen
-                portList[index].inFlow += dbytes_list[i] / SCALE
-                portList[index].outFlow += sbytes_list[i] / SCALE
-                flag = True
-        if flag == False:
-            portVar = Port()
-            portVar.no = port
-            portVar.pre = 0
-            portVar.cur = flowLen
-            portVar.inFlow = dbytes_list[i] / SCALE
-            portVar.outFlow = sbytes_list[i] / SCALE
-            portList.append(portVar)
-    analysisVar = Analysis()
-    analysisVar.all = str(flow.all / 1024)
-    analysisVar.tcpv4 = str(flow.tcpv4 / 1024)
-    analysisVar.tcpv6 = str(flow.tcpv6 / 1024)
-    analysisVar.udpv4 = str(flow.udpv4 / 1024)
-    analysisVar.udpv6 = str(flow.udpv6 / 1024)
-    analysisVar.otherv4 = str(flow.otherv4 / 1024)
-    analysisVar.otherv6 = str(flow.otherv6 / 1024)
-    analysisVar.arp = str(flow.arp / 1024)
-    analysisVar.rarp = str(flow.rarp / 1024)
-    analysisVar.other = str(flow.other / 1024)
-    analysisVar.outFlow = str(flow.outFlow / 1024)
-    analysisVar.inputFlow = str(flow.inputFlow / 1024)
-    analysisVar.ipv4 = str(flow.ipv4 / 1024)
-    analysisVar.ipv6 = str(flow.ipv6 / 1024)
-    analysisVar.icmpv4 = str(flow.icmpv4 / 1024)
-    analysisVar.icmpv6 = str(flow.icmpv6 / 1024)
-    analysisVar.uniCast = str(flow.uniCast / 1024)
-    analysisVar.broadcast = str(flow.broadcast / 1024)
-    analysisVar.multicast = str(flow.multicast / 1024)
-    analysisVar.date = str(datetime.now().strftime("%H:%M:%S"))
-    analysisVar.save()
+            portvar.outFlow = str(flow.all / 1024)
+            portvar.inFlow = "0"
+        portvar.save()
 
-    portvar = PortInfo()
-    portvar.cur = str(flow.all / 1024)
-    portvar.pre = "0"
-    portvar.no = random.randint(9200, 58000)
-    r = random.random()
-    if r > 0.5:
-        portvar.inFlow = str(flow.all / 1024)
-        portvar.outFlow = "0"
-    else:
-        portvar.outFlow = str(flow.all / 1024)
-        portvar.inFlow = "0"
-    portvar.save()
-
-    result = []
-    return JsonResponse(result, safe=False)
+        result = []
+        return JsonResponse(result, safe=False)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 def test_html(request):
@@ -766,9 +743,33 @@ def mock_data3(request: object) -> object:
 
 
 def clear_analysis(request):
-    Analysis.objects.all().delete()
-    PortInfo.objects.all().delete()
-    Behavior.objects.all().delete()
-    Behavior_predict.objects.all().delete()
-    result = []
-    return JsonResponse(result, safe=False)
+    """清空分析数据"""
+    try:
+        Analysis.objects.all().delete()
+        PortInfo.objects.all().delete()
+        Behavior.objects.all().delete()
+        Behavior_predict.objects.all().delete()
+        result = {"message": "Analysis data cleared successfully"}
+        return JsonResponse(result, safe=False)
+    except Exception as e:
+        return JsonResponse({"error": f"Failed to clear data: {str(e)}"}, status=500)
+
+
+def data_status(request):
+    """数据源状态接口"""
+    try:
+        data_reader = DataReader()
+        summary = data_reader.get_data_summary()
+        return JsonResponse(summary, safe=False)
+    except Exception as e:
+        return JsonResponse({"error": f"Failed to get data status: {str(e)}"}, status=500)
+
+
+def data_validation(request):
+    """数据文件验证接口"""
+    try:
+        data_reader = DataReader()
+        validation_result = data_reader.validate_data_paths()
+        return JsonResponse(validation_result, safe=False)
+    except Exception as e:
+        return JsonResponse({"error": f"Failed to validate data files: {str(e)}"}, status=500)
