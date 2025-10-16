@@ -46,14 +46,13 @@ class DataReader:
         # 获取配置
         self.processing_config = get_processing_config()
         
-        # 数据文件路径配置
+        # 数据文件路径配置（只使用demo数据）
         self.data_paths = {
-            'perflow': get_data_path('changzhou', 'perflow'),
-            'topk': get_data_path('changzhou', 'topk'),
-            'fenwei': get_data_path('changzhou', 'fenwei'),
-            'demo_csv': get_data_path('demo', 'csv'),
-            'demo_perflow': get_data_path('demo', 'perflow'),
-            'demo_topk': get_data_path('demo', 'topk'),
+            'csv': get_data_path('demo', 'csv'),
+            'perflow': get_data_path('demo', 'perflow'),
+            'topk': get_data_path('demo', 'topk'),
+            'fenwei': get_data_path('demo', 'fenwei'),
+            'result': get_data_path('demo', 'result'),
         }
     
     def _check_file_exists(self, file_path: str) -> bool:
@@ -65,11 +64,11 @@ class DataReader:
     
     def _safe_read_csv(self, file_path: str, **kwargs) -> Optional[pd.DataFrame]:
         """
-        安全读取CSV文件
+        安全读取CSV文件或Excel文件
         
         Args:
-            file_path: CSV文件路径
-            **kwargs: pandas.read_csv的其他参数
+            file_path: 文件路径
+            **kwargs: pandas读取方法的其他参数
             
         Returns:
             DataFrame或None（如果读取失败）
@@ -78,28 +77,50 @@ class DataReader:
             if not self._check_file_exists(file_path):
                 return None
             
-            df = pd.read_csv(file_path, **kwargs)
-            logger.info(f"成功读取CSV文件: {file_path}, 行数: {len(df)}")
+            # 检查文件扩展名，如果是Excel文件则使用read_excel
+            if file_path.lower().endswith(('.xlsx', '.xls')) or self._is_excel_file(file_path):
+                df = pd.read_excel(file_path, **kwargs)
+                logger.info(f"成功读取Excel文件: {file_path}, 行数: {len(df)}")
+            else:
+                df = pd.read_csv(file_path, **kwargs)
+                logger.info(f"成功读取CSV文件: {file_path}, 行数: {len(df)}")
+            
             return df
             
         except pd.errors.EmptyDataError:
-            logger.error(f"CSV文件为空: {file_path}")
+            logger.error(f"文件为空: {file_path}")
             return None
         except Exception as e:
-            logger.error(f"读取CSV文件失败: {file_path}, 错误: {str(e)}")
+            logger.error(f"读取文件失败: {file_path}, 错误: {str(e)}")
             return None
     
-    def read_perflow_data(self, use_demo: bool = False) -> List[List[Any]]:
+    def _is_excel_file(self, file_path: str) -> bool:
+        """
+        检查文件是否为Excel格式
+        
+        Args:
+            file_path: 文件路径
+            
+        Returns:
+            是否为Excel文件
+        """
+        try:
+            with open(file_path, 'rb') as f:
+                header = f.read(8)
+                # 检查Excel文件头
+                return header.startswith(b'\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1') or \
+                       header.startswith(b'PK\x03\x04')  # .xlsx文件头
+        except:
+            return False
+    
+    def read_perflow_data(self) -> List[List[Any]]:
         """
         读取Per-Flow分析数据
         
-        Args:
-            use_demo: 是否使用演示数据
-            
         Returns:
             Per-Flow数据列表
         """
-        file_path = self.data_paths['demo_perflow'] if use_demo else self.data_paths['perflow']
+        file_path = self.data_paths['perflow']
         
         df = self._safe_read_csv(file_path)
         if df is None:
@@ -122,12 +143,11 @@ class DataReader:
         
         return result
     
-    def read_topk_data(self, use_demo: bool = False, chunk_size: int = None) -> List[Dict[str, Any]]:
+    def read_topk_data(self, chunk_size: int = None) -> List[Dict[str, Any]]:
         """
         读取TopK分析数据
         
         Args:
-            use_demo: 是否使用演示数据
             chunk_size: 分块读取大小，如果为None则使用配置中的默认值
             
         Returns:
@@ -136,7 +156,7 @@ class DataReader:
         if chunk_size is None:
             chunk_size = self.processing_config.get('chunk_size', 20)
             
-        file_path = self.data_paths['demo_topk'] if use_demo else self.data_paths['topk']
+        file_path = self.data_paths['topk']
         
         if not self._check_file_exists(file_path):
             return []
@@ -165,13 +185,10 @@ class DataReader:
         
         return result
     
-    def read_fenwei_data(self, use_demo: bool = False) -> List[List[Any]]:
+    def read_fenwei_data(self) -> List[List[Any]]:
         """
         读取分位数估计数据
         
-        Args:
-            use_demo: 是否使用演示数据
-            
         Returns:
             分位数数据列表
         """
@@ -204,14 +221,14 @@ class DataReader:
         
         return result
     
-    def read_demo_csv_data(self) -> Optional[pd.DataFrame]:
+    def read_csv_data(self) -> Optional[pd.DataFrame]:
         """
-        读取演示CSV数据
+        读取CSV数据
         
         Returns:
-            演示数据DataFrame
+            CSV数据DataFrame
         """
-        return self._safe_read_csv(self.data_paths['demo_csv'])
+        return self._safe_read_csv(self.data_paths['csv'])
     
     def get_analysis_data_from_db(self) -> List[Analysis]:
         """

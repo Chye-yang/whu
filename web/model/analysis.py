@@ -95,7 +95,7 @@ def table1(request):
     """Per-Flow分析数据接口"""
     try:
         data_reader = DataReader()
-        result = data_reader.read_perflow_data(use_demo=False)
+        result = data_reader.read_perflow_data()
         
         if not result:
             return JsonResponse({"error": "No perflow data available"}, status=500)
@@ -116,7 +116,7 @@ def table2(request):
     """Heavy Flow检测数据接口"""
     try:
         data_reader = DataReader()
-        result = data_reader.read_topk_data(use_demo=False, chunk_size=20)
+        result = data_reader.read_topk_data(chunk_size=20)
         
         if not result:
             return JsonResponse({"error": "No topk data available"}, status=500)
@@ -131,7 +131,7 @@ def table3(request):
     """分位数估计数据接口"""
     try:
         data_reader = DataReader()
-        result = data_reader.read_fenwei_data(use_demo=False)
+        result = data_reader.read_fenwei_data()
         
         if not result:
             return JsonResponse({"error": "No fenwei data available"}, status=500)
@@ -413,7 +413,7 @@ def readCsv(request):
     """实时流量流动+网络层分析+数据采集+总流统计"""
     try:
         data_reader = DataReader()
-        inputData = data_reader.read_demo_csv_data()
+        inputData = data_reader.read_csv_data()
         
         if inputData is None:
             return JsonResponse({"error": "No demo CSV data available"}, status=500)

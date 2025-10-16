@@ -8,3 +8,4 @@ scapy~=2.4.3
 scikit-learn~=1.0.2
 matplotlib~=3.5.3
 keras~=2.10.0
+openpyxl~=3.0.9

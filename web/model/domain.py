@@ -98,7 +98,7 @@ from django.http import JsonResponse
 def table5(request):
     result = []
     try:
-        inputData = pd.read_csv(get_data_path('changzhou', 'globle'))
+        inputData = pd.read_csv(get_data_path('domain', 'globle'))
         # inputData = pd.read_csv("web/data/ChangZhouData/perflow.csv")
         
 
@@ -146,7 +146,7 @@ def table6(request):
         # 建议使用 settings.BASE_DIR 构建绝对路径，例如:
         # csv_path = os.path.join(settings.BASE_DIR, 'data', 'ChangZhouData', '0524', 'Result', 'IP_domain.csv')
         # 这里暂时保留您的路径，但请注意它在生产环境中的可靠性
-        csv_path = get_data_path('changzhou', 'ip_domain') 
+        csv_path = get_data_path('domain', 'ip_domain') 
         
         inputData = pd.read_csv(csv_path)
 
@@ -203,7 +203,7 @@ def table6(request):
 def table7(request):
     result = []
     try:
-        inputData = pd.read_csv(get_data_path('changzhou', 'domain_jiangsu'))
+        inputData = pd.read_csv(get_data_path('domain', 'domain_jiangsu'))
         # topK分析
         for index, row in inputData.iterrows():
 
@@ -235,7 +235,7 @@ def table7(request):
 def table8(request):
     result = []
     try:
-        inputData = pd.read_csv(get_data_path('changzhou', 'domain_shandong'))
+        inputData = pd.read_csv(get_data_path('domain', 'domain_shandong'))
         # topK分析
         for index, row in inputData.iterrows():
 
@@ -515,9 +515,9 @@ def readCsv(request):
     port_list = inputData.iloc[start:end, 45]  # 保留原逻辑
     
     # 新增：读取三个CSV文件作为新数据来源
-    totalFlowData = pd.read_csv(os.path.join(get_data_path('changzhou', 'domain_jiangsu').replace('Domain_JiangSu.csv', ''), 'JiangSu.csv'))  # 新来源：总流量
-    outFlowData = pd.read_csv(os.path.join(get_data_path('changzhou', 'domain_shandong').replace('Domain_ShanDong.csv', ''), 'ShanDong.csv'))     # 新来源：上行流量
-    inputFlowData = pd.read_csv(os.path.join(get_data_path('changzhou', 'domain_jiangsu').replace('Domain_JiangSu.csv', ''), 'HeNan.csv')) # 新来源：下行流量
+    totalFlowData = pd.read_csv(os.path.join(get_data_path('domain', 'domain_jiangsu').replace('Domain_JiangSu.csv', ''), 'JiangSu.csv'))  # 新来源：总流量
+    outFlowData = pd.read_csv(os.path.join(get_data_path('domain', 'domain_shandong').replace('Domain_ShanDong.csv', ''), 'ShanDong.csv'))     # 新来源：上行流量
+    inputFlowData = pd.read_csv(os.path.join(get_data_path('domain', 'domain_jiangsu').replace('Domain_JiangSu.csv', ''), 'HeNan.csv')) # 新来源：下行流量
     
     # 随机选取新数据范围（保持与原代码一致的随机逻辑）ls
     new_start = random.randint(0, len(totalFlowData) - 10)  # 假设新文件有足够行数
