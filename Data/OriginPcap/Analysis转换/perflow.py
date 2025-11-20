@@ -284,8 +284,8 @@ def pcap_to_perflow(pcap_file, output_file):
 def main():
     """主函数"""
     # 输入和输出文件路径
-    pcap_file = "/home/whu/os/Data/OriginPcap/second/ceshi_815.pcap"
-    output_file = "/home/whu/os/Data/analysis/perflow_beijing2-2.csv"
+    pcap_file = "/home/whu/os/Data/OriginPcap/third/ceshi_000003.pcap"
+    output_file = "/home/whu/os/Data/analysis/perflow_beijing-3-3.csv"
     
     # 确保输出目录存在
     os.makedirs(os.path.dirname(output_file), exist_ok=True)

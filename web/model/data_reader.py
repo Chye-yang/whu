@@ -7,9 +7,11 @@ import csv
 import os
 import logging
 from typing import List, Dict, Any, Optional, Tuple
-from collections import Counter
+from collections import Counter, defaultdict
 from django.conf import settings
 from .db import Analysis, PortInfo
+import dpkt
+import socket
 
 # 导入数据配置
 try:
@@ -314,6 +316,127 @@ class DataReader:
             'db_port_count': PortInfo.objects.count(),
         }
         return summary
+    
+    def read_pcap_flows(self, pcap_file_path: str = None) -> List[Dict[str, Any]]:
+        """
+        读取PCAP文件并解析为流量五元组信息
+        
+        Args:
+            pcap_file_path: PCAP文件路径，如果为None则使用配置中的默认路径
+            
+        Returns:
+            聚合后的数据流列表，每个元素包含五元组信息和统计数据
+        """
+
+        # 修改record部分
+        # 如果没有指定路径，使用配置中的路径
+        if pcap_file_path is None:
+            try:
+                pcap_file_path = get_data_path('pcap', 'test')
+            except (ValueError, FileNotFoundError):
+                pcap_file_path = '/home/whu/os/Data/OriginPcap/third/ceshi_000001.pcap'
+        
+        
+        # flow_summary 用于存储聚合后的数据流信息
+        # 键是 (src_ip, dst_ip, src_port, dst_port, protocol)
+        # 值是 {'packet_count': count, 'byte_count': total_bytes}
+        flow_summary = defaultdict(lambda: {'packet_count': 0, 'byte_count': 0})
+        
+        try:
+            if not self._check_file_exists(pcap_file_path):
+                logger.error(f"PCAP文件不存在: {pcap_file_path}")
+                return []
+            
+            with open(pcap_file_path, 'rb') as f:
+                try:
+                    pcap = dpkt.pcap.Reader(f)
+                except dpkt.dpkt.NeedData:
+                    logger.error(f"无法解析PCAP文件 {pcap_file_path}。文件可能已损坏或不完整。")
+                    return []
+                except ValueError as ve:
+                    logger.error(f"PCAP文件格式无效 {pcap_file_path}: {ve}")
+                    return []
+                
+                # 遍历PCAP文件中的每个数据包
+                for timestamp, buf in pcap:
+                    try:
+                        # 解析以太网帧
+                        eth = dpkt.ethernet.Ethernet(buf)
+                        
+                        # 只处理IP数据包
+                        if not isinstance(eth.data, dpkt.ip.IP):
+                            continue
+                        
+                        ip = eth.data
+                        
+                        # 转换IP地址
+                        try:
+                            src_ip = socket.inet_ntoa(ip.src)
+                            dst_ip = socket.inet_ntoa(ip.dst)
+                        except socket.error:
+                            continue  # 跳过无效的IP地址
+                        
+                        protocol_name = ''
+                        src_port = 0
+                        dst_port = 0
+                        
+                        # 检查协议类型并解析相应的数据包
+                        if ip.p == dpkt.ip.IP_PROTO_TCP:
+                            if isinstance(ip.data, dpkt.tcp.TCP):
+                                tcp = ip.data
+                                src_port = tcp.sport
+                                dst_port = tcp.dport
+                                protocol_name = 'TCP'
+                            else:
+                                continue  # TCP包但无法解析TCP头部
+                        elif ip.p == dpkt.ip.IP_PROTO_UDP:
+                            if isinstance(ip.data, dpkt.udp.UDP):
+                                udp = ip.data
+                                src_port = udp.sport
+                                dst_port = udp.dport
+                                protocol_name = 'UDP'
+                            else:
+                                continue  # UDP包但无法解析UDP头部
+                        else:
+                            continue  # 只关心TCP和UDP
+                        
+                        # 定义数据流的唯一标识符 (5元组)
+                        flow_key = (src_ip, dst_ip, src_port, dst_port, protocol_name)
+                        
+                        # 更新该数据流的包数量和字节数
+                        flow_summary[flow_key]['packet_count'] += 1
+                        flow_summary[flow_key]['byte_count'] += len(buf)
+                    
+                    except dpkt.dpkt.NeedData:
+                        continue
+                    except AttributeError:
+                        continue
+                    except Exception as e:
+                        logger.warning(f"处理数据包时发生错误: {e}")
+                        continue
+        
+        except FileNotFoundError:
+            logger.error(f"PCAP文件未找到: {pcap_file_path}")
+            return []
+        except Exception as e:
+            logger.error(f"打开或读取PCAP文件时发生错误: {e}")
+            return []
+        
+        # 将聚合后的数据转换为列表形式
+        aggregated_flows = []
+        for key, data in flow_summary.items():
+            aggregated_flows.append({
+                'src_ip': key[0],
+                'dst_ip': key[1],
+                'src_port': key[2],
+                'dst_port': key[3],
+                'protocol': key[4],
+                'packet_count': data['packet_count'],
+                'byte_count': data['byte_count']
+            })
+        
+        logger.info(f"成功从PCAP文件读取 {len(aggregated_flows)} 条流量记录")
+        return aggregated_flows
 
 
 class DataProcessor:
@@ -337,28 +460,30 @@ class DataProcessor:
             
             result_list = []
             if not str_list:
-                result_list.append("0.00TB")
+                result_list.append("0.00GB")
             elif str_list[-1][0] == 0:
-                result_list.append("0.00TB")
+                result_list.append("0.00GB")
             else:
-                result_list.append(str(float("%.3g" % float(str_list[-1][0]))) + "TB")
+                # 将TB转换为GB（乘以1024）
+                result_list.append(str(float("%.3g" % (float(str_list[-1][0]) ))) + "GB")
             
             if not float_list:
-                result_list.extend(["0.00TB"] * 5)
+                result_list.extend(["0.00GB"] * 5)
             else:
                 import numpy as np
-                result_list.append(str(float("%.3g" % np.mean(float_list))) + "TB")
-                result_list.append(str(float("%.3g" % np.max(float_list))) + "TB")
-                result_list.append(str(float("%.3g" % np.min(float_list))) + "TB")
-                result_list.append(str(float("%.3g" % np.sum(float_list))) + "TB")
-                result_list.append(str(float("%.3g" % np.std(float_list))))
+                # 将TB转换为GB（乘以1024）
+                result_list.append(str(float("%.3g" % (np.mean(float_list) ))) + "GB")
+                result_list.append(str(float("%.3g" % (np.max(float_list) ))) + "GB")
+                result_list.append(str(float("%.3g" % (np.min(float_list)))) + "GB")
+                result_list.append(str(float("%.3g" % (np.sum(float_list) ))) + "GB")
+                result_list.append(str(float("%.3g" % (np.std(float_list) ))))
             
             result_list.append(str(param))
             return result_list
             
         except Exception as e:
             logger.error(f"处理分析数据时出错: {str(e)}")
-            return ["0.00TB"] * 6
+            return ["0.00GB"] * 6
     
     @staticmethod
     def process_port_data(port_list: List[PortInfo]) -> List[List[str]]:

@@ -13,8 +13,8 @@ def convert_perflow_to_topk():
     将perflow_beijing2.csv转换为topk_beijing.csv格式
     """
     # 输入和输出文件路径
-    input_file = "/home/whu/os/Data/analysis/perflow_beijing2.csv"
-    output_file = "/home/whu/os/Data/analysis/topk_beijing2.csv"
+    input_file = "/home/whu/os/Data/analysis/perflow_beijing-3.csv"
+    output_file = "/home/whu/os/Data/analysis/topk_beijing-3.csv"
     
     try:
         # 读取原始CSV文件

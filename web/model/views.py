@@ -31,7 +31,10 @@ import joblib
 
 
 def record(request):
-    record_info = db_url(request)
+    # 使用新的DataReader类读取PCAP数据
+    from model.data_reader import DataReader
+    data_reader = DataReader()
+    record_info = data_reader.read_pcap_flows()
     attack_info = db_predict(request)
     return render(request, 'record.html', {'record': record_info,
                                            'attack':attack_info})
@@ -121,8 +124,15 @@ from collections import defaultdict # 导入defaultdict用于方便地聚合数�
 
 def db_url(request=None): # request参数保留，以防未来与web框架集成
     """
+    【已弃用】此函数已迁移到 model.data_reader.DataReader.read_pcap_flows()
+    
     优化后的函数，用于处理PCAP文件并聚合数据流信息。
     不再存储每个数据包，而是统计每个数据流的包数量和总字节数。
+    
+    请使用新的方式：
+    from model.data_reader import DataReader
+    data_reader = DataReader()
+    flows = data_reader.read_pcap_flows()
     """
     # flow_summary 用于存储聚合后的数据流信息
     #键是 (src_ip, dst_ip, src_port, dst_port, protocol)

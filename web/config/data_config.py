@@ -19,8 +19,8 @@ PCAP_DATA_BASE = os.path.join(os.path.dirname(settings.BASE_DIR), 'Data', 'Origi
 # =============================
 DEMO_FILES = {
     'csv': os.path.join(DEMO_DATA_BASE, 'inputCSV5.csv'),
-    'perflow': os.path.join(DEMO_DATA_BASE, 'perflow_beijing2.csv'),
-    'topk': os.path.join(DEMO_DATA_BASE, 'topk_beijing2.csv'),
+    'perflow': os.path.join(DEMO_DATA_BASE, 'perflow_beijing-3.csv'),
+    'topk': os.path.join(DEMO_DATA_BASE, 'topk_beijing-3.csv'),
     'fenwei': os.path.join(DEMO_DATA_BASE, 'fen.csv'),
     'result': os.path.join(DEMO_DATA_BASE, 'result.csv'),
 }
@@ -39,8 +39,9 @@ DOMAIN_FILES = {
 # PCAP数据文件配置
 # =============================
 PCAP_FILES = {
-    'test': os.path.join(PCAP_DATA_BASE, 'second', 'ceshi_815.pcap'),
-    'demo1': os.path.join(PCAP_DATA_BASE, 'second', 'ceshi_471.pcap'),
+    'test': os.path.join(PCAP_DATA_BASE, 'third', 'ceshi_000018.pcap'),  # 默认测试文件
+    'demo1': os.path.join(PCAP_DATA_BASE, 'third', 'ceshi_000018.pcap'),
+    # 备用路径：os.path.join(PCAP_DATA_BASE, 'second', 'ceshi_815.pcap')
 }
 
 # =============================
